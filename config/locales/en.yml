@@ -5,4 +5,9 @@ en:
     index:
       heading: 'Summary'
     sidebar:
+      heading_body_trackers: 'Body trackers'
       heading_common: 'Common'
+      link_summary: 'Summary'
+      link_units: 'Units'
+    units:
+      heading: 'Units'

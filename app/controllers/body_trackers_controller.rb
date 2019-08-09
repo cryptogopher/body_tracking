@@ -1,8 +1,11 @@
 class BodyTrackersController < ApplicationController
-  before_action :find_project, only: [:index]
+  before_action :find_project, only: [:index, :units]
   before_action :authorize
 
   def index
+  end
+
+  def units
   end
 
   private

@@ -3,6 +3,10 @@
 
 resources :projects do
   shallow do
-    resources :body_trackers, :controller => 'body_trackers', :only => [:index]
+    resources :body_trackers, :controller => 'body_trackers', :only => [:index] do
+      collection do
+        get 'units'
+      end
+    end
   end
 end

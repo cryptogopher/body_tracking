@@ -7,9 +7,9 @@ Redmine::Plugin.register :body_tracking do
   author_url 'https://github.com/cryptogopher'
 
   project_module :body_tracking do
-    permission :view_body_trackers, {:body_trackers => [:index]}, read: true
+    permission :view_body_trackers, {:body_trackers => [:index, :units]}, read: true
   end
 
   menu :project_menu, :body_trackers, {:controller => 'body_trackers', :action => 'index'},
-    :caption => :body_trackers_menu_caption, :last => :true, :param => :project_id
+    :caption => :body_trackers_menu_caption, :before => :settings, :param => :project_id
 end
