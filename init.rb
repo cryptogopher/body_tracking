@@ -5,4 +5,11 @@ Redmine::Plugin.register :body_tracking do
   version '0.1'
   url 'https://github.com/cryptogopher/body_tracking'
   author_url 'https://github.com/cryptogopher'
+
+  project_module :body_tracking do
+    permission :view_body_trackers, {:body_trackers => [:index]}, read: true
+  end
+
+  menu :project_menu, :body_trackers, {:controller => 'body_trackers', :action => 'index'},
+    :caption => :body_trackers_menu_caption, :last => :true, :param => :project_id
 end
