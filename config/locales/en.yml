@@ -1,6 +1,7 @@
 # English strings go here for Rails i18n
 en:
   body_trackers_menu_caption: 'Body trackers'
+  field_shortname: 'Short name'
   body_trackers:
     index:
       heading: 'Summary'
@@ -9,5 +10,7 @@ en:
       heading_common: 'Common'
       link_summary: 'Summary'
       link_units: 'Units'
-    units:
+  units:
+    index:
       heading: 'Units'
+      heading_new_unit: 'New unit'
