@@ -1,7 +1,13 @@
 <%= error_messages_for @unit %>
 
 <div class="box tabular">
-  <p><%= f.text_field :name, :required => true, :size => 40 %></p>
-  <p><%= f.text_field :shortname, :required => true, :size => 10 %></p>
-  <p><%#= f.select :summary, :cols => 60, :rows => 2 %></p>
+  <div class="splitcontent">
+    <div class="splitcontentleft">
+      <p><%= f.text_field :shortname, required: true, size: 10 %></p>
+    </div>
+    <div class="splitcontentright">
+      <p><%= f.select :type, type_options, required: true %></p>
+    </div>
+  </div>
+  <p><%= f.text_field :name, required: true, size: 40 %></p>
 </div>

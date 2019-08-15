@@ -14,3 +14,19 @@ en:
     index:
       heading: 'Units'
       heading_new_unit: 'New unit'
+    form:
+      types:
+        number: 'count'
+        share: 'share'
+        length: 'length'
+        mass: 'mass'
+        time: 'time'
+        temperature: 'temperature'
+        volume: 'volume'
+        density: 'density'
+        ndensity: 'number density'
+        frequency: 'frequency'
+        velocity: 'velocity'
+        flow: 'flow rate'
+        energy: 'energy'
+        pressure: 'pressure'

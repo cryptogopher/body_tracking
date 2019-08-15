@@ -4,8 +4,7 @@
 
 <div class="contextual">
   <% if @project && User.current.allowed_to?(:manage_units, @project) %>
-    <%= link_to t(".heading_new_unit"), new_project_unit_path(@project),
-      :class => 'icon icon-add',
+    <%= link_to t(".heading_new_unit"), '#', :class => 'icon icon-add',
       :onclick => 'showAndScrollTo("add-unit", "unit_name"); return false;' %>
   <% end %>
 </div>
