@@ -1,6 +1,8 @@
 class Unit < ActiveRecord::Base
+  belongs_to :project
+
   # https://en.wikipedia.org/wiki/International_System_of_Units
-  enum type: {
+  enum group: {
     number: 0,
     share: 1,
 
@@ -21,4 +23,8 @@ class Unit < ActiveRecord::Base
 
     pressure: 40
   }
+
+  validates :project, associated: true
+  validates :name, :shortname, presence: true
+  validates :group, inclusion: groups.keys
 end

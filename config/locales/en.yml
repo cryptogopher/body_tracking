@@ -15,7 +15,7 @@ en:
       heading: 'Units'
       heading_new_unit: 'New unit'
     form:
-      types:
+      groups:
         number: 'count'
         share: 'share'
         length: 'length'
