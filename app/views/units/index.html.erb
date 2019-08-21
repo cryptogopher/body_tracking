@@ -3,9 +3,11 @@
 <% end %>
 
 <div class="contextual">
-  <% if @project && User.current.allowed_to?(:manage_units, @project) %>
+  <% if User.current.allowed_to?(:manage_units, @project) %>
     <%= link_to t(".heading_new_unit"), '#', :class => 'icon icon-add',
-      :onclick => 'showAndScrollTo("add-unit", "unit_name"); return false;' %>
+      :onclick => 'showAndScrollTo("add-unit", "unit_shortname"); return false;' %>
+    <%= link_to t(".heading_import"), import_project_units_path(@project), method: :post,
+      :class => 'icon icon-duplicate' %>
   <% end %>
 </div>
 
@@ -23,3 +25,27 @@
 </div>
 
 <h2><%= t ".heading" %></h2>
+<% if @units.any? %>
+  <table class="list">
+    <thead>
+      <tr>
+        <th><%= l(:field_shortname) %></th>
+        <th><%= l(:field_name) %></th>
+        <th style="width:15%"><%= l(:field_action) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @units.each do |u| %>
+        <tr id="unit-<%= u.id %>" class="unit">
+          <td class="shortname"><%= u.shortname %></td>
+          <td class="unitname"><%= u.name %></td>
+          <td>
+            <%= delete_link unit_path(u), :remote => true %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>

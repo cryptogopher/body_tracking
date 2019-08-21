@@ -1,3 +1,7 @@
+(Rails::VERSION::MAJOR < 5 ? ActionDispatch : ActiveSupport)::Reloader.to_prepare do
+  Project.include BodyTracking::ProjectPatch
+end
+
 Redmine::Plugin.register :body_tracking do
   name 'Body tracking plugin'
   author 'cryptogopher'
@@ -7,8 +11,10 @@ Redmine::Plugin.register :body_tracking do
   author_url 'https://github.com/cryptogopher'
 
   project_module :body_tracking do
-    permission :view_body_trackers, {:body_trackers => [:index], :units => [:index]}, read: true
-    permission :manage_units, {:units => [:new, :create, :destroy]}, require: :loggedin
+    permission :view_body_trackers, {:body_trackers => [:index], :units => [:index]},
+      read: true
+    permission :manage_units, {:units => [:create, :destroy, :import]},
+      require: :loggedin
   end
 
   menu :project_menu, :body_trackers, {:controller => 'body_trackers', :action => 'index'},

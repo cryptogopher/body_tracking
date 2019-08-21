@@ -2,6 +2,7 @@
 en:
   body_trackers_menu_caption: 'Body trackers'
   field_shortname: 'Short name'
+  field_action: 'Action'
   body_trackers:
     index:
       heading: 'Summary'
@@ -14,3 +15,4 @@ en:
     index:
       heading: 'Units'
       heading_new_unit: 'New unit'
+      heading_import: 'Import'

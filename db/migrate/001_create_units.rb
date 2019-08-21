@@ -8,7 +8,6 @@ class CreateUnits < ActiveRecord::Migration
 
     reversible do |dir|
       dir.up do
-        Unit.create project: nil, shortname: "", name: "count"
         Unit.create project: nil, shortname: "%", name: "percent"
         Unit.create project: nil, shortname: "g", name: "gram"
         Unit.create project: nil, shortname: "kg", name: "kilogram"

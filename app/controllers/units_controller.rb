@@ -1,13 +1,10 @@
 class UnitsController < ApplicationController
-  before_action :find_project, only: [:new, :index, :create, :import]
+  before_action :find_project, only: [:index, :create, :import]
   before_action :authorize
-
-  def new
-    @unit = Unit.new
-  end
 
   def index
     @unit = Unit.new
+    @units = @project.units
   end
 
   def create
@@ -17,6 +14,11 @@ class UnitsController < ApplicationController
   end
 
   def import
+    defaults = Unit.where(project: nil).pluck(:name, :shortname)
+    missing = defaults - Unit.where(project: @project).pluck(:name, :shortname)
+    @project.units.create(missing.map { |n, s| {name: n, shortname: s} })
+
+    redirect_to project_units_url(@project)
   end
 
   private
