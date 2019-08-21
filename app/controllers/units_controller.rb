@@ -1,5 +1,5 @@
 class UnitsController < ApplicationController
-  before_action :find_project, only: [:new, :index, :create]
+  before_action :find_project, only: [:new, :index, :create, :import]
   before_action :authorize
 
   def new
@@ -14,6 +14,9 @@ class UnitsController < ApplicationController
   end
 
   def destroy
+  end
+
+  def import
   end
 
   private

@@ -4,19 +4,17 @@ class CreateUnits < ActiveRecord::Migration
       t.references :project
       t.string :name
       t.string :shortname
-      t.integer :group
     end
 
     reversible do |dir|
       dir.up do
-        Unit.create project: nil, shortname: "", name: "count", group: :number
-        Unit.create project: nil, shortname: "%", name: "percent", group: :share
-        Unit.create project: nil, shortname: "g", name: "gram", group: :mass
-        Unit.create project: nil, shortname: "kg", name: "kilogram", group: :mass
+        Unit.create project: nil, shortname: "", name: "count"
+        Unit.create project: nil, shortname: "%", name: "percent"
+        Unit.create project: nil, shortname: "g", name: "gram"
+        Unit.create project: nil, shortname: "kg", name: "kilogram"
       end
-
       dir.down do
-        Unit.delete_all
+        Unit.where(project: nil).delete_all
       end
     end
   end
