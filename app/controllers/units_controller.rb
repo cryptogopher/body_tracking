@@ -27,9 +27,10 @@ class UnitsController < ApplicationController
   end
 
   def import
+    available = Unit.where(project: @project).pluck(:shortname)
     defaults = Unit.where(project: nil).pluck(:name, :shortname)
-    missing = defaults - Unit.where(project: @project).pluck(:name, :shortname)
-    @project.units.create(missing.map { |n, s| {name: n, shortname: s} })
+    defaults.delete_if { |n, s| available.include?(s) }
+    @project.units.create(defaults.map { |n, s| {name: n, shortname: s} })
 
     redirect_to project_units_url(@project)
   end
