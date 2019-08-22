@@ -6,6 +6,13 @@ class CreateUnits < ActiveRecord::Migration
       t.string :shortname
     end
 
+    create_table :quantities do |t|
+      t.references :project
+      t.string :name
+      t.string :description
+      t.integer :domain
+    end
+
     reversible do |dir|
       dir.up do
         Unit.create project: nil, shortname: "%", name: "percent"
