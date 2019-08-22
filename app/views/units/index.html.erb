@@ -11,12 +11,12 @@
   <% end %>
 </div>
 
-<div id="add-unit" style="display:none;">
+<div id="add-unit" <%= 'style=display:none;' if @unit.errors.empty? %>>
   <h2><%= t ".heading_new_unit" %></h2>
 
   <%= labelled_form_for @unit,
                         :url => project_units_path(@project),
-                        :html => { :id => 'unit-form', :multipart => true } do |f| %>
+                        :html => {:id => 'unit-form'} do |f| %>
     <%= render :partial => 'units/form', :locals => { :f => f } %>
     <%= submit_tag l(:button_create) %>
     <%= link_to l(:button_cancel), "#", :onclick => '$("#add-unit").hide()' %>
@@ -40,7 +40,7 @@
           <td class="shortname"><%= u.shortname %></td>
           <td class="unitname"><%= u.name %></td>
           <td>
-            <%= delete_link unit_path(u), :remote => true %>
+            <%= delete_link unit_path(u) %>
           </td>
         </tr>
       <% end %>
