@@ -40,7 +40,7 @@
           <td class="shortname"><%= u.shortname %></td>
           <td class="unitname"><%= u.name %></td>
           <td>
-            <%= delete_link unit_path(u) %>
+            <%= delete_link unit_path(u), data: {} %>
           </td>
         </tr>
       <% end %>
