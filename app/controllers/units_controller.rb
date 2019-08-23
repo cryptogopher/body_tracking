@@ -1,5 +1,5 @@
 class UnitsController < ApplicationController
-  before_action :find_project, only: [:index, :create, :import]
+  before_action :find_project_by_project_id, only: [:index, :create]
   before_action :find_unit, only: [:destroy]
   before_action :authorize
 
@@ -26,15 +26,6 @@ class UnitsController < ApplicationController
     redirect_to project_units_url(@project)
   end
 
-  def import
-    available = Unit.where(project: @project).pluck(:shortname)
-    defaults = Unit.where(project: nil).pluck(:name, :shortname)
-    defaults.delete_if { |n, s| available.include?(s) }
-    @project.units.create(defaults.map { |n, s| {name: n, shortname: s} })
-
-    redirect_to project_units_url(@project)
-  end
-
   private
 
   def unit_params
@@ -46,12 +37,6 @@ class UnitsController < ApplicationController
 
   # :find_* methods are called before :authorize,
   # @project is required for :authorize to succeed
-  def find_project
-    @project = Project.find(params[:project_id])
-  rescue ActiveRecord::RecordNotFound
-    render_404
-  end
-
   def find_unit
     @unit = Unit.find(params[:id])
     @project = @unit.project

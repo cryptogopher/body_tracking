@@ -3,9 +3,10 @@
 
 resources :projects do
   shallow do
-    resources :body_trackers, :only => [:index]
-    resources :units, :only => [:index, :create, :destroy] do
-      post 'import', on: :collection
+    resources :body_trackers, :only => [:index] do
+      post 'defaults', on: :collection
     end
+    resources :units, :only => [:index, :create, :destroy]
+    resources :quantities, :only => [:index, :create, :destroy]
   end
 end

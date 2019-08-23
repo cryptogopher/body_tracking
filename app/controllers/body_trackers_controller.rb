@@ -1,17 +1,16 @@
 class BodyTrackersController < ApplicationController
-  before_action :find_project, only: [:index]
+  before_action :find_project_by_project_id, only: [:index, :defaults]
   before_action :authorize
 
   def index
   end
 
-  private
+  def defaults
+    available = Unit.where(project: @project).pluck(:shortname)
+    defaults = Unit.where(project: nil).pluck(:name, :shortname)
+    defaults.delete_if { |n, s| available.include?(s) }
+    @project.units.create(defaults.map { |n, s| {name: n, shortname: s} })
 
-  # :find_* methods are called before :authorize,
-  # @project is required for :authorize to succeed
-  def find_project
-    @project = Project.find(params[:project_id])
-  rescue ActiveRecord::RecordNotFound
-    render_404
+    redirect_to :back
   end
 end

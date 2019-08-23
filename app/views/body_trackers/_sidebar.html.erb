@@ -5,5 +5,11 @@
 
 <h3><%= t ".heading_common" %></h3>
 <ul>
+  <li><%= link_to t(".link_quantities"), project_quantities_path(@project) %></li>
   <li><%= link_to t(".link_units"), project_units_path(@project) %></li>
+  <% if User.current.allowed_to?(:manage_common, @project) %>
+    <li>&nbsp</li>
+    <li><p><%= link_to t(".link_defaults"), defaults_project_body_trackers_path(@project),
+      method: :post, data: {confirm: t(".confirm_defaults")} %></li>
+  <% end %>
 </ul>

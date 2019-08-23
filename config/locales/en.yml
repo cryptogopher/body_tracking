@@ -3,6 +3,7 @@ en:
   body_trackers_menu_caption: 'Body trackers'
   field_shortname: 'Short name'
   field_action: 'Action'
+  field_domain: 'Domain'
   body_trackers:
     index:
       heading: 'Summary'
@@ -10,9 +11,20 @@ en:
       heading_body_trackers: 'Body trackers'
       heading_common: 'Common'
       link_summary: 'Summary'
+      link_quantities: 'Quantities'
       link_units: 'Units'
+      link_defaults: 'Load defaults'
+      confirm_defaults: 'This will load default quantities and units. Continue?'
+  quantities:
+    index:
+      heading: 'Quantities'
+      heading_new_quantity: 'New quantity'
+    form:
+      domains:
+        diet: 'diet'
+        measurement: 'measurement'
+        exercise: 'exercise'
   units:
     index:
       heading: 'Units'
       heading_new_unit: 'New unit'
-      heading_import: 'Import defaults'

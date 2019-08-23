@@ -11,10 +11,16 @@ Redmine::Plugin.register :body_tracking do
   author_url 'https://github.com/cryptogopher'
 
   project_module :body_tracking do
-    permission :view_body_trackers, {:body_trackers => [:index], :units => [:index]},
-      read: true
-    permission :manage_units, {:units => [:create, :destroy, :import]},
-      require: :loggedin
+    permission :view_body_trackers, {
+      :body_trackers => [:index],
+      :units => [:index],
+      :quantities => [:index]
+    }, read: true
+    permission :manage_common, {
+      :body_trackers => [:defaults],
+      :units => [:create, :destroy],
+      :quantities => [:create, :destroy]
+    }, require: :loggedin
   end
 
   menu :project_menu, :body_trackers, {:controller => 'body_trackers', :action => 'index'},

@@ -3,11 +3,9 @@
 <% end %>
 
 <div class="contextual">
-  <% if User.current.allowed_to?(:manage_units, @project) %>
+  <% if User.current.allowed_to?(:manage_common, @project) %>
     <%= link_to t(".heading_new_unit"), '#', :class => 'icon icon-add',
       :onclick => 'showAndScrollTo("add-unit", "unit_shortname"); return false;' %>
-    <%= link_to t(".heading_import"), import_project_units_path(@project), method: :post,
-      :class => 'icon icon-duplicate' %>
   <% end %>
 </div>
 
@@ -39,9 +37,7 @@
         <tr id="unit-<%= u.id %>" class="unit">
           <td class="shortname"><%= u.shortname %></td>
           <td class="unitname"><%= u.name %></td>
-          <td>
-            <%= delete_link unit_path(u), data: {} %>
-          </td>
+          <td><%= delete_link unit_path(u), data: {} %></td>
         </tr>
       <% end %>
     </tbody>
