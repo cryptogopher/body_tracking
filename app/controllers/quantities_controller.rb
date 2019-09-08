@@ -5,6 +5,7 @@ class QuantitiesController < ApplicationController
 
   def index
     @quantity = Quantity.new
+    @quantities = @project.quantities
   end
 
   def create
@@ -13,6 +14,7 @@ class QuantitiesController < ApplicationController
       flash[:notice] = 'Created new quantity'
       redirect_to project_quantities_url(@project)
     else
+      @quantities = @project.quantities
       render :index
     end
   end

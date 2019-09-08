@@ -7,7 +7,7 @@ module QuantitiesHelper
   end
 
   def parent_options
-    options = nested_set_options(Quantity, @quantity) do |i|
+    options = nested_set_options(@quantities, @quantity) do |i|
       raw("#{'&ensp;' * i.level}#{i.name}")
     end
     options.unshift([t('.null_parent'), nil])
