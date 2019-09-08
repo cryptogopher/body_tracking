@@ -1,3 +1,5 @@
+gem 'awesome_nested_set'
+
 group :development do
   gem "web-console"
 end

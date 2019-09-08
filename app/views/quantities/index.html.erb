@@ -23,7 +23,7 @@
 </div>
 
 <h2><%= t ".heading" %></h2>
-<% if @quantities.any? %>
+<% if Quantity.roots.any? %>
   <table class="list">
     <thead>
       <tr>
@@ -34,13 +34,16 @@
       </tr>
     </thead>
     <tbody>
-      <% @quantities.each do |q| %>
-        <tr id="quantity-<%= q.id %>" class="quantity">
-          <td class="quantityname"><%= q.name %></td>
-          <td class="domain"><%= q.domain %></td>
-          <td class="description"><%= q.description %></td>
-          <td><%= delete_link quantity_path(q), data: {} %></td>
-        </tr>
+      <% Quantity.roots.each do |r| %>
+        <% Quantity.each_with_level(r.self_and_descendants) do |q, level| %>
+          <tr id="quantity-<%= q.id %>"
+              class="quantity <%= "project idnt idnt-#{level}" if level > 0 %>">
+            <td class="name"><span><%= q.name %></span></td>
+            <td class="domain"><%= q.domain %></td>
+            <td class="description"><%= q.description %></td>
+            <td><%= delete_link quantity_path(q), data: {} %></td>
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>

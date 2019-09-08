@@ -1,4 +1,6 @@
 class Quantity < ActiveRecord::Base
+  acts_as_nested_set dependent: :nullify, scope: :project
+
   enum domain: {
     diet: 0,
     measurement: 1,

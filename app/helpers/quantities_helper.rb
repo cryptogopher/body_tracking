@@ -5,4 +5,11 @@ module QuantitiesHelper
       [translations[k.to_sym], k]
     end
   end
+
+  def parent_options
+    options = nested_set_options(Quantity, @quantity) do |i|
+      raw("#{'&ensp;' * i.level}#{i.name}")
+    end
+    options.unshift([t('.null_parent'), nil])
+  end
 end

@@ -4,6 +4,7 @@ en:
   field_shortname: 'Short name'
   field_action: 'Action'
   field_domain: 'Domain'
+  field_parent_quantity: 'Parent'
   body_trackers:
     index:
       heading: 'Summary'
@@ -24,6 +25,7 @@ en:
         diet: 'diet'
         measurement: 'measurement'
         exercise: 'exercise'
+      null_parent: '- none -'
   units:
     index:
       heading: 'Units'
