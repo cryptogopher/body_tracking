@@ -5,6 +5,13 @@ en:
   field_action: 'Action'
   field_domain: 'Domain'
   field_parent_quantity: 'Parent'
+  activerecord:
+    errors:
+      models:
+        quantity:
+          attributes:
+            parent:
+              parent_domain_mismatch: 'parent quantity has to be in the same domain'
   body_trackers:
     index:
       heading: 'Summary'
