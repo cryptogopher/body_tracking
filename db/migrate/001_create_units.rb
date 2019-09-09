@@ -60,7 +60,7 @@ class CreateUnits < ActiveRecord::Migration
         f9 = Quantity.create project: nil, domain: :diet, parent: f7, name: "ALA 18:3(n-3)",
           description: "alpha-Linolenic acid"
         f10 = Quantity.create project: nil, domain: :diet, parent: f7, name: "EPA 20:5(n-3)",
-          description: "Eicosapentaenoic acid; Icosapentaenoic acid"
+          description: "Eicosapentaenoic acid; also icosapentaenoic acid"
         f11 = Quantity.create project: nil, domain: :diet, parent: f7, name: "DHA 22:6(n-3)",
           description: "Docosahexaenoic acid"
 
@@ -92,7 +92,7 @@ class CreateUnits < ActiveRecord::Migration
           description: ""
         c14 = Quantity.create project: nil, domain: :diet, parent: c13, name: "Fibre",
           description: "Carbohydrate polymers with 3 or more monomeric units, which are" \
-          "neither digested nor absorbed in the human small intestine"
+          " neither digested nor absorbed in the human small intestine"
 
         m1 = Quantity.create project: nil, domain: :diet, parent: nil, name: "Minerals",
           description: ""
@@ -114,9 +114,9 @@ class CreateUnits < ActiveRecord::Migration
         v7 = Quantity.create project: nil, domain: :diet, parent: v6, name: "Thiamine (B1)",
           description: ""
         v8 = Quantity.create project: nil, domain: :diet, parent: v6, name: "Riboflavin (B2)",
-          description: "Other names: Vitamin G"
+          description: "Vitamin G"
         v9 = Quantity.create project: nil, domain: :diet, parent: v6, name: "Vitamin B3",
-          description: "Other names: Vitamin PP"
+          description: "Vitamin PP"
         v10 = Quantity.create project: nil, domain: :diet, parent: v9, name: "Niacin",
           description: "Nicotinic acid"
         v11 = Quantity.create project: nil, domain: :diet, parent: v6, name: "Vitamin B5",
@@ -124,7 +124,7 @@ class CreateUnits < ActiveRecord::Migration
         v12 = Quantity.create project: nil, domain: :diet, parent: v6, name: "Vitamin B6",
           description: ""
         v13 = Quantity.create project: nil, domain: :diet, parent: v6, name: "Biotin (B7)",
-          description: "Other names: Vitamin H, Coenzyme R"
+          description: "Vitamin H, also coenzyme R"
         v14 = Quantity.create project: nil, domain: :diet, parent: v6, name: "Folate",
           description: "Includes: folic acid, folacin and vitamin B9"
         v15 = Quantity.create project: nil, domain: :diet, parent: v14, name: "Vitamin B9",
