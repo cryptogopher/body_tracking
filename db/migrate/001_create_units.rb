@@ -32,11 +32,11 @@ class CreateUnits < ActiveRecord::Migration
         Unit.create project: nil, shortname: "g", name: "gram"
         Unit.create project: nil, shortname: "kg", name: "kilogram"
 
+        # https://www.fsai.ie/uploadedFiles/Consol_Reg1169_2011.pdf
+        # https://www.fsai.ie/legislation/food_legislation/food_information_fic/nutrition_labelling.html
         Quantity.create project: nil, domain: :diet, parent: nil, name: "Proteins",
           description: "Total amount of proteins"
 
-        # https://www.fsai.ie/uploadedFiles/Consol_Reg1169_2011.pdf
-        # https://www.fsai.ie/legislation/food_legislation/food_information_fic/nutrition_labelling.html
         f = Quantity.create project: nil, domain: :diet, parent: nil, name: "Fats",
           description: "Total lipids, including phospholipids"
         f1 = Quantity.create project: nil, domain: :diet, parent: f, name: "Fatty acids",
@@ -142,6 +142,7 @@ class CreateUnits < ActiveRecord::Migration
       end
       dir.down do
         Unit.where(project: nil).delete_all
+        Quantity.where(project: nil).delete_all
       end
     end
   end
