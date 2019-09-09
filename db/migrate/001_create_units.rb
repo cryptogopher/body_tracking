@@ -53,9 +53,9 @@ class CreateUnits < ActiveRecord::Migration
         f6 = Quantity.create project: nil, domain: :diet, parent: f3, name: "Trans",
           description: "Fatty acids with at least one non-conjugated C-C double bond in the" \
           " trans configuration"
-        f7 = Quantity.create project: nil, domain: :diet, parent: f5, name: "omega-3 (n-3)",
+        f7 = Quantity.create project: nil, domain: :diet, parent: f5, name: "Omega-3 (n-3)",
           description: ""
-        f8 = Quantity.create project: nil, domain: :diet, parent: f5, name: "omega-6 (n-6)",
+        f8 = Quantity.create project: nil, domain: :diet, parent: f5, name: "Omega-6 (n-6)",
           description: ""
         f9 = Quantity.create project: nil, domain: :diet, parent: f7, name: "ALA 18:3(n-3)",
           description: "alpha-Linolenic acid"
