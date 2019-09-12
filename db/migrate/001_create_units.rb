@@ -134,10 +134,12 @@ class CreateUnits < ActiveRecord::Migration
         v17 = Quantity.create project: nil, domain: :diet, parent: v1, name: "Vitamin C",
           description: ""
         v18 = Quantity.create project: nil, domain: :diet, parent: v1, name: "Vitamin D",
+          description: "Calciferol"
+        v19 = Quantity.create project: nil, domain: :diet, parent: v18,
+          name: "Cholecalciferol (D3)", description: ""
+        v20 = Quantity.create project: nil, domain: :diet, parent: v1, name: "Vitamin E",
           description: ""
-        v19 = Quantity.create project: nil, domain: :diet, parent: v1, name: "Vitamin E",
-          description: ""
-        v20 = Quantity.create project: nil, domain: :diet, parent: v1, name: "Vitamin K",
+        v21 = Quantity.create project: nil, domain: :diet, parent: v1, name: "Vitamin K",
           description: ""
       end
       dir.down do
