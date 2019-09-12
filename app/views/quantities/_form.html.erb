@@ -2,9 +2,25 @@
 
 <div class="box tabular">
   <p><%= f.select :domain, domain_options, required: true %></p>
-  <p>
-    <%= f.select :parent_id, parent_options, required: true, label: :field_parent_quantity %>
-  </p>
+  <% Quantity.domains.each_key do |d| %>
+    <div id="parent_select_<%= d %>" style="display: none">
+      <p><%= f.select :parent_id, parent_options(d),
+        {required: true, label: :field_parent_quantity} %></p>
+    </div>
+  <% end %>
   <p><%= f.text_field :name, size: 25, required: true %></p>
   <p><%= f.text_field :description, size: 200 %></p>
 </div>
+
+<%= javascript_tag do %>
+  function domainChange() {
+    $('[id^=parent_select_]').prop('disabled', true).hide();
+    $('[id=parent_select_'+$('#quantity_domain option:selected').val()+']')
+      .prop('disabled', false).show();
+  }
+  $('#quantity-form').on('click', '#quantity_domain', domainChange);
+
+  $(document).ready(function() {
+    domainChange();
+  });
+<% end %>
