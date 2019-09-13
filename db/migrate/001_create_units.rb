@@ -19,11 +19,18 @@ class CreateUnits < ActiveRecord::Migration
 
     create_table :ingredients do |t|
       t.string :name
-      t.references :ref_unit
       t.decimal :ref_amount
+      t.references :ref_unit
       t.boolean :hidden
       t.references :source
       t.integer :group
+    end
+
+    create_table :nutrients do |t|
+      t.references :ingredient
+      t.references :quantity
+      t.references :unit
+      t.decimal :amount
     end
 
     reversible do |dir|
