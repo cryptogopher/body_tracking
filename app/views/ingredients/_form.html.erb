@@ -8,10 +8,33 @@
   </p>
   <p><%= f.select :group, group_options, required: true %></p>
   <%= f.fields_for :nutrients, @nutrient do |ff| %>
-    <p>
-    <%= ff.select :quantity_id, quantity_options, {label: '', required: true} %>
-    <%= ff.number_field :amount, {size: 8, label: '', required: true} %>
-    <%= ff.select :unit_id, unit_options, {label: '', required: true} %>
+    <p class="nutrient" data-id="<%= ff.index %>">
+    <%= ff.select :quantity_id, quantity_options,
+      label: (ff.index > 0 ? '' : :field_nutrients) %>
+    <%= ff.number_field :amount, {size: 8, label: ''} %>
+    <%= ff.select :unit_id, unit_options, label: '' %>
+    <%= link_to t(".button_delete_nutrient"), '#',
+      :class => 'icon icon-del',
+      :style => "display:none",
+      :onclick => "deleteNutrient("+ff.index.to_s+"); return false;" %>
     </p>
   <% end %>
+  <p><%= link_to t(".button_add_nutrient"), '#', :class => 'icon icon-add',
+    :onclick => 'addNutrient(); return false;' %></p>
 </div>
+
+<%= javascript_tag do %>
+  function addNutrient() {
+  var row = $('#ingredient-form p.nutrient:last');
+  var id = parseInt(row.attr('data-id')) + 1;
+  var new_row = row.clone().insertAfter(row);
+  new_row.attr('data-id', id)
+  new_row.find('input, select').val('');
+  new_row.find('label').text('');
+  if ($('#ingredient-form p.nutrient').length > 1) {
+    $('#ingredient-form p.nutrient a.icon-del').show();
+  } else {
+    $('#ingredient-form p.nutrient.icon-del').hide();
+  }
+  }
+<% end %>

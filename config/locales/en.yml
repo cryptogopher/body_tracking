@@ -4,6 +4,7 @@ en:
   field_action: 'Action'
   field_ref_amount: 'Reference amount'
   field_group: 'Group'
+  field_nutrients: 'Nutrients:'
   field_domain: 'Domain'
   field_parent_quantity: 'Parent'
   field_shortname: 'Short name'
@@ -32,6 +33,8 @@ en:
       heading: 'Ingredients'
       heading_new_ingredient: 'New ingredient'
     form:
+      button_add_nutrient: 'Add nutrient'
+      button_delete_nutrient: 'Delete'
       groups:
         meat: 'meat'
   quantities:
