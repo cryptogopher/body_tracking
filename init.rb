@@ -13,13 +13,15 @@ Redmine::Plugin.register :body_tracking do
   project_module :body_tracking do
     permission :view_body_trackers, {
       :body_trackers => [:index],
+      :ingredients => [:index],
+      :quantities => [:index],
       :units => [:index],
-      :quantities => [:index]
     }, read: true
     permission :manage_common, {
       :body_trackers => [:defaults],
+      :ingredients => [:create, :destroy],
+      :quantities => [:create, :destroy],
       :units => [:create, :destroy],
-      :quantities => [:create, :destroy]
     }, require: :loggedin
   end
 

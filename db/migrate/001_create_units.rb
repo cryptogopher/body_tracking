@@ -22,9 +22,9 @@ class CreateUnits < ActiveRecord::Migration
       t.string :name
       t.decimal :ref_amount
       t.references :ref_unit
-      t.boolean :hidden
-      t.references :source
       t.integer :group
+      t.references :source
+      t.boolean :hidden
     end
 
     create_table :nutrients do |t|

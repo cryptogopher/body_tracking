@@ -1,10 +1,12 @@
 # English strings go here for Rails i18n
 en:
   body_trackers_menu_caption: 'Body trackers'
-  field_shortname: 'Short name'
   field_action: 'Action'
+  field_ref_amount: 'Reference amount'
+  field_group: 'Group'
   field_domain: 'Domain'
   field_parent_quantity: 'Parent'
+  field_shortname: 'Short name'
   activerecord:
     errors:
       models:
@@ -25,6 +27,13 @@ en:
       link_units: 'Units'
       link_defaults: 'Load defaults'
       confirm_defaults: 'This will load default quantities and units. Continue?'
+  ingredients:
+    index:
+      heading: 'Ingredients'
+      heading_new_ingredient: 'New ingredient'
+    form:
+      groups:
+        meat: 'meat'
   quantities:
     index:
       heading: 'Quantities'
