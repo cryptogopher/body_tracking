@@ -18,6 +18,7 @@ class CreateUnits < ActiveRecord::Migration
     end
 
     create_table :ingredients do |t|
+      t.references :project
       t.string :name
       t.decimal :ref_amount
       t.references :ref_unit

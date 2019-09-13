@@ -1,0 +1,47 @@
+<% content_for :sidebar do %>
+  <%= render :partial => 'body_trackers/sidebar' %>
+<% end %>
+
+<div class="contextual">
+  <% if User.current.allowed_to?(:manage_common, @project) %>
+    <%= link_to t(".heading_new_unit"), '#', :class => 'icon icon-add',
+      :onclick => 'showAndScrollTo("add-unit", "unit_shortname"); return false;' %>
+  <% end %>
+</div>
+
+<div id="add-unit" <%= 'style=display:none;' if @unit.errors.empty? %>>
+  <h2><%= t ".heading_new_unit" %></h2>
+
+  <%= labelled_form_for @unit,
+                        :url => project_units_path(@project),
+                        :html => {:id => 'unit-form'} do |f| %>
+    <%= render :partial => 'units/form', :locals => { :f => f } %>
+    <%= submit_tag l(:button_create) %>
+    <%= link_to l(:button_cancel), "#", :onclick => '$("#add-unit").hide()' %>
+  <% end %>
+  <hr>
+</div>
+
+<h2><%= t ".heading" %></h2>
+<% if @units.any? %>
+  <table class="list">
+    <thead>
+      <tr>
+        <th><%= l(:field_shortname) %></th>
+        <th><%= l(:field_name) %></th>
+        <th style="width:15%"><%= l(:field_action) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @units.each do |u| %>
+        <tr id="unit-<%= u.id %>" class="unit">
+          <td class="shortname"><%= u.shortname %></td>
+          <td class="unitname"><%= u.name %></td>
+          <td><%= delete_link unit_path(u), data: {} %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
