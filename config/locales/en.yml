@@ -19,7 +19,7 @@ en:
       heading: 'Summary'
     sidebar:
       heading_body_trackers: 'Body trackers'
-      heding_diet: 'Diet'
+      heading_diet: 'Diet'
       heading_common: 'Common'
       link_summary: 'Summary'
       link_ingredients: 'Ingredients'

@@ -30,8 +30,8 @@ class CreateUnits < ActiveRecord::Migration
     create_table :nutrients do |t|
       t.references :ingredient
       t.references :quantity
-      t.references :unit
       t.decimal :amount
+      t.references :unit
     end
 
     reversible do |dir|

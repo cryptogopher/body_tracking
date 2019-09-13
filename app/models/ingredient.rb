@@ -4,6 +4,8 @@ class Ingredient < ActiveRecord::Base
   }
 
   belongs_to :project
+  has_many :nutrients
+  accepts_nested_attributes_for :nutrients
 
   validates :project, associated: true
   validates :name, presence: true, uniqueness: {scope: :project_id}

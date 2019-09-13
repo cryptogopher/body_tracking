@@ -7,4 +7,11 @@
   <%= f.select :ref_unit_id, unit_options, {label: '', required: true} %>
   </p>
   <p><%= f.select :group, group_options, required: true %></p>
+  <%= f.fields_for :nutrients, @nutrient do |ff| %>
+    <p>
+    <%= ff.select :quantity_id, quantity_options, {label: '', required: true} %>
+    <%= ff.number_field :amount, {size: 8, label: '', required: true} %>
+    <%= ff.select :unit_id, unit_options, {label: '', required: true} %>
+    </p>
+  <% end %>
 </div>

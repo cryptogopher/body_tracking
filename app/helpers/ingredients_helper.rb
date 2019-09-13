@@ -1,4 +1,10 @@
 module IngredientsHelper
+  def quantity_options
+    nested_set_options(@project.quantities.diet) do |q|
+      raw("#{'&ensp;' * q.level}#{q.name}")
+    end
+  end
+
   def unit_options
     @project.units.map do |u|
       [u.shortname, u.id]
