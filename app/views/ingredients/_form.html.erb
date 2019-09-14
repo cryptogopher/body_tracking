@@ -7,17 +7,20 @@
   <%= f.select :ref_unit_id, unit_options, {label: '', required: true} %>
   </p>
   <p><%= f.select :group, group_options, required: true %></p>
-  <%= f.fields_for :nutrients, @nutrient do |ff| %>
-    <p class="nutrient" data-id="<%= ff.index %>">
-    <%= ff.select :quantity_id, quantity_options,
-      label: (ff.index > 0 ? '' : :field_nutrients) %>
-    <%= ff.number_field :amount, {size: 8, label: ''} %>
-    <%= ff.select :unit_id, unit_options, label: '' %>
-    <%= link_to t(".button_delete_nutrient"), '#',
-      :class => 'icon icon-del',
-      :style => "display:none",
-      :onclick => "deleteNutrient("+ff.index.to_s+"); return false;" %>
-    </p>
+  <% @ingredient.nutrients.each_with_index do |n, index| %>
+    <%= f.fields_for :nutrient, n, index: '' do |ff| %>
+      <p class="nutrient">
+        <%= ff.select :quantity_id, quantity_options,
+          label: (index > 0 ? '' : :field_nutrients) %>
+        <%= ff.number_field :amount, {size: 8, label: ''} %>
+        <%= ff.select :unit_id, unit_options, label: '' %>
+        <%= ff.check_box :_destroy, {style: "display:none", label: ''} %>
+        <%= link_to t(".button_delete_nutrient"), '#',
+          :class => 'icon icon-del',
+          :style => "display:none",
+          :onclick => "deleteNutrient(); return false;" %>
+      </p>
+    <% end %>
   <% end %>
   <p><%= link_to t(".button_add_nutrient"), '#', :class => 'icon icon-add',
     :onclick => 'addNutrient(); return false;' %></p>
@@ -25,16 +28,23 @@
 
 <%= javascript_tag do %>
   function addNutrient() {
-  var row = $('#ingredient-form p.nutrient:last');
-  var id = parseInt(row.attr('data-id')) + 1;
-  var new_row = row.clone().insertAfter(row);
-  new_row.attr('data-id', id)
-  new_row.find('input, select').val('');
-  new_row.find('label').text('');
-  if ($('#ingredient-form p.nutrient').length > 1) {
-    $('#ingredient-form p.nutrient a.icon-del').show();
-  } else {
-    $('#ingredient-form p.nutrient.icon-del').hide();
+    var row = $('p.nutrient:visible:last');
+    var new_row = row.clone().insertAfter(row);
+    new_row.find('input[id$=_amount], select[id$=_quantity_id]').val('');
+    new_row.find('select[id$=_unit_id]').val(row.find('select[id$=_unit_id]').val());
+    new_row.find('label:first').text('');
+    if ($('p.nutrient:visible').length > 1) {
+      $('p.nutrient a.icon-del').show();
+    }
   }
+
+  function deleteNutrient() {
+    var row = $(event.target).closest('p.nutrient');
+    row.find('[id$=_destroy]').val(1);
+    row.hide();
+    $('p.nutrient:visible:first label:first').text('<%= t "field_nutrients" %>');
+    if ($('p.nutrient:visible').length <= 1) {
+      $('p.nutrient a.icon-del').hide();
+    }
   }
 <% end %>
