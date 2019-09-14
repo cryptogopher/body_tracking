@@ -4,6 +4,7 @@ en:
   field_action: 'Action'
   field_ref_amount: 'Reference amount'
   field_group: 'Group'
+  field_source: 'Source'
   field_nutrients: 'Nutrients:'
   field_domain: 'Domain'
   field_parent_quantity: 'Parent'

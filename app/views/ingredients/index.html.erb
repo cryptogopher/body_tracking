@@ -29,7 +29,6 @@
       <tr>
         <th><%= l(:field_name) %></th>
         <th><%= l(:field_ref_amount) %></th>
-        <th><%= l(:field_ref_unit) %></th>
         <th><%= l(:field_group) %></th>
         <th><%= l(:field_source) %></th>
         <th style="width:15%"><%= l(:field_action) %></th>
@@ -39,9 +38,9 @@
       <% @ingredients.each do |i| %>
         <tr id="ingredient-<%= i.id %>" class="ingredient <%= 'hidden' if i.hidden %>">
           <td class="ingredientname"><%= i.name %></td>
-          <td class="ref_amount"><%= i.ref_amount %> [<%= i.ref_unit %>]</td>
+          <td class="ref_amount"><%= i.ref_amount %> [<%= i.ref_unit.shortname %>]</td>
           <td class="group"><%= i.group %></td>
-          <td class="source"><%= i.source %></td>
+          <td class="source"><%#= i.source %></td>
           <td><%= delete_link ingredient_path(i), data: {} %></td>
         </tr>
       <% end %>
