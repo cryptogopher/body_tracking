@@ -11,13 +11,13 @@
     <%= f.fields_for 'nutrients_attributes', n, index: '' do |ff| %>
       <p class="nutrient">
         <%= ff.select :quantity_id, quantity_options,
-          label: (index > 0 ? '' : :field_nutrients) %>
+          {include_blank: true, label: (index > 0 ? '' : :field_nutrients)} %>
         <%= ff.number_field :amount, {size: 8, min: 0, step: :any, label: ''} %>
-        <%= ff.select :unit_id, unit_options, label: '' %>
+        <%= ff.select :unit_id, unit_options, {label: ''} %>
         <%= ff.check_box :_destroy, {style: "display:none", label: ''} %>
         <%= link_to t(".button_delete_nutrient"), '#',
           :class => 'icon icon-del',
-          :style => "display:none",
+          :style => (@ingredient.nutrients.length > 1 ? "" : "display:none"),
           :onclick => "deleteNutrient(); return false;" %>
       </p>
     <% end %>
@@ -41,7 +41,8 @@
   function deleteNutrient() {
     var row = $(event.target).closest('p.nutrient');
     row.find('[id$=_destroy]').val(1);
-    row.hide();
+    // FIXME: should only hide()  row if record already saved (to send _destroy to backend)
+    row.remove();
     $('p.nutrient:visible:first label:first').text('<%= t "field_nutrients" %>');
     if ($('p.nutrient:visible').length <= 1) {
       $('p.nutrient a.icon-del').hide();

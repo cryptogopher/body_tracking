@@ -5,11 +5,19 @@ class Ingredient < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :ref_unit, class_name: 'Unit'
+
   has_many :nutrients, inverse_of: :ingredient
-  accepts_nested_attributes_for :nutrients, allow_destroy: true
-  #reject_if: proc { |attrs|
-  #  attrs['quantity_id'].blank? && attrs['amount'].blank?
-  #}
+  accepts_nested_attributes_for :nutrients, allow_destroy: true, reject_if: proc { |attrs|
+    attrs['quantity_id'].blank? && attrs['amount'].blank?
+  }
+  validates_associated :nutrients
+  # Nutrient quantity_id uniqueness check for nested attributes
+  validate on: :create do
+    quantities = self.nutrients.map { |n| n.quantity_id }
+    if quantities.length != quantities.uniq.length
+      errors.add(:nutrients, :duplicated_quantity)
+    end
+  end
 
   validates :project, associated: true
   validates :name, presence: true, uniqueness: {scope: :project_id}

@@ -12,6 +12,10 @@ en:
   activerecord:
     errors:
       models:
+        ingredient:
+          attributes:
+            nutrients:
+              duplicated_quantity: 'you can define each quantity only once per ingredient'
         quantity:
           attributes:
             parent:
