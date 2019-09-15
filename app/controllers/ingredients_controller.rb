@@ -4,8 +4,9 @@ class IngredientsController < ApplicationController
   before_action :authorize
 
   def index
-    @ingredient = Ingredient.new
-    @ingredient.nutrients.build
+    @ingredient = Ingredient.new(project: @project)
+    # passing attr for after_initialize
+    @ingredient.nutrients.new(ingredient: @ingredient)
     @ingredients = @project.ingredients
   end
 

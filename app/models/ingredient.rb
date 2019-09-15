@@ -24,4 +24,12 @@ class Ingredient < ActiveRecord::Base
   validates :ref_amount, numericality: {greater_than: 0}
   validates :ref_unit, presence: true, associated: true
   validates :group, inclusion: {in: groups.keys}
+
+  after_initialize do
+    if new_record?
+      units = self.project.units
+      self.ref_unit ||= units.find_by(shortname: 'g') || units.first
+    end
+  end
+
 end
