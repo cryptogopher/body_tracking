@@ -6,7 +6,7 @@ class Ingredient < ActiveRecord::Base
   belongs_to :project
   belongs_to :ref_unit, class_name: 'Unit'
 
-  has_many :nutrients, inverse_of: :ingredient
+  has_many :nutrients, inverse_of: :ingredient, dependent: :destroy
   accepts_nested_attributes_for :nutrients, allow_destroy: true, reject_if: proc { |attrs|
     attrs['quantity_id'].blank? && attrs['amount'].blank?
   }
