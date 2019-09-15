@@ -1,6 +1,7 @@
 class Ingredient < ActiveRecord::Base
   enum group: {
-    meat: 0
+    other: 0,
+    meat: 1
   }
 
   belongs_to :project
@@ -27,8 +28,10 @@ class Ingredient < ActiveRecord::Base
 
   after_initialize do
     if new_record?
+      self.ref_amount ||= 100
       units = self.project.units
       self.ref_unit ||= units.find_by(shortname: 'g') || units.first
+      self.group ||= :other
     end
   end
 

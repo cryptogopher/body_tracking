@@ -6,7 +6,9 @@ resources :projects do
     resources :body_trackers, :only => [:index] do
       post 'defaults', on: :collection
     end
-    resources :ingredients, :only => [:index, :create, :destroy]
+    resources :ingredients, :only => [:index, :create, :destroy] do
+      post 'import', on: :collection
+    end
     resources :quantities, :only => [:index, :create, :destroy]
     resources :units, :only => [:index, :create, :destroy]
   end

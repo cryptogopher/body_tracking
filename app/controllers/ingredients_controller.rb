@@ -1,5 +1,5 @@
 class IngredientsController < ApplicationController
-  before_action :find_project_by_project_id, only: [:index, :create]
+  before_action :find_project_by_project_id, only: [:index, :create, :import]
   before_action :find_ingredient, only: [:destroy]
   before_action :authorize
 
@@ -27,6 +27,9 @@ class IngredientsController < ApplicationController
       flash[:notice] = 'Deleted ingredient'
     end
     redirect_to project_ingredients_url(@project)
+  end
+
+  def import
   end
 
   private

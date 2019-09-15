@@ -36,11 +36,17 @@ en:
   ingredients:
     index:
       heading: 'Ingredients'
+      heading_import_ingredients: 'Import'
       heading_new_ingredient: 'New ingredient'
+      label_import_select_csv_file: 'Select CSV file'
+      import_hints: 'CSV file has to include header with column names. Recognized column
+        names are: (1) ingredient attributes (name, ref_amount, ref_unit, group),
+        (2) quantities names with units short names in square brackets (e.g. proteins [g])'
     form:
       button_add_nutrient: 'Add nutrient'
       button_delete_nutrient: 'Delete'
       groups:
+        other: 'other'
         meat: 'meat'
   quantities:
     index:
