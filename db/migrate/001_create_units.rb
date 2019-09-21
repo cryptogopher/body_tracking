@@ -36,12 +36,18 @@ class CreateUnits < ActiveRecord::Migration
 
     reversible do |dir|
       dir.up do
-        Unit.create project: nil, shortname: "%", name: "percent"
         Unit.create project: nil, shortname: "g", name: "gram"
+        Unit.create project: nil, shortname: "mg", name: "milligram"
+        Unit.create project: nil, shortname: "ug", name: "microgram"
         Unit.create project: nil, shortname: "kg", name: "kilogram"
+        Unit.create project: nil, shortname: "kcal", name: "kilocalorie"
+        Unit.create project: nil, shortname: "%", name: "percent"
 
         # https://www.fsai.ie/uploadedFiles/Consol_Reg1169_2011.pdf
         # https://www.fsai.ie/legislation/food_legislation/food_information_fic/nutrition_labelling.html
+        e = Quantity.create project: nil, domain: :diet, parent: nil, name: "Energy",
+          description: "Total energy"
+
         Quantity.create project: nil, domain: :diet, parent: nil, name: "Proteins",
           description: "Total amount of proteins"
 

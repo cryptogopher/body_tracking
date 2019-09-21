@@ -42,11 +42,17 @@ class IngredientsController < ApplicationController
 
       CSV.foreach(params[:file].path, headers: true).with_index(2) do |row, line|
         r = row.to_h
+        unless r.has_key?('Name')
+          warnings << "Line 1: required 'Name' column is missing" if line == 2
+        end
         i = {
           name: r.delete('Name'),
+          ref_amount: 100.0,
+          ref_unit: units['g'],
           group: r.delete('Group') || :other,
           nutrients_attributes: []
         }
+
         r.each do |col, val|
           if col.blank?
             warnings << "Line 1: column header missing" if line == 2
@@ -64,8 +70,8 @@ class IngredientsController < ApplicationController
                 " in column #{col}" unless column_units[quantity]
             end
           end
-          next if quantities[quantity].blank? || val.blank?
 
+          next if val.blank?
           amount, amount_unit_sn, * = val.rstrip.partition(/\[.*\]$/)
           unit = nil
           if amount_unit_sn.present?
@@ -80,6 +86,7 @@ class IngredientsController < ApplicationController
             end
           end
 
+          next if quantities[quantity].blank?
           if quantity == 'Reference'
             i.update({
               ref_amount: amount.to_d,
