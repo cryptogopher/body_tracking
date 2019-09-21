@@ -40,8 +40,13 @@ en:
       heading_new_ingredient: 'New ingredient'
       label_import_select_csv_file: 'Select CSV file'
       import_hints: 'CSV file has to include header with column names. Recognized column
-        names are: (1) ingredient attributes (name, ref_amount, ref_unit, group),
-        (2) quantities names with units short names in square brackets (e.g. proteins [g])'
+        names are:
+        (1) ingredient attributes, case sensitive:
+        "Name" - required, "Reference" - defaults to 100[g], "Group" - defaults to "other",
+        (2) quantities'' names with unit short name in square brackets.
+        Sample header: "Name,Reference,Group,Proteins[g],Fats[g],Carbohydrates[g]".
+        Sample data row: "Brussels,100[g],other,3.4,300[mg],9".
+        Unit given in data row has precedence over that specified in header.'
     form:
       button_add_nutrient: 'Add nutrient'
       button_delete_nutrient: 'Delete'
