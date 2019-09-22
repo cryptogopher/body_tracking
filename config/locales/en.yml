@@ -2,7 +2,7 @@
 en:
   body_trackers_menu_caption: 'Body trackers'
   field_action: 'Action'
-  field_ref_amount: 'Reference amount'
+  field_reference: 'Reference'
   field_group: 'Group'
   field_source: 'Source'
   field_nutrients: 'Nutrients:'
