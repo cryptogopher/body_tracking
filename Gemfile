@@ -1,7 +1,8 @@
 gem 'awesome_nested_set'
 
 group :development do
-  gem "web-console"
+  gem 'web-console'
+  gem 'active_record_query_trace'
 end
 
 group :development, :test do

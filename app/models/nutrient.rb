@@ -1,13 +1,10 @@
 class Nutrient < ActiveRecord::Base
-  belongs_to :ingredient, inverse_of: :nutrients
-  belongs_to :quantity
-  belongs_to :unit
+  belongs_to :ingredient, inverse_of: :nutrients, required: true
+  belongs_to :quantity, required: true
+  belongs_to :unit, required: true
 
-  # disabled to avoid loop with Ingredient 'validates_associated :nutrients'
-  #validates :ingredient, presence: true, associated: true
-  validates :quantity, presence: true, associated: true, uniqueness: {scope: :ingredient_id}
-  validates :amount, numericality: {greater_than: 0}
-  validates :unit, presence: true, associated: true
+  validates :quantity, uniqueness: {scope: :ingredient_id}
+  validates :amount, numericality: {greater_thani_or_equal_to: 0.0}
 
   after_initialize do
     if new_record?

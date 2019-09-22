@@ -9,7 +9,7 @@ class IngredientsController < ApplicationController
     @ingredient = Ingredient.new(project: @project)
     # passing attr for after_initialize
     @ingredient.nutrients.new(ingredient: @ingredient)
-    @ingredients = @project.ingredients
+    @ingredients = @project.ingredients.includes(:ref_unit)
   end
 
   def create
@@ -18,7 +18,7 @@ class IngredientsController < ApplicationController
       flash[:notice] = 'Created new ingredient'
       redirect_to project_ingredients_url(@project)
     else
-      @ingredients = @project.ingredients
+      @ingredients = @project.ingredients.includes(:ref_unit)
       render :index
     end
   end
@@ -37,7 +37,7 @@ class IngredientsController < ApplicationController
     if params.has_key?(:file)
       quantities = @project.quantities.map { |q| [q.name, q] }.to_h
       units = @project.units.map { |u| [u.shortname, u] }.to_h
-      ingredients = []
+      ingredients_params = []
       column_units = {}
 
       CSV.foreach(params[:file].path, headers: true).with_index(2) do |row, line|
@@ -45,7 +45,7 @@ class IngredientsController < ApplicationController
         unless r.has_key?('Name')
           warnings << "Line 1: required 'Name' column is missing" if line == 2
         end
-        i = {
+        i_params = {
           name: r.delete('Name'),
           ref_amount: 100.0,
           ref_unit: units['g'],
@@ -88,25 +88,34 @@ class IngredientsController < ApplicationController
 
           next if quantities[quantity].blank?
           if quantity == 'Reference'
-            i.update({
+            i_params.update({
               ref_amount: amount.to_d,
               ref_unit: unit
             })
           else
-            i[:nutrients_attributes] << {
+            i_params[:nutrients_attributes] << {
               quantity: quantities[quantity],
               amount: amount.to_d,
               unit: unit
             }
           end
         end
-        ingredients << i
+
+        ingredients_params << i_params
       end
     else
       warnings << 'No file selected'
     end
 
-    if warnings.present?
+    if warnings.empty?
+      ingredients = @project.ingredients.create(ingredients_params)
+      flash[:notice] = "Imported #{ingredients.map(&:persisted?).count(true)} out of" \
+        " #{ingredients_params.length} ingredients"
+      skipped = ingredients.select { |i| !i.persisted? }
+      skipped_desc = skipped.map { |i| "#{i.name} - #{i.errors.full_messages.join(', ')}" }
+      flash[:warning] = "Ingredients skipped due to errors:<br>" \
+        " #{skipped_desc.join('<br>').truncate(1024)}"
+    else
       warnings.unshift("Problems encountered during import - fix and try again:")
       flash[:warning] = warnings.join("<br>").truncate(1024, omission: '...(and other)')
     end
