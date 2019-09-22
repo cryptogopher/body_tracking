@@ -15,7 +15,7 @@ class BodyTrackersController < ApplicationController
     flash[:notice] = "Loaded #{new_units > 0 ? new_units : "no" } new" \
       " #{'unit'.pluralize(new_units)}"
 
-    available = Quantity.where(project: @project).map { |q| [[q.name, q.domain], q] }.to_h
+    available = @project.quantities.map { |q| [[q.name, q.domain], q] }.to_h
     new_quantities = available.length
     defaults = Quantity.where(project: nil)
     Quantity.each_with_level(defaults) do |q, level|

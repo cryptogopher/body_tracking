@@ -19,6 +19,7 @@ class IngredientsController < ApplicationController
       redirect_to project_ingredients_url(@project)
     else
       @ingredients = @project.ingredients.includes(:ref_unit)
+      @ingredient.nutrients.new(ingredient: @ingredient) if @ingredient.nutrients.empty?
       render :index
     end
   end
@@ -112,9 +113,11 @@ class IngredientsController < ApplicationController
       flash[:notice] = "Imported #{ingredients.map(&:persisted?).count(true)} out of" \
         " #{ingredients_params.length} ingredients"
       skipped = ingredients.select { |i| !i.persisted? }
-      skipped_desc = skipped.map { |i| "#{i.name} - #{i.errors.full_messages.join(', ')}" }
-      flash[:warning] = "Ingredients skipped due to errors:<br>" \
-        " #{skipped_desc.join('<br>').truncate(1024)}"
+      if skipped.length > 0
+        skipped_desc = skipped.map { |i| "#{i.name} - #{i.errors.full_messages.join(', ')}" }
+        flash[:warning] = "Ingredients skipped due to errors:<br>" \
+          " #{skipped_desc.join('<br>').truncate(1024)}"
+      end
     else
       warnings.unshift("Problems encountered during import - fix and try again:")
       flash[:warning] = warnings.join("<br>").truncate(1024, omission: '...(and other)')
