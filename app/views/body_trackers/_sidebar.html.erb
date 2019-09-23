@@ -10,6 +10,7 @@
 
 <h3><%= t ".heading_common" %></h3>
 <ul>
+  <li><%= link_to t(".link_sources"), project_sources_path(@project) %></li>
   <li><%= link_to t(".link_quantities"), project_quantities_path(@project) %></li>
   <li><%= link_to t(".link_units"), project_units_path(@project) %></li>
   <% if User.current.allowed_to?(:manage_common, @project) %>

@@ -23,7 +23,7 @@
 </div>
 
 <h2><%= t ".heading" %></h2>
-<% if @units.any? %>
+<% if @units.many? %>
   <table class="list">
     <thead>
       <tr>
@@ -34,6 +34,7 @@
     </thead>
     <tbody>
       <% @units.each do |u| %>
+        <% next if u.new_record? %>
         <tr id="unit-<%= u.id %>" class="unit">
           <td class="shortname"><%= u.shortname %></td>
           <td class="unitname"><%= u.name %></td>

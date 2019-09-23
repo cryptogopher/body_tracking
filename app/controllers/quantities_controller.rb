@@ -4,12 +4,12 @@ class QuantitiesController < ApplicationController
   before_action :authorize
 
   def index
-    @quantity = Quantity.new
+    @quantity = @project.quantities.new
     @quantities = @project.quantities
   end
 
   def create
-    @quantity = Quantity.new(quantity_params.update(project: @project))
+    @quantity = @project.quantities.new(quantity_params)
     if @quantity.save
       flash[:notice] = 'Created new quantity'
       redirect_to project_quantities_url(@project)

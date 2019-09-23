@@ -23,7 +23,7 @@
 </div>
 
 <h2><%= t ".heading" %></h2>
-<% if @quantities.any? %>
+<% if @quantities.many? %>
   <table class="list">
     <thead>
       <tr>
@@ -35,6 +35,7 @@
     </thead>
     <tbody>
         <% Quantity.each_with_level(@quantities) do |q, level| %>
+          <% next if q.new_record? %>
           <tr id="quantity-<%= q.id %>"
               class="quantity <%= "project idnt idnt-#{level}" if level > 0 %>">
             <td class="name"><span><%= q.name %></span></td>

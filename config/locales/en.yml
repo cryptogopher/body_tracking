@@ -29,6 +29,7 @@ en:
       heading_common: 'Common'
       link_summary: 'Summary'
       link_ingredients: 'Ingredients'
+      link_sources: 'Data sources'
       link_quantities: 'Quantities'
       link_units: 'Units'
       link_defaults: 'Load defaults'

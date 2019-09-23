@@ -46,7 +46,7 @@
 </div>
 
 <h2><%= t ".heading" %></h2>
-<% if @ingredients.any? %>
+<% if @ingredients.many? %>
   <table class="list">
     <thead>
       <tr>
@@ -59,6 +59,7 @@
     </thead>
     <tbody>
       <% @ingredients.each do |i| %>
+        <% next if i.new_record? %>
         <tr id="ingredient-<%= i.id %>" class="ingredient <%= 'hidden' if i.hidden %>">
           <td class="name"><%= i.name %></td>
           <td class="reference"><%= i.ref_amount %> [<%= i.ref_unit.shortname %>]</td>

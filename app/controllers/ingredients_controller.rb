@@ -6,14 +6,15 @@ class IngredientsController < ApplicationController
   before_action :authorize
 
   def index
-    @ingredient = Ingredient.new(project: @project)
+    @ingredient = @project.ingredients.new
     # passing attr for after_initialize
     @ingredient.nutrients.new(ingredient: @ingredient)
     @ingredients = @project.ingredients.includes(:ref_unit)
+    @ingredients << @ingredient
   end
 
   def create
-    @ingredient = Ingredient.new(ingredient_params.update(project: @project))
+    @ingredient = @project.ingredients.new(ingredient_params)
     if @ingredient.save
       flash[:notice] = 'Created new ingredient'
       redirect_to project_ingredients_url(@project)

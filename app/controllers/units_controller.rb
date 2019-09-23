@@ -4,12 +4,12 @@ class UnitsController < ApplicationController
   before_action :authorize
 
   def index
-    @unit = Unit.new
+    @unit = @project.units.new
     @units = @project.units
   end
 
   def create
-    @unit = Unit.new(unit_params.update(project: @project))
+    @unit = @project.units.new(unit_params)
     if @unit.save
       flash[:notice] = 'Created new unit'
       redirect_to project_units_url(@project)
