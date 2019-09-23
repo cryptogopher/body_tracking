@@ -54,13 +54,13 @@ class CreateUnits < ActiveRecord::Migration
         # https://www.fsai.ie/uploadedFiles/Consol_Reg1169_2011.pdf
         # https://www.fsai.ie/legislation/food_legislation/food_information_fic/nutrition_labelling.html
         e = Quantity.create project: nil, domain: :diet, parent: nil, name: "Energy",
-          description: "Total energy"
+          description: "Total energy", displayed: true
 
         Quantity.create project: nil, domain: :diet, parent: nil, name: "Proteins",
-          description: "Total amount of proteins"
+          description: "Total amount of proteins", displayed: true
 
         f = Quantity.create project: nil, domain: :diet, parent: nil, name: "Fats",
-          description: "Total lipids, including phospholipids"
+          description: "Total lipids, including phospholipids", displayed: true
         f1 = Quantity.create project: nil, domain: :diet, parent: f, name: "Fatty acids",
           description: ""
         f2 = Quantity.create project: nil, domain: :diet, parent: f1, name: "Saturated",
@@ -87,7 +87,7 @@ class CreateUnits < ActiveRecord::Migration
           description: "Docosahexaenoic acid"
 
         c1 = Quantity.create project: nil, domain: :diet, parent: nil, name: "Carbohydrates",
-          description: "Total amount of carbohydrates"
+          description: "Total amount of carbohydrates", displayed: true
         c2 = Quantity.create project: nil, domain: :diet, parent: c1, name: "Digestible",
           description: ""
         c3 = Quantity.create project: nil, domain: :diet, parent: c2, name: "Sugars",

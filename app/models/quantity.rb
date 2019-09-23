@@ -13,4 +13,10 @@ class Quantity < ActiveRecord::Base
   validate if: -> { parent.present? } do
     errors.add(:parent, :parent_domain_mismatch) unless domain == parent.domain
   end
+
+  after_initialize do
+    if new_record?
+      self.displayed = false if self.displayed.nil?
+    end
+  end
 end

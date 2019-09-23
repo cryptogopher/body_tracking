@@ -9,6 +9,7 @@ resources :projects do
     resources :ingredients, :only => [:index, :create, :destroy] do
       post 'import', on: :collection
     end
+    resources :sources, :only => [:index, :create, :destroy]
     resources :quantities, :only => [:index, :create, :destroy]
     resources :units, :only => [:index, :create, :destroy]
   end
