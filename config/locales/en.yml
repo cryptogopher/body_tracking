@@ -54,6 +54,10 @@ en:
       groups:
         other: 'other'
         meat: 'meat'
+  sources:
+    index:
+      heading: 'Data sources'
+      heading_new_source: 'New source'
   quantities:
     index:
       heading: 'Quantities'

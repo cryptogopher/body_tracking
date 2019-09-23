@@ -7,7 +7,7 @@ class IngredientsController < ApplicationController
 
   def index
     @ingredient = @project.ingredients.new
-    # passing attr for after_initialize
+    # passing attr for Nutrient after_initialize
     @ingredient.nutrients.new(ingredient: @ingredient)
     @ingredients = @project.ingredients.includes(:ref_unit)
     @ingredients << @ingredient

@@ -39,7 +39,7 @@ class SourcesController < ApplicationController
   # :find_* methods are called before :authorize,
   # @project is required for :authorize to succeed
   def find_source
-    @unit = Source.find(params[:id])
+    @source = Source.find(params[:id])
     @project = @source.project
   rescue ActiveRecord::RecordNotFound
     render_404

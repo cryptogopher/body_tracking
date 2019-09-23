@@ -1,1 +1,48 @@
-<h2>SourcesController#index</h2>
+<% content_for :sidebar do %>
+  <%= render :partial => 'body_trackers/sidebar' %>
+<% end %>
+
+<div class="contextual">
+  <% if User.current.allowed_to?(:manage_common, @project) %>
+    <%= link_to t(".heading_new_source"), '#', :class => 'icon icon-add',
+      :onclick => 'showAndScrollTo("add-source", "source_name"); return false;' %>
+  <% end %>
+</div>
+
+<div id="add-source" <%= 'style=display:none;' if @source.errors.empty? %>>
+  <h2><%= t ".heading_new_source" %></h2>
+
+  <%= labelled_form_for @source,
+                        :url => project_sources_path(@project),
+                        :html => {:id => 'source-form'} do |f| %>
+    <%= render :partial => 'sources/form', :locals => { :f => f } %>
+    <%= submit_tag l(:button_create) %>
+    <%= link_to l(:button_cancel), "#", :onclick => '$("#add-source").hide()' %>
+  <% end %>
+  <hr>
+</div>
+
+<h2><%= t ".heading" %></h2>
+<% if @sources.many? %>
+  <table class="list">
+    <thead>
+      <tr>
+        <th><%= l(:field_name) %></th>
+        <th><%= l(:field_description) %></th>
+        <th style="width:15%"><%= l(:field_action) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sources.each do |s| %>
+        <% next if s.new_record? %>
+        <tr id="source-<%= s.id %>" class="source">
+          <td class="name"><%= s.name %></td>
+          <td class="description"><%= s.description %></td>
+          <td><%= delete_link source_path(s), data: {} %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
