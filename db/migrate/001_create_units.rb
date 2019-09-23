@@ -163,10 +163,14 @@ class CreateUnits < ActiveRecord::Migration
           description: ""
         v21 = Quantity.create project: nil, domain: :diet, parent: v1, name: "Vitamin K",
           description: ""
+
+        Source.create project: nil, name: "Nutrition label",
+          description: "From package nutrition label"
       end
       dir.down do
         Unit.where(project: nil).delete_all
         Quantity.where(project: nil).delete_all
+        Source.where(project: nil).delete_all
       end
     end
   end
