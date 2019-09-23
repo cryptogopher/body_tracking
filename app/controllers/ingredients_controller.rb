@@ -9,7 +9,7 @@ class IngredientsController < ApplicationController
     @ingredient = @project.ingredients.new
     # passing attr for Nutrient after_initialize
     @ingredient.nutrients.new(ingredient: @ingredient)
-    @ingredients = @project.ingredients.includes(:ref_unit)
+    @ingredients = @project.ingredients.includes(:ref_unit, :source)
     @ingredients << @ingredient
   end
 
@@ -19,7 +19,7 @@ class IngredientsController < ApplicationController
       flash[:notice] = 'Created new ingredient'
       redirect_to project_ingredients_url(@project)
     else
-      @ingredients = @project.ingredients.includes(:ref_unit)
+      @ingredients = @project.ingredients.includes(:ref_unit, :source)
       @ingredient.nutrients.new(ingredient: @ingredient) if @ingredient.nutrients.empty?
       render :index
     end
@@ -39,6 +39,7 @@ class IngredientsController < ApplicationController
     if params.has_key?(:file)
       quantities = @project.quantities.map { |q| [q.name, q] }.to_h
       units = @project.units.map { |u| [u.shortname, u] }.to_h
+      sources = @project.sources.map { |s| [s.name, s] }.to_h
       ingredients_params = []
       column_units = {}
 
@@ -47,11 +48,17 @@ class IngredientsController < ApplicationController
         unless r.has_key?('Name')
           warnings << "Line 1: required 'Name' column is missing" if line == 2
         end
+        if r['Source'].present? && sources[r['Source']].blank?
+          warnings << "Line #{line}: unknown source name #{r['Source']}"
+        end
+
         i_params = {
           name: r.delete('Name'),
           ref_amount: 100.0,
           ref_unit: units['g'],
           group: r.delete('Group') || :other,
+          source: sources[r['Source']],
+          source_ident: r.delete('SourceIdent'),
           nutrients_attributes: []
         }
 
@@ -134,6 +141,8 @@ class IngredientsController < ApplicationController
       :ref_amount,
       :ref_unit_id,
       :group,
+      :source_id,
+      :source_ident,
       nutrients_attributes:
       [
         :id,

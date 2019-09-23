@@ -11,6 +11,12 @@ module IngredientsHelper
     end
   end
 
+  def source_options
+    @project.sources.map do |s|
+      [s.name, s.id]
+    end
+  end
+
   def group_options
     translations = t('.groups')
     Ingredient.groups.map do |k,v|

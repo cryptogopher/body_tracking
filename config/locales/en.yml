@@ -4,7 +4,8 @@ en:
   field_action: 'Action'
   field_reference: 'Reference'
   field_group: 'Group'
-  field_source: 'Source'
+  field_source: 'Data source'
+  field_source_ident: 'Source identifier'
   field_nutrients: 'Nutrients:'
   field_domain: 'Domain'
   field_parent_quantity: 'Parent'
@@ -44,6 +45,7 @@ en:
         names are:
         (1) ingredient attributes, case sensitive:
         "Name" - required, "Reference" - defaults to 100[g], "Group" - defaults to "other",
+        "Source" - optional, "SourceIdent" - optional,
         (2) quantities'' names with unit short name in square brackets.
         Sample header: "Name,Reference,Group,Proteins[g],Fats[g],Carbohydrates[g]".
         Sample data row: "Brussels,100[g],other,3.4,300[mg],9".

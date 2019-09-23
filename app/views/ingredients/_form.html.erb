@@ -7,6 +7,14 @@
   <%= f.select :ref_unit_id, unit_options, {label: '', required: true} %>
   </p>
   <p><%= f.select :group, group_options, required: true %></p>
+  <div class="splitcontent">
+    <div class="splitcontentleft">
+      <p><%= f.select :source_id, source_options, required: false, include_blank: true %></p>
+    </div>
+    <div class="splitcontentright">
+      <p><%= f.text_field :source_ident, size: 25, required: false %></p>
+    </div>
+  </div>
   <% @ingredient.nutrients.each_with_index do |n, index| %>
     <%= f.fields_for 'nutrients_attributes', n, index: '' do |ff| %>
       <p class="nutrient">

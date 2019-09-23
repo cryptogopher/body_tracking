@@ -6,6 +6,7 @@ class Ingredient < ActiveRecord::Base
 
   belongs_to :project, required: true
   belongs_to :ref_unit, class_name: 'Unit', required: true
+  belongs_to :source, required: false
 
   has_many :nutrients, inverse_of: :ingredient, dependent: :destroy, validate: true
   validates :nutrients, presence: true
