@@ -11,10 +11,17 @@ class CreateUnits < ActiveRecord::Migration
       t.string :name
       t.string :description
       t.integer :domain
+      t.boolean :displayed
       # fields for awesome_nested_set
       t.references :parent
       t.integer :lft, :null => false, :index => true
       t.integer :rgt, :null => false, :index => true
+    end
+
+    create_table :sources do |t|
+      t.references :project
+      t.string :name
+      t.text :description
     end
 
     create_table :ingredients do |t|
@@ -24,6 +31,7 @@ class CreateUnits < ActiveRecord::Migration
       t.references :ref_unit
       t.integer :group
       t.references :source
+      t.string :source_ident
       t.boolean :hidden
     end
 
