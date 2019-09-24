@@ -3,8 +3,10 @@
 <% end %>
 
 <div class="contextual">
+  <%= link_to t(".heading_nutrient_view"), nutrients_project_ingredients_path(@project),
+    :class => 'icon icon-stats' %>
   <% if User.current.allowed_to?(:manage_common, @project) %>
-    <%= link_to t(".heading_import_ingredients"), '#', :class => 'icon icon-file',
+    <%= link_to t(".heading_import_ingredients"), '#', :class => 'icon icon-multiple',
       :onclick => 'showAndScrollTo("import-ingredients", "filename"); return false;' %>
     <%= link_to t(".heading_new_ingredient"), '#', :class => 'icon icon-add',
       :onclick => 'showAndScrollTo("add-ingredient", "ingredient_name"); return false;' %>

@@ -1,3 +1,5 @@
+require_dependency 'body_tracking/body_trackers_view_listener'
+
 (Rails::VERSION::MAJOR < 5 ? ActionDispatch : ActiveSupport)::Reloader.to_prepare do
   Project.include BodyTracking::ProjectPatch
 end
@@ -13,7 +15,7 @@ Redmine::Plugin.register :body_tracking do
   project_module :body_tracking do
     permission :view_body_trackers, {
       :body_trackers => [:index],
-      :ingredients => [:index],
+      :ingredients => [:index, :nutrients],
       :sources => [:index],
       :quantities => [:index],
       :units => [:index],

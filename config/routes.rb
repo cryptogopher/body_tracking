@@ -8,6 +8,7 @@ resources :projects do
     end
     resources :ingredients, :only => [:index, :create, :destroy] do
       post 'import', on: :collection
+      get 'nutrients', on: :collection
     end
     resources :sources, :only => [:index, :create, :destroy]
     resources :quantities, :only => [:index, :create, :destroy]

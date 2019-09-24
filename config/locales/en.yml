@@ -38,6 +38,7 @@ en:
   ingredients:
     index:
       heading: 'Ingredients'
+      heading_nutrient_view: 'Nutrient view'
       heading_import_ingredients: 'Import'
       heading_new_ingredient: 'New ingredient'
       label_import_select_csv_file: 'Select CSV file'
@@ -50,6 +51,9 @@ en:
         Sample header: "Name,Reference,Group,Proteins[g],Fats[g],Carbohydrates[g]".
         Sample data row: "Brussels,100[g],other,3.4,300[mg],9".
         Unit given in data row has precedence over that specified in header.'
+    nutrients:
+      heading: 'Nutrients'
+      heading_ingredient_list: 'Ingredient list'
     form:
       button_add_nutrient: 'Add nutrient'
       button_delete_nutrient: 'Delete'

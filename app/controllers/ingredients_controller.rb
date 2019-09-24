@@ -1,7 +1,7 @@
 class IngredientsController < ApplicationController
   require 'csv'
 
-  before_action :find_project_by_project_id, only: [:index, :create, :import]
+  before_action :find_project_by_project_id, only: [:index, :create, :import, :nutrients]
   before_action :find_ingredient, only: [:destroy]
   before_action :authorize
 
@@ -131,6 +131,23 @@ class IngredientsController < ApplicationController
       flash[:warning] = warnings.join("<br>").truncate(1024, omission: '...(and other)')
     end
     redirect_to project_ingredients_url(@project)
+  end
+
+  def nutrients
+    ingredients = @project.ingredients.includes(:ref_unit, nutrients: [:quantity, :unit])
+    @header = @project.quantities.where(displayed: true)
+    @nutrients = Hash.new { |h,k| h[k] = {} }
+    @descriptions = Hash.new { |h,k| h[k] = [] }
+    ingredients.each do |i|
+      i.nutrients.sort_by { |n| n.quantity.lft }.each do |n|
+        if @header.include?(n.quantity)
+          @nutrients[i.name][n.quantity_id] = "#{n.amount} [#{n.unit.shortname}]"
+        else
+          @descriptions[i.name] << "#{n.quantity.name}: #{n.amount} [#{n.unit.shortname}]"
+        end
+      end
+    end
+    @descriptions.each { |k, v| @descriptions[k] = v.join(", ") }
   end
 
   private
