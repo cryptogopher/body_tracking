@@ -135,7 +135,7 @@ class IngredientsController < ApplicationController
 
   def nutrients
     ingredients = @project.ingredients.includes(:ref_unit, nutrients: [:quantity, :unit])
-    @header = @project.quantities.where(displayed: true)
+    @header = @project.quantities.where(primary: true)
     @nutrients = Hash.new { |h,k| h[k] = {} }
     @descriptions = Hash.new { |h,k| h[k] = [] }
     ingredients.each do |i|

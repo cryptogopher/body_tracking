@@ -11,7 +11,7 @@ class CreateUnits < ActiveRecord::Migration
       t.string :name
       t.string :description
       t.integer :domain
-      t.boolean :displayed
+      t.boolean :primary
       # fields for awesome_nested_set
       t.references :parent
       t.integer :lft, :null => false, :index => true
@@ -54,13 +54,13 @@ class CreateUnits < ActiveRecord::Migration
         # https://www.fsai.ie/uploadedFiles/Consol_Reg1169_2011.pdf
         # https://www.fsai.ie/legislation/food_legislation/food_information_fic/nutrition_labelling.html
         e = Quantity.create project: nil, domain: :diet, parent: nil, name: "Energy",
-          description: "Total energy", displayed: true
+          description: "Total energy", primary: true
 
         Quantity.create project: nil, domain: :diet, parent: nil, name: "Proteins",
-          description: "Total amount of proteins", displayed: true
+          description: "Total amount of proteins", primary: true
 
         f = Quantity.create project: nil, domain: :diet, parent: nil, name: "Fats",
-          description: "Total lipids, including phospholipids", displayed: true
+          description: "Total lipids, including phospholipids", primary: true
         f1 = Quantity.create project: nil, domain: :diet, parent: f, name: "Fatty acids",
           description: ""
         f2 = Quantity.create project: nil, domain: :diet, parent: f1, name: "Saturated",
@@ -87,7 +87,7 @@ class CreateUnits < ActiveRecord::Migration
           description: "Docosahexaenoic acid"
 
         c1 = Quantity.create project: nil, domain: :diet, parent: nil, name: "Carbohydrates",
-          description: "Total amount of carbohydrates", displayed: true
+          description: "Total amount of carbohydrates", primary: true
         c2 = Quantity.create project: nil, domain: :diet, parent: c1, name: "Digestible",
           description: ""
         c3 = Quantity.create project: nil, domain: :diet, parent: c2, name: "Sugars",

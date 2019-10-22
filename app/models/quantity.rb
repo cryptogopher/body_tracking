@@ -16,7 +16,7 @@ class Quantity < ActiveRecord::Base
 
   after_initialize do
     if new_record?
-      self.displayed = false if self.displayed.nil?
+      self.primary = false if self.primary.nil?
     end
   end
 end

@@ -27,7 +27,7 @@ class BodyTrackersController < ApplicationController
           parent: q.parent ? available[[q.parent.name, q.parent.domain]] : nil,
           name: q.name,
           description: q.description,
-          displayed: q.displayed
+          primary: q.primary
         })
         available[[q.name, q.domain]] = obj
       end
