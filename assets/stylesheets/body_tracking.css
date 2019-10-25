@@ -1,1 +1,3 @@
-table.nutrients td.value {text-align:right;}
+table.list tr.quantity.primary td.name {font-weight: bold;}
+table.list td.action,
+table.list td.value {text-align: right;}

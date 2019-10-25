@@ -38,7 +38,7 @@
         <tr id="source-<%= s.id %>" class="source">
           <td class="name"><%= s.name %></td>
           <td class="description"><%= s.description %></td>
-          <td><%= delete_link source_path(s), data: {} %></td>
+          <td class="action"><%= delete_link source_path(s), data: {} %></td>
         </tr>
       <% end %>
     </tbody>

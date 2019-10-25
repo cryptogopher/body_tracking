@@ -35,13 +35,17 @@
     </thead>
     <tbody>
         <% Quantity.each_with_level(@quantities) do |q, level| %>
-          <% next if q.new_record? %>
-          <tr id="quantity-<%= q.id %>"
-              class="quantity <%= "project idnt idnt-#{level}" if level > 0 %>">
+          <%
+            next if q.new_record?
+            quantity_class = "quantity"
+            quantity_class += " project idnt idnt-#{level}" if level > 0
+            quantity_class += " primary" if q.primary
+          %>
+          <tr id="quantity-<%= q.id %>" class="<%= quantity_class %>">
             <td class="name"><span><%= q.name %></span></td>
             <td class="domain"><%= q.domain %></td>
             <td class="description"><%= q.description %></td>
-            <td><%= delete_link quantity_path(q), data: {} %></td>
+            <td class="action"><%= delete_link quantity_path(q), data: {} %></td>
           </tr>
         <% end %>
     </tbody>

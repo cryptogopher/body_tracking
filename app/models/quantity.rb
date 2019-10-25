@@ -5,7 +5,7 @@ class Quantity < ActiveRecord::Base
     exercise: 2
   }
 
-  acts_as_nested_set dependent: :nullify, scope: :project
+  acts_as_nested_set dependent: :destroy, scope: :project
   belongs_to :project, required: false
 
   validates :name, presence: true, uniqueness: {scope: :project_id}
