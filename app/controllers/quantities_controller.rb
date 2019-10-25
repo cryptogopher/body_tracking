@@ -1,6 +1,6 @@
 class QuantitiesController < ApplicationController
   before_action :find_project_by_project_id, only: [:index, :create]
-  before_action :find_quantity, only: [:destroy]
+  before_action :find_quantity, only: [:destroy, :toggle]
   before_action :authorize
 
   def index
@@ -23,6 +23,11 @@ class QuantitiesController < ApplicationController
     if @quantity.destroy
       flash[:notice] = 'Deleted quantity'
     end
+    redirect_to project_quantities_url(@project)
+  end
+
+  def toggle
+    @quantity.update(primary: !@quantity.primary)
     redirect_to project_quantities_url(@project)
   end
 

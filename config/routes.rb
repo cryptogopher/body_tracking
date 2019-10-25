@@ -11,7 +11,9 @@ resources :projects do
       get 'nutrients', on: :collection
     end
     resources :sources, :only => [:index, :create, :destroy]
-    resources :quantities, :only => [:index, :create, :destroy]
+    resources :quantities, :only => [:index, :create, :destroy] do
+      post 'toggle', on: :member
+    end
     resources :units, :only => [:index, :create, :destroy]
   end
 end

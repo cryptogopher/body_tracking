@@ -10,6 +10,7 @@ en:
   field_domain: 'Domain'
   field_parent_quantity: 'Parent'
   field_shortname: 'Short name'
+  button_toggle: 'Toggle'
   activerecord:
     errors:
       models:

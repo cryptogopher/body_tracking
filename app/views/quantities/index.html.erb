@@ -45,7 +45,11 @@
             <td class="name"><span><%= q.name %></span></td>
             <td class="domain"><%= q.domain %></td>
             <td class="description"><%= q.description %></td>
-            <td class="action"><%= delete_link quantity_path(q), data: {} %></td>
+            <td class="action">
+              <%= link_to l(:button_toggle), toggle_quantity_path(q),
+                {method: :post, class: "icon #{q.primary ? "icon-fav" : "icon-fav-off"}"} %>
+              <%= delete_link quantity_path(q), data: {} %>
+            </td>
           </tr>
         <% end %>
     </tbody>
