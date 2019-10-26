@@ -27,8 +27,8 @@
   <table class="list">
     <thead>
       <tr>
-        <th><%= l(:field_order) %></th>
         <th><%= l(:field_name) %></th>
+        <th><%= l(:field_order) %></th>
         <th><%= l(:field_domain) %></th>
         <th><%= l(:field_description) %></th>
         <th><%= l(:field_action) %></th>
@@ -39,10 +39,15 @@
           <%
             next if q.new_record?
             quantity_class = "quantity"
-            quantity_class += " project idnt idnt-#{level}" if level > 0
+            quantity_class += " project idnt idnt-#{level+1}"
             quantity_class += " primary" if q.primary
           %>
           <tr id="quantity-<%= q.id %>" class="<%= quantity_class %>">
+            <td class="name">
+              <%= link_to '', toggle_quantity_path(q),
+                {method: :post, class: "icon #{q.primary ? "icon-fav" : "icon-fav-off"}"} %>
+              <%= q.name %>
+            </td>
             <td class="order">
               <%=
                 if q.left_sibling.present?
@@ -76,14 +81,9 @@
                 end
               %>
             </td>
-            <td class="name"><span><%= q.name %></span></td>
             <td class="domain"><%= q.domain %></td>
             <td class="description"><%= q.description %></td>
-            <td class="action">
-              <%= link_to l(:button_primary), toggle_quantity_path(q),
-                {method: :post, class: "icon #{q.primary ? "icon-fav" : "icon-fav-off"}"} %>
-              <%= delete_link quantity_path(q), data: {} %>
-            </td>
+            <td class="action"><%= delete_link quantity_path(q), data: {} %></td>
           </tr>
         <% end %>
     </tbody>
