@@ -27,10 +27,11 @@
   <table class="list">
     <thead>
       <tr>
+        <th><%= l(:field_order) %></th>
         <th><%= l(:field_name) %></th>
         <th><%= l(:field_domain) %></th>
         <th><%= l(:field_description) %></th>
-        <th style="width:15%"><%= l(:field_action) %></th>
+        <th><%= l(:field_action) %></th>
       </tr>
     </thead>
     <tbody>
@@ -42,11 +43,44 @@
             quantity_class += " primary" if q.primary
           %>
           <tr id="quantity-<%= q.id %>" class="<%= quantity_class %>">
+            <td class="order">
+              <%=
+                if q.left_sibling.present?
+                  link_to '', up_quantity_path(q), {method: :post, class: "icon icon-move-up"}
+                else
+                  link_to '', '', {class: "icon"}
+                end
+              %>
+              <%=
+                if q.right_sibling.present?
+                  link_to '', down_quantity_path(q),
+                    {method: :post, class: "icon icon-move-down"}
+                else
+                  link_to '', '', {class: "icon"}
+                end
+              %>
+              <%=
+                if q.parent.present?
+                  link_to '', left_quantity_path(q),
+                    {method: :post, class: "icon icon-move-left"}
+                else
+                  link_to '', '', {class: "icon"}
+                end
+              %>
+              <%=
+                if q.left_sibling.present?
+                  link_to '', right_quantity_path(q),
+                    {method: :post, class: "icon icon-move-right"}
+                else
+                  link_to '', '', {class: "icon"}
+                end
+              %>
+            </td>
             <td class="name"><span><%= q.name %></span></td>
             <td class="domain"><%= q.domain %></td>
             <td class="description"><%= q.description %></td>
             <td class="action">
-              <%= link_to l(:button_toggle), toggle_quantity_path(q),
+              <%= link_to l(:button_primary), toggle_quantity_path(q),
                 {method: :post, class: "icon #{q.primary ? "icon-fav" : "icon-fav-off"}"} %>
               <%= delete_link quantity_path(q), data: {} %>
             </td>

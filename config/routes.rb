@@ -13,6 +13,7 @@ resources :projects do
     resources :sources, :only => [:index, :create, :destroy]
     resources :quantities, :only => [:index, :create, :destroy] do
       post 'toggle', on: :member
+      post 'up', 'down', 'left', 'right', on: :member
     end
     resources :units, :only => [:index, :create, :destroy]
   end

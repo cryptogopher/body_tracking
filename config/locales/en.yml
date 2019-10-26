@@ -1,6 +1,7 @@
 # English strings go here for Rails i18n
 en:
   body_trackers_menu_caption: 'Body trackers'
+  field_order: 'Order'
   field_action: 'Action'
   field_reference: 'Reference'
   field_group: 'Group'
@@ -10,7 +11,7 @@ en:
   field_domain: 'Domain'
   field_parent_quantity: 'Parent'
   field_shortname: 'Short name'
-  button_toggle: 'Toggle'
+  button_primary: 'Primary'
   activerecord:
     errors:
       models:
