@@ -10,13 +10,17 @@
   <% end %>
   <p><%= f.text_field :name, size: 25, required: true %></p>
   <p><%= f.text_field :description, size: 200 %></p>
+  <p><%= f.check_box :primary %></p>
 </div>
 
 <%= javascript_tag do %>
   function domainChange() {
     $('[id^=parent_select_]').prop('disabled', true).hide();
+    $('[id^=parent_select_] select').attr('name', 'placeholder');
     $('[id=parent_select_'+$('#quantity_domain option:selected').val()+']')
       .prop('disabled', false).show();
+    $('[id=parent_select_'+$('#quantity_domain option:selected').val()+'] select')
+      .attr('name', 'quantity[parent_id]');
   }
   $('#quantity-form').on('click', '#quantity_domain', domainChange);
 

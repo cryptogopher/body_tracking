@@ -10,6 +10,7 @@ en:
   field_nutrients: 'Nutrients:'
   field_domain: 'Domain'
   field_parent_quantity: 'Parent'
+  field_primary: 'Primary'
   field_shortname: 'Short name'
   button_primary: 'Primary'
   activerecord:

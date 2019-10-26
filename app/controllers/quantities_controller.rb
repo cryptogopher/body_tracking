@@ -58,7 +58,8 @@ class QuantitiesController < ApplicationController
       :name,
       :description,
       :domain,
-      :parent_id
+      :parent_id,
+      :primary
     )
   end
 
