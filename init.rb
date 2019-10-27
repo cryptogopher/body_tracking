@@ -22,7 +22,7 @@ Redmine::Plugin.register :body_tracking do
     }, read: true
     permission :manage_common, {
       :body_trackers => [:defaults],
-      :ingredients => [:create, :destroy, :import],
+      :ingredients => [:create, :destroy, :toggle, :import],
       :sources => [:create, :destroy],
       :quantities => [:create, :destroy, :toggle, :up, :down, :left, :right],
       :units => [:create, :destroy],

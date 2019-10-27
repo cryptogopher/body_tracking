@@ -2,7 +2,7 @@ class IngredientsController < ApplicationController
   require 'csv'
 
   before_action :find_project_by_project_id, only: [:index, :create, :import, :nutrients]
-  before_action :find_ingredient, only: [:destroy]
+  before_action :find_ingredient, only: [:destroy, :toggle]
   before_action :authorize
 
   def index
@@ -31,6 +31,11 @@ class IngredientsController < ApplicationController
       flash[:notice] = 'Deleted ingredient'
     end
     redirect_to project_ingredients_url(@project)
+  end
+
+  def toggle
+    @ingredient.update(hidden: !@ingredient.hidden)
+    @ingredients = @project.ingredients.includes(:ref_unit, :source)
   end
 
   def import

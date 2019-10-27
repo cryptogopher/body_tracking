@@ -1,4 +1,5 @@
 table.list tr.quantity.primary td.name {font-weight: bold;}
+table.list tr.ingredient.hidden {opacity: 0.4}
 table.list td.action,
 table.list td.value {text-align: right;}
 table.list td.action,
@@ -6,3 +7,4 @@ table.list td.name {white-space: nowrap;}
 
 .icon-move-left { background-image: url(../images/1leftarrow.png); }
 .icon-move-right { background-image: url(../images/1rightarrow.png); }
+.icon-eye { background-image: url(../images/eye.png); }

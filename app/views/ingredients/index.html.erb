@@ -48,33 +48,6 @@
 </div>
 
 <h2><%= t ".heading" %></h2>
-<% if @ingredients.many? %>
-  <table class="list">
-    <thead>
-      <tr>
-        <th><%= l(:field_name) %></th>
-        <th><%= l(:field_reference) %></th>
-        <th><%= l(:field_group) %></th>
-        <th><%= l(:field_source) %></th>
-        <th style="width:15%"><%= l(:field_action) %></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @ingredients.each do |i| %>
-        <% next if i.new_record? %>
-        <tr id="ingredient-<%= i.id %>" class="ingredient <%= 'hidden' if i.hidden %>">
-          <td class="name"><%= i.name %></td>
-          <td class="reference value"><%= i.ref_amount %> [<%= i.ref_unit.shortname %>]</td>
-          <td class="group"><%= i.group %></td>
-          <td class="source">
-            <%= i.source.name if i.source.present? %>
-            <%= ", #{i.source_ident}" if i.source_ident.present? %>
-          </td>
-          <td class="action"><%= delete_link ingredient_path(i), data: {} %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <p class="nodata"><%= l(:label_no_data) %></p>
-<% end %>
+<div id='ingredients'>
+  <%= render :partial => 'ingredients/list' %>
+</div>
