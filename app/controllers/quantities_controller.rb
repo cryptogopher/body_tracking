@@ -28,27 +28,31 @@ class QuantitiesController < ApplicationController
 
   def toggle
     @quantity.update(primary: !@quantity.primary)
-    redirect_to project_quantities_url(@project)
+    @quantities = @project.quantities
   end
 
   def up
     @quantity.move_left if @quantity.left_sibling.present?
-    redirect_to project_quantities_url(@project)
+    @quantities = @project.quantities
+    render :toggle
   end
 
   def down
     @quantity.move_right if @quantity.right_sibling.present?
-    redirect_to project_quantities_url(@project)
+    @quantities = @project.quantities
+    render :toggle
   end
 
   def left
     @quantity.move_to_right_of(@quantity.parent) if @quantity.parent.present?
-    redirect_to project_quantities_url(@project)
+    @quantities = @project.quantities
+    render :toggle
   end
 
   def right
     @quantity.move_to_child_of(@quantity.left_sibling) if @quantity.left_sibling.present?
-    redirect_to project_quantities_url(@project)
+    @quantities = @project.quantities
+    render :toggle
   end
 
   private
