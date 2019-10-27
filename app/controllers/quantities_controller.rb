@@ -23,7 +23,8 @@ class QuantitiesController < ApplicationController
     if @quantity.destroy
       flash[:notice] = 'Deleted quantity'
     end
-    redirect_to project_quantities_url(@project)
+    @quantities = @project.quantities
+    render :toggle
   end
 
   def toggle

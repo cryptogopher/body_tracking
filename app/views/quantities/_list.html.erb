@@ -76,7 +76,9 @@
             </td>
             <td class="domain"><%= q.domain %></td>
             <td class="description"><%= q.description %></td>
-            <td class="action"><%= delete_link quantity_path(q), data: {} %></td>
+            <td class="action">
+              <%= delete_link quantity_path(q), {remote: true, data: {}} %>
+            </td>
           </tr>
         <% end %>
     </tbody>
