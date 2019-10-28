@@ -9,8 +9,29 @@ class IngredientsController < ApplicationController
     @ingredient = @project.ingredients.new
     # passing attr for Nutrient after_initialize
     @ingredient.nutrients.new(ingredient: @ingredient)
+
     @ingredients = @project.ingredients.includes(:ref_unit, :source)
     @ingredients << @ingredient
+  end
+
+  def nutrients
+    @ingredient = @project.ingredients.new
+    @ingredient.nutrients.new(ingredient: @ingredient)
+
+    ingredients = @project.ingredients.includes(:ref_unit, nutrients: [:quantity, :unit])
+    @header = @project.quantities.where(primary: true)
+    @nutrients = Hash.new { |h,k| h[k] = {} }
+    @descriptions = Hash.new { |h,k| h[k] = [] }
+    ingredients.each do |i|
+      i.nutrients.sort_by { |n| n.quantity.lft }.each do |n|
+        if @header.include?(n.quantity)
+          @nutrients[i.name][n.quantity_id] = "#{n.amount} [#{n.unit.shortname}]"
+        else
+          @descriptions[i.name] << "#{n.quantity.name}: #{n.amount} [#{n.unit.shortname}]"
+        end
+      end
+    end
+    @descriptions.each { |k, v| @descriptions[k] = v.join(", ") }
   end
 
   def create
@@ -136,23 +157,6 @@ class IngredientsController < ApplicationController
       flash[:warning] = warnings.join("<br>").truncate(1024, omission: '...(and other)')
     end
     redirect_to project_ingredients_url(@project)
-  end
-
-  def nutrients
-    ingredients = @project.ingredients.includes(:ref_unit, nutrients: [:quantity, :unit])
-    @header = @project.quantities.where(primary: true)
-    @nutrients = Hash.new { |h,k| h[k] = {} }
-    @descriptions = Hash.new { |h,k| h[k] = [] }
-    ingredients.each do |i|
-      i.nutrients.sort_by { |n| n.quantity.lft }.each do |n|
-        if @header.include?(n.quantity)
-          @nutrients[i.name][n.quantity_id] = "#{n.amount} [#{n.unit.shortname}]"
-        else
-          @descriptions[i.name] << "#{n.quantity.name}: #{n.amount} [#{n.unit.shortname}]"
-        end
-      end
-    end
-    @descriptions.each { |k, v| @descriptions[k] = v.join(", ") }
   end
 
   private

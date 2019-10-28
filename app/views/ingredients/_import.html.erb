@@ -1,0 +1,20 @@
+<div id="import-ingredients" style="display:none;">
+  <h2><%= t ".heading_import_ingredients" %></h2>
+
+  <%= form_tag import_project_ingredients_path(@project),
+               :multipart => true,
+               :id => 'import-form' do %>
+    <div class="box tabular">
+      <p>
+      <label><%= t ".label_import_select_csv_file" %></label>
+      <%= file_field_tag 'file' %>
+      </p>
+      <p>
+      <%= t ".import_hints" %>
+      </p>
+    </div>
+    <%= submit_tag l(:button_import) %>
+    <%= link_to l(:button_cancel), "#", :onclick => '$("#import-ingredients").hide()' %>
+  <% end %>
+  <hr>
+</div>

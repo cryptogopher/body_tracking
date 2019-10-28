@@ -5,47 +5,12 @@
 <div class="contextual">
   <%= link_to t(".heading_nutrient_view"), nutrients_project_ingredients_path(@project),
     :class => 'icon icon-stats' %>
-  <% if User.current.allowed_to?(:manage_common, @project) %>
-    <%= link_to t(".heading_import_ingredients"), '#', :class => 'icon icon-multiple',
-      :onclick => 'showAndScrollTo("import-ingredients", "filename"); return false;' %>
-    <%= link_to t(".heading_new_ingredient"), '#', :class => 'icon icon-add',
-      :onclick => 'showAndScrollTo("add-ingredient", "ingredient_name"); return false;' %>
-  <% end %>
+  <%= render :partial => 'ingredients/contextual' %>
 </div>
 
-<div id="import-ingredients" style="display:none;">
-  <h2><%= t ".heading_import_ingredients" %></h2>
+<%= render :partial => 'ingredients/import' %>
 
-  <%= form_tag import_project_ingredients_path(@project),
-               :multipart => true,
-               :id => 'import-form' do %>
-    <div class="box tabular">
-      <p>
-      <label><%= t ".label_import_select_csv_file" %></label>
-      <%= file_field_tag 'file' %>
-      </p>
-      <p>
-      <%= t ".import_hints" %>
-      </p>
-    </div>
-    <%= submit_tag l(:button_import) %>
-    <%= link_to l(:button_cancel), "#", :onclick => '$("#import-ingredients").hide()' %>
-  <% end %>
-  <hr>
-</div>
-
-<div id="add-ingredient" <%= 'style=display:none;' if @ingredient.errors.empty? %>>
-  <h2><%= t ".heading_new_ingredient" %></h2>
-
-  <%= labelled_form_for @ingredient,
-                        :url => project_ingredients_path(@project),
-                        :html => {:id => 'ingredient-form'} do |f| %>
-    <%= render :partial => 'ingredients/form', :locals => { :f => f } %>
-    <%= submit_tag l(:button_create) %>
-    <%= link_to l(:button_cancel), "#", :onclick => '$("#add-ingredient").hide()' %>
-  <% end %>
-  <hr>
-</div>
+<%= render :partial => 'ingredients/form' %>
 
 <h2><%= t ".heading" %></h2>
 <div id='ingredients'>

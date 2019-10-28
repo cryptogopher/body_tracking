@@ -1,37 +1,53 @@
-<%= error_messages_for @ingredient %>
+<div id="add-ingredient" <%= 'style=display:none;' if @ingredient.errors.empty? %>>
+  <h2><%= t ".heading_new_ingredient" %></h2>
 
-<div class="box tabular">
-  <p><%= f.text_field :name, size: 40, required: true %></p>
-  <p>
-  <%= f.number_field :ref_amount, size: 8, required: true, min: 0, label: :field_reference %>
-  <%= f.select :ref_unit_id, unit_options, {label: '', required: true} %>
-  </p>
-  <p><%= f.select :group, group_options, required: true %></p>
-  <div class="splitcontent">
-    <div class="splitcontentleft">
-      <p><%= f.select :source_id, source_options, required: false, include_blank: true %></p>
-    </div>
-    <div class="splitcontentright">
-      <p><%= f.text_field :source_ident, size: 25, required: false %></p>
-    </div>
-  </div>
-  <% @ingredient.nutrients.each_with_index do |n, index| %>
-    <%= f.fields_for 'nutrients_attributes', n, index: '' do |ff| %>
-      <p class="nutrient">
-        <%= ff.select :quantity_id, quantity_options,
-          {include_blank: true, label: (index > 0 ? '' : :field_nutrients)} %>
-        <%= ff.number_field :amount, {size: 8, min: 0, step: :any, label: ''} %>
-        <%= ff.select :unit_id, unit_options, {label: ''} %>
-        <%= ff.check_box :_destroy, {style: "display:none", label: ''} %>
-        <%= link_to t(".button_delete_nutrient"), '#',
-          :class => 'icon icon-del',
-          :style => (@ingredient.nutrients.length > 1 ? "" : "display:none"),
-          :onclick => "deleteNutrient(); return false;" %>
+  <%= labelled_form_for @ingredient,
+                        :url => project_ingredients_path(@project),
+                        :html => {:id => 'ingredient-form'} do |f| %>
+    <%= error_messages_for @ingredient %>
+
+    <div class="box tabular">
+      <p><%= f.text_field :name, size: 40, required: true %></p>
+      <p>
+        <%= f.number_field :ref_amount, size: 8, required: true, min: 0,
+          label: :field_reference %>
+        <%= f.select :ref_unit_id, unit_options, {label: '', required: true} %>
       </p>
-    <% end %>
+      <p><%= f.select :group, group_options, required: true %></p>
+      <div class="splitcontent">
+        <div class="splitcontentleft">
+          <p>
+            <%= f.select :source_id, source_options, required: false, include_blank: true %>
+          </p>
+        </div>
+        <div class="splitcontentright">
+          <p><%= f.text_field :source_ident, size: 25, required: false %></p>
+        </div>
+      </div>
+      <% @ingredient.nutrients.each_with_index do |n, index| %>
+        <%= f.fields_for 'nutrients_attributes', n, index: '' do |ff| %>
+          <p class="nutrient">
+            <%= ff.select :quantity_id, quantity_options,
+              {include_blank: true, label: (index > 0 ? '' : :field_nutrients)} %>
+            <%= ff.number_field :amount, {size: 8, min: 0, step: :any, label: ''} %>
+            <%= ff.select :unit_id, unit_options, {label: ''} %>
+            <%= ff.check_box :_destroy, {style: "display:none", label: ''} %>
+            <%= link_to t(".button_delete_nutrient"), '#',
+              :class => 'icon icon-del',
+              :style => (@ingredient.nutrients.length > 1 ? "" : "display:none"),
+              :onclick => "deleteNutrient(); return false;" %>
+          </p>
+        <% end %>
+      <% end %>
+      <p>
+        <%= link_to t(".button_add_nutrient"), '#', :class => 'icon icon-add',
+          :onclick => 'addNutrient(); return false;' %>
+      </p>
+    </div>
+    <%= submit_tag l(:button_create) %>
+    <%= link_to l(:button_cancel), "#", :onclick => '$("#add-ingredient").hide()' %>
   <% end %>
-  <p><%= link_to t(".button_add_nutrient"), '#', :class => 'icon icon-add',
-    :onclick => 'addNutrient(); return false;' %></p>
+  <hr>
 </div>
 
 <%= javascript_tag do %>

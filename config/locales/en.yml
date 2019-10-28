@@ -39,11 +39,11 @@ en:
       link_defaults: 'Load defaults'
       confirm_defaults: 'This will load default quantities and units. Continue?'
   ingredients:
-    index:
-      heading: 'Ingredients'
-      heading_nutrient_view: 'Nutrient view'
+    contextual:
       heading_import_ingredients: 'Import'
       heading_new_ingredient: 'New ingredient'
+    import:
+      heading_import_ingredients: 'Import'
       label_import_select_csv_file: 'Select CSV file'
       import_hints: 'CSV file has to include header with column names. Recognized column
         names are:
@@ -54,15 +54,19 @@ en:
         Sample header: "Name,Reference,Group,Proteins[g],Fats[g],Carbohydrates[g]".
         Sample data row: "Brussels,100[g],other,3.4,300[mg],9".
         Unit given in data row has precedence over that specified in header.'
-    nutrients:
-      heading: 'Nutrients'
-      heading_ingredient_list: 'Ingredient list'
     form:
+      heading_new_ingredient: 'New ingredient'
       button_add_nutrient: 'Add nutrient'
       button_delete_nutrient: 'Delete'
       groups:
         other: 'other'
         meat: 'meat'
+    index:
+      heading: 'Ingredients'
+      heading_nutrient_view: 'Nutrient view'
+    nutrients:
+      heading: 'Nutrients'
+      heading_ingredient_list: 'Ingredient list'
   sources:
     index:
       heading: 'Data sources'
