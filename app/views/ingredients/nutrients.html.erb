@@ -24,13 +24,27 @@
       </tr>
     </thead>
     <tbody>
-      <% @nutrients.each do |name, values| %>
-        <tr class="ingredient">
-          <td class="name"><%= name %></td>
+      <% @nutrients.each do |i, values| %>
+        <tr id="ingredient-<%= i.id %>" class="ingredient <%= 'hidden' if i.hidden %>">
+          <td class="name">
+            <%= link_to '', '#', {
+                  onclick: "$(this).closest('tr').next('tr').toggle(); $(this).toggleClass('icon-bullet-closed'); $(this).toggleClass('icon-bullet-open'); return false;",
+                  class: "icon icon-bullet-closed"
+                } %>
+            <%= i.name %>
+          </td>
           <% @header.each do |q| %>
             <td class="value"><%= values[q.id] || '-' %></td>
           <% end %>
         </tr>
+        <tr id="ingredient-desc-<%= i.id %>" class="ingredient <%= 'hidden' if i.hidden %>"
+            style="display:none">
+          <td></td>
+          <td colspan="<%= @header.length %>" class="description">
+            <%= @descriptions[i] %>
+          </td>
+        </tr>
+        <tr style="display:none"></tr>
       <% end %>
     </tbody>
   </table>

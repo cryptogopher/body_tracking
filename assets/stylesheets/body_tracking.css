@@ -8,3 +8,5 @@ table.list td.name {white-space: nowrap;}
 .icon-move-left { background-image: url(../images/1leftarrow.png); }
 .icon-move-right { background-image: url(../images/1rightarrow.png); }
 .icon-eye { background-image: url(../images/eye.png); }
+.icon-bullet-open { background-image: url(../../../images/bullet_toggle_minus.png); }
+.icon-bullet-closed { background-image: url(../../../images/bullet_toggle_plus.png); }

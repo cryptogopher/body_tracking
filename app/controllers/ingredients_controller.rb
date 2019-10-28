@@ -20,18 +20,20 @@ class IngredientsController < ApplicationController
 
     ingredients = @project.ingredients.includes(:ref_unit, nutrients: [:quantity, :unit])
     @header = @project.quantities.where(primary: true)
-    @nutrients = Hash.new { |h,k| h[k] = {} }
-    @descriptions = Hash.new { |h,k| h[k] = [] }
+    @nutrients = {}
+    @descriptions = {}
     ingredients.each do |i|
+      @nutrients[i] = {}
+      @descriptions[i] = []
       i.nutrients.sort_by { |n| n.quantity.lft }.each do |n|
         if @header.include?(n.quantity)
-          @nutrients[i.name][n.quantity_id] = "#{n.amount} [#{n.unit.shortname}]"
+          @nutrients[i][n.quantity_id] = "#{n.amount} [#{n.unit.shortname}]"
         else
-          @descriptions[i.name] << "#{n.quantity.name}: #{n.amount} [#{n.unit.shortname}]"
+          @descriptions[i] << "#{n.quantity.name}: #{n.amount} [#{n.unit.shortname}]"
         end
       end
     end
-    @descriptions.each { |k, v| @descriptions[k] = v.join(", ") }
+    @descriptions.each { |i, v| @descriptions[i] = v.join(", ") }
   end
 
   def create
