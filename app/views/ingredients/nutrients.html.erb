@@ -25,11 +25,12 @@
     </thead>
     <tbody>
       <% @primary_nutrients.each do |i, values| %>
+
         <% row_class = "ingredient#{' hidden' if i.hidden} #{cycle('odd', 'even')}" %>
         <tr id="ingredient-<%= i.id %>" class="primary <%= row_class %>">
           <td class="name">
             <%= link_to '', '#', {
-                  onclick: "$(this).closest('tr').nextUntil('tr.primary', 'tr').toggle(); $(this).toggleClass('icon-bullet-closed'); $(this).toggleClass('icon-bullet-open'); return false;",
+                  onclick: "$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', 'tr').toggle(); return false;",
                   class: "icon icon-bullet-closed"
                 } %>
             <%= i.name %>
@@ -40,6 +41,29 @@
             </td>
           <% end %>
         </tr>
+
+        <tr class="<%= row_class %>" style="display:none">
+          <td class="name" rowspan="2">
+            <%= link_to '', '#', {
+                  onclick: "$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', 'tr').toggle(); return false;",
+                  class: "icon icon-bullet-open"
+                } %>
+            <%= i.name %>
+          </td>
+          <% @primary_quantities.each do |q| %>
+            <td class="primary quantity">
+              <%= q.name %>
+            </td>
+          <% end %>
+        </tr>
+        <tr class="<%= row_class %>" style="display:none">
+          <% @primary_quantities.each do |q| %>
+            <td class="primary value">
+              <%= values[q.id] || '-' %>
+            </td>
+          <% end %>
+        </tr>
+
         <% extras = @extra_nutrients[i].keys %>
         <% extras.each_slice(@primary_quantities.length).with_index do |names, index| %>
           <tr class="extra <%= row_class %>" style="display:none">
@@ -59,13 +83,13 @@
           </tr>
           <tr class="extra <%= row_class %>" style="display:none">
             <% names.each do |name| %>
-              <% title =  %>
               <td class="extra value">
                 <%= @extra_nutrients[i][name] %>
               </td>
             <% end %>
           </tr>
         <% end %>
+
       <% end %>
     </tbody>
   </table>
