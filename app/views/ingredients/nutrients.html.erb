@@ -28,12 +28,8 @@
 
         <% row_class = "ingredient#{' hidden' if i.hidden} #{cycle('odd', 'even')}" %>
         <tr id="ingredient-<%= i.id %>" class="primary <%= row_class %>">
-          <td class="name">
-            <%= link_to '', '#', {
-                  onclick: "$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', 'tr').toggle(); return false;",
-                  class: "icon icon-bullet-closed"
-                } %>
-            <%= i.name %>
+          <td class="name" style="cursor: pointer;" onclick="$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', 'tr').toggle(); return false;">
+            <span class="icon icon-bullet-closed"><%= i.name %></span>
           </td>
           <% @primary_quantities.each do |q| %>
             <td class="primary value">
@@ -43,12 +39,8 @@
         </tr>
 
         <tr class="<%= row_class %>" style="display:none">
-          <td class="name">
-            <%= link_to '', '#', {
-                  onclick: "$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', 'tr').toggle(); return false;",
-                  class: "icon icon-bullet-open"
-                } %>
-            <%= i.name %>
+          <td class="name" style="cursor: pointer;" onclick="$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', 'tr').toggle(); return false;">
+            <span class="icon icon-bullet-closed"><%= i.name %></span>
           </td>
           <% @primary_quantities.each do |q| %>
             <td class="primary quantity">
