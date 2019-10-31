@@ -43,7 +43,7 @@
         </tr>
 
         <tr class="<%= row_class %>" style="display:none">
-          <td class="name" rowspan="2">
+          <td class="name">
             <%= link_to '', '#', {
                   onclick: "$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', 'tr').toggle(); return false;",
                   class: "icon icon-bullet-open"
@@ -57,6 +57,7 @@
           <% end %>
         </tr>
         <tr class="<%= row_class %>" style="display:none">
+          <td class="space"></td>
           <% @primary_quantities.each do |q| %>
             <td class="primary value">
               <%= values[q.id] || '-' %>
@@ -67,25 +68,25 @@
         <% extras = @extra_nutrients[i].keys %>
         <% extras.each_slice(@primary_quantities.length).with_index do |names, index| %>
           <tr class="extra <%= row_class %>" style="display:none">
-            <% if index == 0 %>
-              <td rowspan="<%= 2*(extras.length.to_d / @primary_quantities.length).ceil %>"
-                  class="space">
-              </td>
-            <% end %>
+            <td class="space"></td>
             <% names.each do |name| %>
               <td class="extra quantity">
                 <%= name %>
               </td>
             <% end %>
             <% if @primary_quantities.length > names.length %>
-              <td rowspan="2" colspan="<%= @primary_quantities.length-names.length %>"></td>
+              <td class="space" colspan="<%= @primary_quantities.length-names.length %>"></td>
             <% end %>
           </tr>
           <tr class="extra <%= row_class %>" style="display:none">
+            <td class="space"></td>
             <% names.each do |name| %>
               <td class="extra value">
                 <%= @extra_nutrients[i][name] %>
               </td>
+            <% end %>
+            <% if @primary_quantities.length > names.length %>
+              <td class="space" colspan="<%= @primary_quantities.length-names.length %>"></td>
             <% end %>
           </tr>
         <% end %>
