@@ -13,38 +13,54 @@
 <%= render :partial => 'ingredients/form' %>
 
 <h2><%= t ".heading" %></h2>
-<% if @nutrients.any? %>
+<% if @primary_nutrients.any? %>
   <table class="nutrients list">
     <thead>
       <tr>
-        <th><%= l(:field_name) %></th>
-        <% @header.each do |q| %>
-          <th><%= q.name %></th>
+        <th style="width:30%"><%= l(:field_name) %></th>
+        <% @primary_quantities.each do |q| %>
+          <th style="width:8%"><%= q.name %></th>
         <% end %>
       </tr>
     </thead>
     <tbody>
-      <% @nutrients.each do |i, values| %>
-        <tr id="ingredient-<%= i.id %>" class="ingredient <%= 'hidden' if i.hidden %>">
+      <% @primary_nutrients.each do |i, values| %>
+        <% row_class = "ingredient #{'hidden' if i.hidden}" %>
+        <tr id="ingredient-<%= i.id %>" class="primary <%= row_class %>">
           <td class="name">
             <%= link_to '', '#', {
-                  onclick: "$(this).closest('tr').next('tr').toggle(); $(this).toggleClass('icon-bullet-closed'); $(this).toggleClass('icon-bullet-open'); return false;",
+                  onclick: "$(this).closest('tr').nextUntil('tr.primary', 'tr').toggle(); $(this).toggleClass('icon-bullet-closed'); $(this).toggleClass('icon-bullet-open'); return false;",
                   class: "icon icon-bullet-closed"
                 } %>
             <%= i.name %>
           </td>
-          <% @header.each do |q| %>
-            <td class="value"><%= values[q.id] || '-' %></td>
+          <% @primary_quantities.each do |q| %>
+            <td class="primary value">
+              <%= values[q.id] || '-' %>
+            </td>
           <% end %>
         </tr>
-        <tr id="ingredient-desc-<%= i.id %>" class="ingredient <%= 'hidden' if i.hidden %>"
-            style="display:none">
-          <td></td>
-          <td colspan="<%= @header.length %>" class="description">
-            <%= @descriptions[i] %>
-          </td>
-        </tr>
-        <tr style="display:none"></tr>
+        <% @extra_nutrients[i].keys.each_slice(@primary_quantities.length) do |names| %>
+          <tr class="extra <%= row_class %>" style="display:none">
+            <td rowspan="2"></td>
+            <% names.each do |name| %>
+              <td class="extra name">
+                <%= name %>
+              </td>
+            <% end %>
+            <% for index in names.length...@primary_quantities.length do %>
+              <td rowspan="2"></td>
+            <% end %>
+          </tr>
+          <tr class="extra <%= row_class %>" style="display:none">
+            <% names.each do |name| %>
+              <% title =  %>
+              <td class="extra value">
+                <%= @extra_nutrients[i][name] %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>
