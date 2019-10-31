@@ -14,7 +14,7 @@
 
 <h2><%= t ".heading" %></h2>
 <% if @primary_nutrients.any? %>
-  <table class="nutrients list">
+  <table class="nutrients list odd-even">
     <thead>
       <tr>
         <th style="width:30%"><%= l(:field_name) %></th>
@@ -25,7 +25,7 @@
     </thead>
     <tbody>
       <% @primary_nutrients.each do |i, values| %>
-        <% row_class = "ingredient #{'hidden' if i.hidden}" %>
+        <% row_class = "ingredient#{' hidden' if i.hidden} #{cycle('odd', 'even')}" %>
         <tr id="ingredient-<%= i.id %>" class="primary <%= row_class %>">
           <td class="name">
             <%= link_to '', '#', {
@@ -40,16 +40,21 @@
             </td>
           <% end %>
         </tr>
-        <% @extra_nutrients[i].keys.each_slice(@primary_quantities.length) do |names| %>
+        <% extras = @extra_nutrients[i].keys %>
+        <% extras.each_slice(@primary_quantities.length).with_index do |names, index| %>
           <tr class="extra <%= row_class %>" style="display:none">
-            <td rowspan="2"></td>
+            <% if index == 0 %>
+              <td rowspan="<%= 2*(extras.length.to_d / @primary_quantities.length).ceil %>"
+                  class="space">
+              </td>
+            <% end %>
             <% names.each do |name| %>
-              <td class="extra name">
+              <td class="extra quantity">
                 <%= name %>
               </td>
             <% end %>
-            <% for index in names.length...@primary_quantities.length do %>
-              <td rowspan="2"></td>
+            <% if @primary_quantities.length > names.length %>
+              <td rowspan="2" colspan="<%= @primary_quantities.length-names.length %>"></td>
             <% end %>
           </tr>
           <tr class="extra <%= row_class %>" style="display:none">

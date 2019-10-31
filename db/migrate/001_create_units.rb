@@ -27,7 +27,7 @@ class CreateUnits < ActiveRecord::Migration
     create_table :ingredients do |t|
       t.references :project
       t.string :name
-      t.decimal :ref_amount
+      t.decimal :ref_amount, precision: 12, scale: 6
       t.references :ref_unit
       t.integer :group
       t.references :source
@@ -38,7 +38,7 @@ class CreateUnits < ActiveRecord::Migration
     create_table :nutrients do |t|
       t.references :ingredient
       t.references :quantity
-      t.decimal :amount
+      t.decimal :amount, precision: 12, scale: 6
       t.references :unit
     end
 
