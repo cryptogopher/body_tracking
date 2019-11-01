@@ -5,6 +5,15 @@ module IngredientsHelper
     end
   end
 
+  def nutrient_column_options
+    disabled = []
+    options = nested_set_options(@project.quantities.diet) do |q|
+      disabled << q.id if q.primary
+      raw("#{'&ensp;' * q.level}#{q.name}")
+    end
+    options_for_select(options, disabled: disabled)
+  end
+
   def unit_options
     @project.units.map do |u|
       [u.shortname, u.id]

@@ -1,6 +1,7 @@
 require_dependency 'body_tracking/body_trackers_view_listener'
 
 (Rails::VERSION::MAJOR < 5 ? ActionDispatch : ActiveSupport)::Reloader.to_prepare do
+  ApplicationController.include BodyTracking::ApplicationControllerPatch
   Project.include BodyTracking::ProjectPatch
 end
 
@@ -22,7 +23,7 @@ Redmine::Plugin.register :body_tracking do
     }, read: true
     permission :manage_common, {
       :body_trackers => [:defaults],
-      :ingredients => [:create, :destroy, :toggle, :import],
+      :ingredients => [:create, :destroy, :toggle, :import, :toggle_nutrient_column],
       :sources => [:create, :destroy],
       :quantities => [:create, :destroy, :toggle, :up, :down, :left, :right],
       :units => [:create, :destroy],

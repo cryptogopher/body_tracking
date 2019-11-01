@@ -3,6 +3,7 @@ class IngredientsController < ApplicationController
 
   before_action :find_project_by_project_id, only: [:index, :create, :import, :nutrients]
   before_action :find_ingredient, only: [:destroy, :toggle]
+  before_action :find_quantity, only: [:toggle_nutrient_column]
   before_action :authorize
 
   def index
@@ -17,22 +18,12 @@ class IngredientsController < ApplicationController
   def nutrients
     @ingredient = @project.ingredients.new
     @ingredient.nutrients.new(ingredient: @ingredient)
+    prepare_nutrients
+  end
 
-    ingredients = @project.ingredients.includes(:ref_unit, nutrients: [:quantity, :unit])
-    @primary_quantities = @project.quantities.where(primary: true)
-    @primary_nutrients = {}
-    @extra_nutrients = {}
-    ingredients.each do |i|
-      @primary_nutrients[i] = {}
-      @extra_nutrients[i] = {}
-      i.nutrients.sort_by { |n| n.quantity.lft }.each do |n|
-        if @primary_quantities.include?(n.quantity)
-          @primary_nutrients[i][n.quantity_id] = "#{n.amount} [#{n.unit.shortname}]"
-        else
-          @extra_nutrients[i][n.quantity.name] = "#{n.amount} [#{n.unit.shortname}]"
-        end
-      end
-    end
+  def toggle_nutrient_column
+    @quantity.toggle_primary!
+    prepare_nutrients
   end
 
   def create
@@ -188,5 +179,23 @@ class IngredientsController < ApplicationController
     @project = @ingredient.project
   rescue ActiveRecord::RecordNotFound
     render_404
+  end
+
+  def prepare_nutrients
+    ingredients = @project.ingredients.includes(:ref_unit, nutrients: [:quantity, :unit])
+    @primary_quantities = @project.quantities.where(primary: true)
+    @primary_nutrients = {}
+    @extra_nutrients = {}
+    ingredients.each do |i|
+      @primary_nutrients[i] = {}
+      @extra_nutrients[i] = {}
+      i.nutrients.sort_by { |n| n.quantity.lft }.each do |n|
+        if @primary_quantities.include?(n.quantity)
+          @primary_nutrients[i][n.quantity_id] = "#{n.amount} [#{n.unit.shortname}]"
+        else
+          @extra_nutrients[i][n.quantity.name] = "#{n.amount} [#{n.unit.shortname}]"
+        end
+      end
+    end
   end
 end

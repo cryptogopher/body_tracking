@@ -1,0 +1,31 @@
+<fieldset id="options" class="collapsible">
+  <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
+  <%= form_tag toggle_nutrient_column_project_ingredients_path(@project),
+    id: 'add_nutrient_column', method: :post, remote: true do %>
+  <table>
+    <tr>
+      <td width="100%"></td>
+      <td>
+        <%= select_tag 'id', nutrient_column_options %>
+      </td>
+      <td>
+        <%= submit_tag l(:button_add) %>
+      </td>
+    </tr>
+  </table>
+  <% end %>
+</fieldset>
+
+<table class="list" style="border: none; width: 100%">
+  <tr>
+    <% total_width = 3 + @primary_quantities.length %>
+    <td style="visibility: hidden; border: none; width:<%= 3 * 100/total_width%>%"></td>
+    <% @primary_quantities.each do |q| %>
+      <td class="action" style="width:<%= 100/total_width %>%">
+        <%= link_to l(:button_hide),
+          toggle_nutrient_column_project_ingredients_path(@project, id: q.id),
+          {class: "icon icon-close", method: :post, remote: true} %>
+      </td>
+    <% end %>
+  </tr>
+</table>

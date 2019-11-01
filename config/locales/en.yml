@@ -61,6 +61,8 @@ en:
       groups:
         other: 'other'
         meat: 'meat'
+    options:
+      label_options: 'Options'
     index:
       heading: 'Ingredients'
       heading_nutrient_view: 'Nutrient view'

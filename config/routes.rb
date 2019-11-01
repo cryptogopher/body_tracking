@@ -10,6 +10,7 @@ resources :projects do
       post 'toggle', on: :member
       post 'import', on: :collection
       get 'nutrients', on: :collection
+      post 'toggle_nutrient_column', on: :collection
     end
     resources :sources, :only => [:index, :create, :destroy]
     resources :quantities, :only => [:index, :create, :destroy] do

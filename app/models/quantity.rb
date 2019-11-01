@@ -19,4 +19,8 @@ class Quantity < ActiveRecord::Base
       self.primary = false if self.primary.nil?
     end
   end
+
+  def toggle_primary!
+    self.toggle!(:primary)
+  end
 end

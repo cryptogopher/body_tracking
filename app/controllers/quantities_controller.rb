@@ -28,7 +28,7 @@ class QuantitiesController < ApplicationController
   end
 
   def toggle
-    @quantity.update(primary: !@quantity.primary)
+    @quantity.toggle_primary!
     @quantities = @project.quantities
   end
 
@@ -66,14 +66,5 @@ class QuantitiesController < ApplicationController
       :parent_id,
       :primary
     )
-  end
-
-  # :find_* methods are called before :authorize,
-  # @project is required for :authorize to succeed
-  def find_quantity
-    @quantity = Quantity.find(params[:id])
-    @project = @quantity.project
-  rescue ActiveRecord::RecordNotFound
-    render_404
   end
 end
