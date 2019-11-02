@@ -14,6 +14,11 @@ module IngredientsHelper
     options_for_select(options, disabled: disabled)
   end
 
+  def visibility_options(selected)
+    options = [["all", nil], ["visible", 1], ["hidden", 0]]
+    options_for_select(options, selected)
+  end
+
   def unit_options
     @project.units.map do |u|
       [u.shortname, u.id]

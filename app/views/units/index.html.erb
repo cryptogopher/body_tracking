@@ -23,7 +23,7 @@
 </div>
 
 <h2><%= t ".heading" %></h2>
-<% if @units.many? %>
+<% if @units.any? { |u| u.persisted? } %>
   <table class="list">
     <thead>
       <tr>

@@ -23,7 +23,7 @@
 </div>
 
 <h2><%= t ".heading" %></h2>
-<% if @sources.many? %>
+<% if @sources.any? { |s| s.persisted? } %>
   <table class="list">
     <thead>
       <tr>

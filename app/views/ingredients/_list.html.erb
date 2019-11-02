@@ -1,4 +1,4 @@
-<% if @ingredients.many? %>
+<% if @ingredients.any? { |i| i.persisted? } %>
   <table class="list">
     <thead>
       <tr>

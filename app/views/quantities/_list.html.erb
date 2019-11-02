@@ -1,4 +1,4 @@
-<% if @quantities.many? %>
+<% if @quantities.any? { |q| q.persisted? } %>
   <table class="list">
     <thead>
       <tr>

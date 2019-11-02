@@ -15,6 +15,7 @@ table.list td.value {
   white-space: nowrap;
   max-width: 1px;
 }
+fieldset#filters table.filter td {padding-left: 8px;}
 
 .icon-move-left { background-image: url(../images/1leftarrow.png); }
 .icon-move-right { background-image: url(../images/1rightarrow.png); }

@@ -223,6 +223,9 @@ class IngredientsController < ApplicationController
     if filters[:name].present?
       ingredients = ingredients.where("name LIKE ?", "%#{filters[:name]}%")
     end
+    if filters[:visibility].present?
+      ingredients = ingredients.where(hidden: filters[:visibility] == "1" ? false : true)
+    end
     ingredients
   end
 end
