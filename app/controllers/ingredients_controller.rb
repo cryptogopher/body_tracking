@@ -28,11 +28,10 @@ class IngredientsController < ApplicationController
   end
 
   def create
-    # FIXME: redirect to :back?
     @ingredient = @project.ingredients.new(ingredient_params)
     if @ingredient.save
       flash[:notice] = 'Created new ingredient'
-      redirect_to project_ingredients_url(@project)
+      redirect_to :back
     else
       prepare_ingredients
       @ingredient.nutrients.new(ingredient: @ingredient) if @ingredient.nutrients.empty?
@@ -67,7 +66,6 @@ class IngredientsController < ApplicationController
   end
 
   def import
-    # FIXME: redirect to :back?
     warnings = []
 
     if params.has_key?(:file)
@@ -164,7 +162,7 @@ class IngredientsController < ApplicationController
       warnings.unshift("Problems encountered during import - fix and try again:")
       flash[:warning] = warnings.join("<br>").truncate(1024, omission: '...(and other)')
     end
-    redirect_to project_ingredients_url(@project)
+    redirect_to :back
   end
 
   private
