@@ -41,12 +41,12 @@ class IngredientsController < ApplicationController
   end
 
   def destroy
-    # FIXME: redirect to :back?
     # FIXME: don't destroy if any meal depend on ingredient
     if @ingredient.destroy
       flash[:notice] = 'Deleted ingredient'
     end
-    redirect_to project_ingredients_url(@project)
+    prepare_ingredients
+    render :toggle
   end
 
   def toggle
