@@ -33,6 +33,7 @@ en:
       heading_common: 'Common'
       link_summary: 'Summary'
       link_ingredients: 'Ingredients'
+      link_nutrients: 'Nutrients'
       link_sources: 'Data sources'
       link_quantities: 'Quantities'
       link_units: 'Units'
@@ -61,8 +62,6 @@ en:
       groups:
         other: 'other'
         meat: 'meat'
-    options:
-      label_options: 'Options'
     index:
       heading: 'Ingredients'
       heading_nutrient_view: 'Nutrient view'

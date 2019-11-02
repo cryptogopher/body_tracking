@@ -7,10 +7,12 @@ resources :projects do
       post 'defaults', on: :collection
     end
     resources :ingredients, :only => [:index, :create, :destroy] do
-      post 'toggle', on: :member
-      post 'import', on: :collection
       get 'nutrients', on: :collection
       post 'toggle_nutrient_column', on: :collection
+      post 'toggle', on: :member
+      get 'filter', on: :collection
+      get 'filter_nutrients', on: :collection
+      post 'import', on: :collection
     end
     resources :sources, :only => [:index, :create, :destroy]
     resources :quantities, :only => [:index, :create, :destroy] do

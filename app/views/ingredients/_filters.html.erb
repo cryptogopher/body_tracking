@@ -1,0 +1,19 @@
+<fieldset id="filters" class="collapsible">
+  <legend onclick="toggleFieldset(this);"><%= l(:label_filter_plural) %></legend>
+  <%= form_tag url, id: 'filters_form', method: :get, remote: true do %>
+  <table>
+    <tr>
+      <td style="width:100%;"></td>
+      <td>
+        <%= text_field_tag 'filters[name]', session[:filters][:name],
+          placeholder: 'name filter' %>
+      </td>
+      <td style="padding-left:8px;">
+        <%= link_to l(:button_apply), '#',
+          :class => "icon icon-checked",
+          :onclick => '$("#filters_form").submit(); return false;' %>
+      </td>
+    </tr>
+  </table>
+  <% end %>
+</fieldset>

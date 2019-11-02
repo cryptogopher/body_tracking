@@ -1,9 +1,10 @@
 class IngredientsController < ApplicationController
   require 'csv'
 
-  before_action :find_project_by_project_id, only: [:index, :create, :import, :nutrients]
-  before_action :find_ingredient, only: [:destroy, :toggle]
+  before_action :find_project_by_project_id,
+    only: [:index, :nutrients, :create, :import, :filter, :filter_nutrients]
   before_action :find_quantity, only: [:toggle_nutrient_column]
+  before_action :find_ingredient, only: [:destroy, :toggle]
   before_action :authorize
 
   def index
@@ -11,7 +12,7 @@ class IngredientsController < ApplicationController
     # passing attr for Nutrient after_initialize
     @ingredient.nutrients.new(ingredient: @ingredient)
 
-    @ingredients = @project.ingredients.includes(:ref_unit, :source)
+    prepare_ingredients
     @ingredients << @ingredient
   end
 
@@ -27,18 +28,20 @@ class IngredientsController < ApplicationController
   end
 
   def create
+    # FIXME: redirect to :back?
     @ingredient = @project.ingredients.new(ingredient_params)
     if @ingredient.save
       flash[:notice] = 'Created new ingredient'
       redirect_to project_ingredients_url(@project)
     else
-      @ingredients = @project.ingredients.includes(:ref_unit, :source)
+      prepare_ingredients
       @ingredient.nutrients.new(ingredient: @ingredient) if @ingredient.nutrients.empty?
       render :index
     end
   end
 
   def destroy
+    # FIXME: redirect to :back?
     # FIXME: don't destroy if any meal depend on ingredient
     if @ingredient.destroy
       flash[:notice] = 'Deleted ingredient'
@@ -48,10 +51,23 @@ class IngredientsController < ApplicationController
 
   def toggle
     @ingredient.update(hidden: !@ingredient.hidden)
-    @ingredients = @project.ingredients.includes(:ref_unit, :source)
+    prepare_ingredients
+  end
+
+  def filter
+    session[:filters] = params[:filters]
+    prepare_ingredients
+    render :toggle
+  end
+
+  def filter_nutrients
+    session[:filters] = params[:filters]
+    prepare_nutrients
+    render :toggle_nutrient_column
   end
 
   def import
+    # FIXME: redirect to :back?
     warnings = []
 
     if params.has_key?(:file)
@@ -181,8 +197,13 @@ class IngredientsController < ApplicationController
     render_404
   end
 
+  def prepare_ingredients
+    @ingredients = filter_ingredients(@project.ingredients.includes(:ref_unit, :source))
+  end
+
   def prepare_nutrients
     ingredients = @project.ingredients.includes(:ref_unit, nutrients: [:quantity, :unit])
+    ingredients = filter_ingredients(ingredients)
     @primary_quantities = @project.quantities.where(primary: true)
     @primary_nutrients = {}
     @extra_nutrients = {}
@@ -197,5 +218,13 @@ class IngredientsController < ApplicationController
         end
       end
     end
+  end
+
+  def filter_ingredients(ingredients)
+    filters = session[:filters] || {}
+    if filters[:name].present?
+      ingredients = ingredients.where("name LIKE ?", "%#{filters[:name]}%")
+    end
+    ingredients
   end
 end
