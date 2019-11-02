@@ -5,8 +5,8 @@
     <tr>
       <td style="width:100%;"></td>
       <td>
-        <%= text_field_tag 'filters[name]', session[:filters][:name],
-          placeholder: 'name' %>
+        <%= text_field_tag 'filters[name]', session[:filters][:name], placeholder: 'name',
+          :onblur => '$("#filters_form").submit(); return false;' %>
       </td>
       <td>
         <%= select_tag 'filters[visibility]',
