@@ -9,9 +9,13 @@
           placeholder: 'name filter' %>
       </td>
       <td style="padding-left:8px;">
-        <%= link_to l(:button_apply), '#',
-          :class => "icon icon-checked",
+        <%= link_to l(:button_apply), '#', :class => "icon icon-checked",
           :onclick => '$("#filters_form").submit(); return false;' %>
+      </td>
+      <td style="padding-left:8px;">
+        <%= link_to l(:button_clear), '#', :class => "icon icon-reload",
+          :onclick => '$("#filters_form input").val(""); $("#filters_form").submit();
+                       return false;' %>
       </td>
     </tr>
   </table>
