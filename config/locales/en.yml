@@ -10,6 +10,7 @@ en:
   field_nutrients: 'Nutrients:'
   field_domain: 'Domain'
   field_parent_quantity: 'Parent'
+  field_formula: 'Formula'
   field_primary: 'Primary'
   field_shortname: 'Short name'
   button_primary: 'Primary'
@@ -24,6 +25,12 @@ en:
           attributes:
             parent:
               parent_domain_mismatch: 'parent quantity has to be in the same domain'
+            formula:
+              invalid_formula: 'interpretation failed after: %{part}'
+              disallowed_token: 'includes disallowed token "%{token}"
+                (of type %{ttype}) at %{location}'
+              disallowed_function_call: 'includes disallowed function call %{function}'
+              unknown_quantity: 'contains undefined quantities: %{quantities}'
   body_trackers:
     index:
       heading: 'Summary'
@@ -82,6 +89,8 @@ en:
         measurement: 'measurement'
         exercise: 'exercise'
       null_parent: '- none -'
+      formula_placeholder: 'provide if value of quantity has to be computed in terms of
+        other quantities'
   units:
     index:
       heading: 'Units'

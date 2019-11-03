@@ -60,10 +60,11 @@ class QuantitiesController < ApplicationController
 
   def quantity_params
     params.require(:quantity).permit(
-      :name,
-      :description,
       :domain,
       :parent_id,
+      :name,
+      :description,
+      :formula,
       :primary
     )
   end
