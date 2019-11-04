@@ -196,12 +196,11 @@ class IngredientsController < ApplicationController
   end
 
   def prepare_ingredients
-    @ingredients = filter_ingredients(@project.ingredients.includes(:ref_unit, :source))
+    @ingredients = filter_ingredients.includes(:ref_unit, :source)
   end
 
   def prepare_nutrients
-    ingredients = @project.ingredients.includes(:ref_unit, nutrients: [:quantity, :unit])
-    ingredients = filter_ingredients(ingredients)
+    ingredients = filter_ingredients.includes(nutrients: [:quantity, :unit])
     @primary_quantities = @project.quantities.where(primary: true)
     @primary_nutrients = {}
     @extra_nutrients = {}
@@ -218,8 +217,12 @@ class IngredientsController < ApplicationController
     end
   end
 
-  def filter_ingredients(ingredients)
+  def prepare_quantities(ingredients, quantities)
+  end
+
+  def filter_ingredients
     filters = session[:filters] || {}
+    ingredients = @project.ingredients
     if filters[:name].present?
       ingredients = ingredients.where("name LIKE ?", "%#{filters[:name]}%")
     end
