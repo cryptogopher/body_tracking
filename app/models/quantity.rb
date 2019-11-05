@@ -60,4 +60,10 @@ class Quantity < ActiveRecord::Base
   def toggle_primary!
     self.toggle!(:primary)
   end
+
+  def formula_quantities
+  end
+
+  def calculate(inputs)
+  end
 end

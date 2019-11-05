@@ -200,8 +200,9 @@ class IngredientsController < ApplicationController
   end
 
   def prepare_nutrients
-    ingredients = filter_ingredients.includes(nutrients: [:quantity, :unit])
-    @primary_quantities = @project.quantities.where(primary: true)
+    @quantities = @project.quantities.where(primary: true)
+    compute_nutrients(filter_ingredients, @quantities)
+
     @primary_nutrients = {}
     @extra_nutrients = {}
     ingredients.each do |i|
@@ -217,7 +218,40 @@ class IngredientsController < ApplicationController
     end
   end
 
-  def prepare_quantities(ingredients, quantities)
+  def compute_nutrients(ingredients, requested_q)
+    unchecked_q = requested_q.map { |q| [q, nil] }.to_h
+
+    nutrients = Hash.new { |h,k| h[k] = {} }
+    Nutrient.joins(:ingredient).where(ingredient: ingredients)
+      .pluck(:quantity_id, :ingredient_id, :amount, :unit_id)
+      .each { |[q_id, i_id, a, u_id]| nutrients[q_id][i_id] = [a, u_id] }
+
+    completed_q = {}
+    # FIXME: loop should finish unless there is circular dependency in formulas
+    # for now we don't guard against that
+    while !unchecked_q.empty?
+      q, deps = unchecked_q.shift
+
+      if q.formula.blank? || (nutrients[q.id].length == ingredients.length)
+        completed_q[q] = nutrients.delete(q.id)
+        next
+      end
+
+      if deps.nil? || !deps.empty?
+        formula_deps = deps || q.formula_quantities
+        unchecked_q[q] = formula_deps.delete_if { |q| completed_q.has_key?(q) }
+        unchecked_q[q].each { |q| unchecked_q[q] = nil unless unchecked_q.has_key?(q) }
+        deps = unchecked_q[q]
+      end
+
+      if deps.empty?
+        ingredients.each do |i|
+          inputs = nutrients.map { |q_name, *| [q_name, nutrients[q_name][i.id][0]] }.to_h
+          nutrients[q.name][i.id] = q.calculate(inputs)
+        end
+      end
+      unchecked_q[q] = deps
+    end
   end
 
   def filter_ingredients
