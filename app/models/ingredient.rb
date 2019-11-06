@@ -35,4 +35,62 @@ class Ingredient < ActiveRecord::Base
     end
   end
 
+  def self.compute_nutrients(requested_q)
+    ingredients = all
+    unchecked_q = requested_q.map { |q| [q, nil] }
+
+    nutrients = Hash.new { |h,k| h[k] = {} }
+    Nutrient.where(ingredient: ingredients).includes(:quantity, :unit)
+      .order('quantities.lft')
+      .pluck('quantities.name', :ingredient_id, :amount, 'units.shortname')
+      .each { |q_name, i_id, a, u_id| nutrients[q_name][i_id] = [a, u_id] }
+
+    extra_q = nutrients.keys - requested_q.pluck(:name)
+
+    completed_q = {}
+    # FIXME: loop should finish unless there is circular dependency in formulas
+    # for now we don't guard against that
+    while !unchecked_q.empty?
+      q, deps = unchecked_q.shift
+
+      if q.formula.blank? || (nutrients[q.name].length == ingredients.count)
+        completed_q[q.name] = nutrients.delete(q.name)
+        next
+      end
+
+      if deps.nil? || !deps.empty?
+        deps ||= q.formula_quantities
+        deps.reject! { |q| completed_q.has_key?(q.name) }
+        deps.each { |q| unchecked_q << [q, nil] unless unchecked_q.index { |u| u[0] == q } }
+      end
+
+      if deps.empty?
+        input_q = q.formula_quantities
+        ingredients.each do |i|
+          next if !nutrients[q.name][i.id].nil?
+          inputs = input_q.map do |i_q|
+            default_input = [nil, nil]
+            nutrient_data = (completed_q[i_q.name] || nutrients[i_q.name])[i.id]
+            [i_q.name, (nutrient_data || [nil, nil])[0]]
+          end
+          nutrients[q.name][i.id] = q.calculate(inputs)
+        end
+        unchecked_q.unshift([q, deps])
+      else
+        unchecked_q << [q, deps]
+      end
+    end
+
+    all_q = nutrients.merge(completed_q)
+    results = []
+    ingredients.each do |i|
+      results << [i,
+                  requested_q.map { |q| [q.name, all_q[q.name][i.id]] },
+                  extra_q.map do |q_name|
+                    [q_name, all_q[q_name][i.id]] if all_q[q_name][i.id]
+                  end.compact
+                 ]
+    end
+    results
+  end
 end

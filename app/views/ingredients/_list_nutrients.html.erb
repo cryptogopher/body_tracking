@@ -18,10 +18,8 @@
           <td class="name" style="cursor: pointer;" onclick="$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', 'tr').toggle(); return false;">
             <span class="icon icon-bullet-closed"><%= i.name %></span>
           </td>
-          <% @quantities.each do |q| %>
-            <td class="primary value">
-              <%= values[q.id] || '-' %>
-            </td>
+          <% values.each do |*, value| %>
+            <td class="primary value"><%= value %></td>
           <% end %>
         </tr>
 
@@ -29,43 +27,35 @@
           <td class="name" style="cursor: pointer;" onclick="$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', 'tr').toggle(); return false;">
             <span class="icon icon-bullet-closed"><%= i.name %></span>
           </td>
-          <% @quantities.each do |q| %>
-            <td class="primary quantity">
-              <%= q.name %>
-            </td>
+          <% values.each do |q_name, *| %>
+            <td class="primary quantity"><%= q_name %></td>
           <% end %>
         </tr>
         <tr class="<%= row_class %>" style="display:none">
           <td class="space"></td>
-          <% @quantities.each do |q| %>
-            <td class="primary value">
-              <%= values[q.id] || '-' %>
-            </td>
+          <% values.each do |*, value| %>
+            <td class="primary value"><%= value %></td>
           <% end %>
         </tr>
 
-        <% extras = @extra_nutrients[i].keys %>
-        <% extras.each_slice(@quantities.length).with_index do |names, index| %>
+        <% extras = @extra_nutrients[i] %>
+        <% extras.each_slice(@quantities.length).with_index do |values, index| %>
           <tr class="extra <%= row_class %>" style="display:none">
             <td class="space"></td>
-            <% names.each do |name| %>
-              <td class="extra quantity">
-                <%= name %>
-              </td>
+            <% values.each do |q_name, *| %>
+              <td class="extra quantity"><%= q_name %></td>
             <% end %>
-            <% if @quantities.length > names.length %>
-              <td class="space" colspan="<%= @quantities.length-names.length %>"></td>
+            <% if @quantities.length > values.length %>
+              <td class="space" colspan="<%= @quantities.length-values.length %>"></td>
             <% end %>
           </tr>
           <tr class="extra <%= row_class %>" style="display:none">
             <td class="space"></td>
-            <% names.each do |name| %>
-              <td class="extra value">
-                <%= @extra_nutrients[i][name] %>
-              </td>
+            <% values.each do |*, value| %>
+              <td class="extra value"><%= value %></td>
             <% end %>
-            <% if @quantities.length > names.length %>
-              <td class="space" colspan="<%= @quantities.length-names.length %>"></td>
+            <% if @quantities.length > values.length %>
+              <td class="space" colspan="<%= @quantities.length-values.length %>"></td>
             <% end %>
           </tr>
         <% end %>

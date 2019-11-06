@@ -63,7 +63,7 @@ class Quantity < ActiveRecord::Base
   end
 
   def formula_quantities
-    q_names = Ripper.lex(formula).each do |*, ttype, token|
+    q_names = Ripper.lex(formula).map do |*, ttype, token|
       token if QUANTITY_TTYPES.include?(ttype)
     end.compact
     self.project.quantities.where(name: q_names).to_a

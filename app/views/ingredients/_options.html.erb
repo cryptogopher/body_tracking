@@ -18,9 +18,9 @@
 
 <table class="list" style="border:none; width:100%">
   <tr>
-    <% total_width = 3 + @primary_quantities.length %>
+    <% total_width = 3 + @quantities.length %>
     <td style="visibility: hidden; border: none; width:<%= 3 * 100/total_width%>%"></td>
-    <% @primary_quantities.each do |q| %>
+    <% @quantities.each do |q| %>
       <td class="action" style="width:<%= 100/total_width %>%">
         <%= link_to l(:button_hide),
           toggle_nutrient_column_project_ingredients_path(@project, id: q.id),
