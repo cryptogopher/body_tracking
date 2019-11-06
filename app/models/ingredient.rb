@@ -82,15 +82,10 @@ class Ingredient < ActiveRecord::Base
     end
 
     all_q = nutrients.merge(completed_q)
-    results = []
-    ingredients.each do |i|
-      results << [i,
-                  requested_q.map { |q| [q.name, all_q[q.name][i.id]] },
-                  extra_q.map do |q_name|
-                    [q_name, all_q[q_name][i.id]] if all_q[q_name][i.id]
-                  end.compact
-                 ]
+    ingredients.map do |i|
+      requested_n = requested_q.map { |q| [q.name, all_q[q.name][i.id]] }
+      extra_n = extra_q.map { |q_name| [q_name, all_q[q_name][i.id]] if all_q[q_name][i.id] }
+      [i, requested_n, extra_n.compact]
     end
-    results
   end
 end
