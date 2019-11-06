@@ -1,5 +1,6 @@
 class Quantity < ActiveRecord::Base
   require 'ripper'
+  QUANTITY_TTYPES = [:on_ident, :on_tstring_content, :on_const]
 
   enum domain: {
     diet: 0,
@@ -26,7 +27,7 @@ class Quantity < ActiveRecord::Base
     identifiers = []
     Ripper.lex(formula).each do |location, ttype, token|
       case
-      when [:on_ident, :on_tstring_content, :on_const].include?(ttype)
+      when QUANTITY_TTYPES.include?(ttype)
         identifiers << token
       when [:on_sp, :on_int, :on_rational, :on_float, :on_tstring_beg, :on_tstring_end,
         :on_lparen, :on_rparen].include?(ttype)
@@ -62,8 +63,13 @@ class Quantity < ActiveRecord::Base
   end
 
   def formula_quantities
+    q_names = Ripper.lex(formula).each do |*, ttype, token|
+      token if QUANTITY_TTYPES.include?(ttype)
+    end.compact
+    self.project.quantities.where(name: q_names).to_a
   end
 
   def calculate(inputs)
+    [1.0, nil]
   end
 end
