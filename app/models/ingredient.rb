@@ -71,7 +71,9 @@ class Ingredient < ActiveRecord::Base
             i,
             input_q.map do |i_q|
               nutrient_data = (completed_q[i_q.name] || nutrients[i_q.name])[i.id]
-              [i_q.name, (nutrient_data || [nil, nil])[0]]
+              # FIXME: result for computation with nil values (substituted with 0s)
+              # should be marked as not precise
+              [i_q.name, (nutrient_data || [0, nil])[0]]
             end.to_h
           ]
         end
