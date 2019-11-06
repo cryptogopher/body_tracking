@@ -53,17 +53,20 @@ class Ingredient < ActiveRecord::Base
     while !unchecked_q.empty?
       q, deps = unchecked_q.shift
 
+      # quantity not computable (no formula) or not requiring calculation/computed
       if q.formula.blank? || (nutrients[q.name].length == ingredients.count)
         completed_q[q.name] = nutrients.delete(q.name) || {}
         next
       end
 
+      # quantity with formula requires refresh of dependencies availability
       if deps.nil? || !deps.empty?
         deps ||= q.formula_quantities
         deps.reject! { |q| completed_q.has_key?(q.name) }
         deps.each { |q| unchecked_q << [q, nil] unless unchecked_q.index { |u| u[0] == q } }
       end
 
+      # quantity with formula has all dependencies satisfied, requires calculation
       if deps.empty?
         input_q = q.formula_quantities
         inputs = ingredients.select { |i| nutrients[q.name][i.id].nil? }.map do |i|
@@ -79,9 +82,11 @@ class Ingredient < ActiveRecord::Base
         end
         q.calculate(inputs).each { |i, result| nutrients[q.name][i.id] = result }
         unchecked_q.unshift([q, deps])
-      else
-        unchecked_q << [q, deps]
+        next
       end
+
+      # quantity still has unsatisfied dependencies, move to the end of queue
+      unchecked_q << [q, deps]
     end
 
     all_q = nutrients.merge(completed_q)
