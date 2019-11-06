@@ -70,6 +70,6 @@ class Quantity < ActiveRecord::Base
   end
 
   def calculate(inputs)
-    [1.0, nil]
+    inputs.map { |i, values| [i, 1.0] }
   end
 end

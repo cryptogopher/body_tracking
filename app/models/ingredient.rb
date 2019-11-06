@@ -66,15 +66,16 @@ class Ingredient < ActiveRecord::Base
 
       if deps.empty?
         input_q = q.formula_quantities
-        ingredients.each do |i|
-          next if !nutrients[q.name][i.id].nil?
-          inputs = input_q.map do |i_q|
-            default_input = [nil, nil]
-            nutrient_data = (completed_q[i_q.name] || nutrients[i_q.name])[i.id]
-            [i_q.name, (nutrient_data || [nil, nil])[0]]
-          end
-          nutrients[q.name][i.id] = q.calculate(inputs)
+        inputs = ingredients.select { |i| nutrients[q.name][i.id].nil? }.map do |i|
+          [
+            i,
+            input_q.map do |i_q|
+              nutrient_data = (completed_q[i_q.name] || nutrients[i_q.name])[i.id]
+              [i_q.name, (nutrient_data || [nil, nil])[0]]
+            end.to_h
+          ]
         end
+        q.calculate(inputs).each { |i, result| nutrients[q.name][i.id] = result }
         unchecked_q.unshift([q, deps])
       else
         unchecked_q << [q, deps]
