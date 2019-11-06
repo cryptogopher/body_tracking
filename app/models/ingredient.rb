@@ -54,7 +54,7 @@ class Ingredient < ActiveRecord::Base
       q, deps = unchecked_q.shift
 
       if q.formula.blank? || (nutrients[q.name].length == ingredients.count)
-        completed_q[q.name] = nutrients.delete(q.name)
+        completed_q[q.name] = nutrients.delete(q.name) || {}
         next
       end
 

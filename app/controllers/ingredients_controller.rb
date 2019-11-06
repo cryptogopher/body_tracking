@@ -209,13 +209,13 @@ class IngredientsController < ApplicationController
       @nutrients[i] = []
       requested_n.each do |q_name, value|
         amount, unitname = value
-        @nutrients[i] << [q_name, "#{amount || '-'} [#{unitname || '-'}]"]
+        @nutrients[i] << [q_name, amount.nil? ? '-' : "#{amount} [#{unitname || '-'}]"]
       end
 
       @extra_nutrients[i] = []
       extra_n.each do |q_name, value|
         amount, unitname = value
-        @extra_nutrients[i] << [q_name, "#{amount || '-'} [#{unitname || '-'}]"]
+        @extra_nutrients[i] << [q_name, amount.nil? ? '-' : "#{amount} [#{unitname || '-'}]"]
       end
     end
   end
