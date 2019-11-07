@@ -4,12 +4,13 @@ module BodyTracking
     QUANTITY_TTYPES = [:on_ident, :on_tstring_content, :on_const]
 
     class Formula
-      def initialize(project, formula)
+      def initialize(project, formula, options = {})
         @project = project
         @formula = formula
+        @options = options
       end
 
-      def validate(options = {})
+      def validate
         errors = []
 
         # 1st: check if formula is valid Ruby code
@@ -26,7 +27,10 @@ module BodyTracking
             identifiers << token
           when [:on_sp, :on_int, :on_rational, :on_float, :on_tstring_beg, :on_tstring_end,
                 :on_lparen, :on_rparen].include?(ttype)
-          when :on_op == ttype && '+-*/'.include?(token)
+          when :on_op == ttype && ['+', '-', '*', '/', '%', '**'].include?(token)
+          when :on_op == ttype && @options[:comparison] &&
+            ['==', '!=', '>', '<', '>=', '<=', '<=>', '===', '..', '...', '?:', 'and', 'or',
+             'not', '&&', '||', '!'].include?(token)
           else
             errors << [:disallowed_token, {token: token, ttype: ttype, location: location}]
           end
@@ -46,6 +50,10 @@ module BodyTracking
         end
 
         errors
+      end
+
+      def valid?
+        self.validate.empty?
       end
 
       def get_quantities
@@ -75,7 +83,7 @@ module BodyTracking
       end
 
       def validate_each(record, attribute, value)
-        Formula.new(record.project, value).validate(options).each do |message, params|
+        Formula.new(record.project, value, options).validate.each do |message, params|
           record.errors.add(attribute, message, params)
         end
       end

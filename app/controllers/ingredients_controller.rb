@@ -223,12 +223,21 @@ class IngredientsController < ApplicationController
   def filter_ingredients
     filters = session[:filters] || {}
     ingredients = @project.ingredients
+
     if filters[:name].present?
       ingredients = ingredients.where("name LIKE ?", "%#{filters[:name]}%")
     end
+
     if filters[:visibility].present?
       ingredients = ingredients.where(hidden: filters[:visibility] == "1" ? false : true)
     end
+
+    if filters[:nutrients].present?
+      formula = Formula.new(self.project, filters[:nutrients], comparison: true)
+      if formula.valid?
+      end
+    end
+
     ingredients
   end
 end
