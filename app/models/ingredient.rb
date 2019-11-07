@@ -55,7 +55,7 @@ class Ingredient < ActiveRecord::Base
 
       # quantity not computable (no formula) or not requiring calculation/computed
       if q.formula.blank? || (nutrients[q.name].length == ingredients.count)
-        completed_q[q.name] = nutrients.delete(q.name) || {}
+        completed_q[q.name] = nutrients.delete(q.name) { {} }
         next
       end
 
@@ -73,10 +73,10 @@ class Ingredient < ActiveRecord::Base
           [
             i,
             input_q.map do |i_q|
-              nutrient_data = (completed_q[i_q.name] || nutrients[i_q.name])[i.id]
               # FIXME: result for computation with nil values (substituted with 0s)
               # should be marked as not precise
-              [i_q.name, (nutrient_data || [0, nil])[0]]
+              nutrient_data = completed_q[i_q.name][i.id] || [0, nil]
+              [i_q.name, nutrient_data[0]]
             end.to_h
           ]
         end
