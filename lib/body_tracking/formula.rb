@@ -47,6 +47,26 @@ module BodyTracking
 
         errors
       end
+
+      def get_quantities
+        q_names = Ripper.lex(@formula).map do |*, ttype, token|
+          token if QUANTITY_TTYPES.include?(ttype)
+        end.compact
+        @project.quantities.where(name: q_names).to_a
+      end
+
+      def calculate(inputs)
+        paramed_formula = Ripper.lex(@formula).map do |*, ttype, token|
+          QUANTITY_TTYPES.include?(ttype) ? "params['#{token}']" : token
+        end.join
+        inputs.map { |i, values| [i, get_binding(values).eval(paramed_formula)] }
+      end
+
+      private
+
+      def get_binding(params)
+        binding
+      end
     end
 
     class FormulaValidator < ActiveModel::EachValidator

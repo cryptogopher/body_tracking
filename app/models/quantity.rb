@@ -28,22 +28,10 @@ class Quantity < ActiveRecord::Base
   end
 
   def formula_quantities
-    q_names = Ripper.lex(formula).map do |*, ttype, token|
-      token if BodyTracking::Formula::QUANTITY_TTYPES.include?(ttype)
-    end.compact
-    self.project.quantities.where(name: q_names).to_a
+    Formula.new(self.project, self.formula).get_quantities
   end
 
   def calculate(inputs)
-    paramed_formula = Ripper.lex(formula).map do |*, ttype, token|
-      BodyTracking::Formula::QUANTITY_TTYPES.include?(ttype) ? "params['#{token}']" : token
-    end.join
-    inputs.map { |i, values| [i, get_binding(values).eval(paramed_formula)] }
-  end
-
-  private
-
-  def get_binding(params)
-    binding
+    Formula.new(self.project, self.formula).calculate(inputs)
   end
 end
