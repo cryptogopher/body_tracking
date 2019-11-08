@@ -3,7 +3,6 @@
   <%= form_tag url, id: 'filters_form', method: :get, remote: true do %>
   <table class="filter">
     <tr>
-      <td style="width:100%;"></td>
       <td>
         <%= text_field_tag 'filters[name]', session[:filters][:name], placeholder: 'name',
           :onblur => '$("#filters_form").submit(); return false;' %>
@@ -13,9 +12,10 @@
           visibility_options(session[:filters][:visibility]),
           :onchange => '$("#filters_form").submit(); return false;' %>
       </td>
-      <td>
+      <td style="width:100%;">
         <%= text_field_tag 'filters[nutrients]', session[:filters][:nutrients],
           placeholder: 'conditional expression including nutrients', size: 40,
+          style: "box-sizing:border-box; width:100%;",
           :onblur => '$("#filters_form").submit(); return false;' %>
       </td>
       <td>
