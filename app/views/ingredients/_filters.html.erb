@@ -15,7 +15,7 @@
       <td style="width:100%;">
         <%= text_field_tag 'filters[nutrients]', session[:filters][:nutrients],
           placeholder: 'conditional expression including nutrients', size: 40,
-          style: "box-sizing:border-box; width:100%;",
+          :style => 'box-sizing:border-box; width:100%;',
           :onblur => '$("#filters_form").submit(); return false;' %>
       </td>
       <td>

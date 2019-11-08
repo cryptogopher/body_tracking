@@ -196,48 +196,29 @@ class IngredientsController < ApplicationController
   end
 
   def prepare_ingredients
-    @ingredients = filter_ingredients.includes(:ref_unit, :source)
+    @ingredients = @project.ingredients.includes(:ref_unit, :source)
+      .filter(@project, session[:filters])
   end
 
   def prepare_nutrients
     @quantities = @project.quantities.where(primary: true)
-    nutrients = filter_ingredients.compute_nutrients(@quantities)
+    ingredients, requested_n, extra_n = @project.ingredients
+      .filter(@project, session[:filters], @quantities)
 
     @nutrients = {}
     @extra_nutrients = {}
-    nutrients.each do |i, requested_n, extra_n|
+    ingredients.each_with_index do |i, index|
       @nutrients[i] = []
-      requested_n.each do |q_name, value|
+      requested_n[index].each do |q_name, value|
         amount, unitname = value
         @nutrients[i] << [q_name, amount.nil? ? '-' : "#{amount} [#{unitname || '-'}]"]
       end
 
       @extra_nutrients[i] = []
-      extra_n.each do |q_name, value|
+      extra_n[index].each do |q_name, value|
         amount, unitname = value
         @extra_nutrients[i] << [q_name, amount.nil? ? '-' : "#{amount} [#{unitname || '-'}]"]
       end
     end
-  end
-
-  def filter_ingredients
-    filters = session[:filters] || {}
-    ingredients = @project.ingredients
-
-    if filters[:name].present?
-      ingredients = ingredients.where("name LIKE ?", "%#{filters[:name]}%")
-    end
-
-    if filters[:visibility].present?
-      ingredients = ingredients.where(hidden: filters[:visibility] == "1" ? false : true)
-    end
-
-    if filters[:nutrients].present?
-      formula = Formula.new(self.project, filters[:nutrients], comparison: true)
-      if formula.valid?
-      end
-    end
-
-    ingredients
   end
 end

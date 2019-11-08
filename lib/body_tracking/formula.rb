@@ -4,10 +4,9 @@ module BodyTracking
     QUANTITY_TTYPES = [:on_ident, :on_tstring_content, :on_const]
 
     class Formula
-      def initialize(project, formula, options = {})
+      def initialize(project, formula)
         @project = project
         @formula = formula
-        @options = options
       end
 
       def validate
@@ -27,10 +26,10 @@ module BodyTracking
             identifiers << token
           when [:on_sp, :on_int, :on_rational, :on_float, :on_tstring_beg, :on_tstring_end,
                 :on_lparen, :on_rparen].include?(ttype)
-          when :on_op == ttype && ['+', '-', '*', '/', '%', '**'].include?(token)
-          when :on_op == ttype && @options[:comparison] &&
-            ['==', '!=', '>', '<', '>=', '<=', '<=>', '===', '..', '...', '?:', 'and', 'or',
-             'not', '&&', '||', '!'].include?(token)
+          when :on_op == ttype &&
+            ['+', '-', '*', '/', '%', '**', '==', '!=', '>', '<', '>=', '<=', '<=>', '===',
+             '..', '...', '?:', 'and', 'or', 'not', '&&', '||', '!'].include?(token)
+          when :on_kw == ttype && ['and', 'or', 'not'].include?(token)
           else
             errors << [:disallowed_token, {token: token, ttype: ttype, location: location}]
           end
@@ -65,7 +64,7 @@ module BodyTracking
 
       def calculate(inputs)
         paramed_formula = Ripper.lex(@formula).map do |*, ttype, token|
-          QUANTITY_TTYPES.include?(ttype) ? "params['#{token}']" : token
+          QUANTITY_TTYPES.include?(ttype) ? "params['#{token}'].to_d" : token
         end.join
         inputs.map { |i, values| [i, get_binding(values).eval(paramed_formula)] }
       end

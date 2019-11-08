@@ -1,4 +1,6 @@
 class Ingredient < ActiveRecord::Base
+  include BodyTracking::Formula
+
   enum group: {
     other: 0,
     meat: 1
@@ -35,9 +37,36 @@ class Ingredient < ActiveRecord::Base
     end
   end
 
-  def self.compute_nutrients(requested_q)
+  def self.filter(project, filters = {}, requested_q = [])
+    ingredients = all
+
+    if filters[:name].present?
+      ingredients = ingredients.where("name LIKE ?", "%#{filters[:name]}%")
+    end
+
+    if filters[:visibility].present?
+      ingredients = ingredients.where(hidden: filters[:visibility] == "1" ? false : true)
+    end
+
+    formula_q = if filters[:nutrients].present?
+      formula = Formula.new(project, filters[:nutrients])
+      if formula.valid?
+        project.quantities.new(name: '__internal_q', formula: filters[:nutrients])
+      end
+    end
+
+    if !requested_q.empty? || formula_q.present?
+      result = self.compute_nutrients(requested_q, formula_q)
+      requested_q.present? ? result : result[0]
+    else
+      ingredients
+    end
+  end
+
+  def self.compute_nutrients(requested_q, filter_q = nil)
     ingredients = all
     unchecked_q = requested_q.map { |q| [q, nil] }
+    unchecked_q << [filter_q, nil] if filter_q
 
     nutrients = Hash.new { |h,k| h[k] = {} }
     Nutrient.where(ingredient: ingredients).includes(:quantity, :unit)
@@ -90,10 +119,12 @@ class Ingredient < ActiveRecord::Base
     end
 
     all_q = nutrients.merge(completed_q)
-    ingredients.map do |i|
-      requested_n = requested_q.map { |q| [q.name, all_q[q.name][i.id]] }
-      extra_n = extra_q.map { |q_name| [q_name, all_q[q_name][i.id]] if all_q[q_name][i.id] }
-      [i, requested_n, extra_n.compact]
-    end
+    [
+      filter_q ? ingredients.to_a.keep_if { |i| all_q[filter_q.name][i.id] } : ingredients,
+      ingredients.map { |i| requested_q.map { |q| [q.name, all_q[q.name][i.id]] } },
+      ingredients.map do |i|
+        extra_q.map { |q_name| [q_name, all_q[q_name][i.id]] if all_q[q_name][i.id] }
+      end
+    ]
   end
 end
