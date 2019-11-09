@@ -104,9 +104,7 @@ class Ingredient < ActiveRecord::Base
           [
             i,
             input_q.map do |i_q|
-              # FIXME: result for computation with nil values (substituted with 0s)
-              # should be marked as not precise
-              nutrient_data = completed_q[i_q.name][i.id] || [0, nil]
+              nutrient_data = completed_q[i_q.name][i.id] || [nil, nil]
               [i_q.name, nutrient_data[0]]
             end.to_h
           ]
