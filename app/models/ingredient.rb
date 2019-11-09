@@ -49,18 +49,20 @@ class Ingredient < ActiveRecord::Base
     end
 
     formula_q = if filters[:nutrients].present?
-      formula = Formula.new(project, filters[:nutrients])
-      if formula.valid?
-        project.quantities.new(name: '__internal_q', formula: filters[:nutrients])
-      end
-    end
+                  project.quantities.new(name: '__internal_q',
+                                         formula: filters[:nutrients],
+                                         domain: :diet)
+                end
+    apply_formula = formula_q.present? && formula_q.valid?
 
-    if !requested_q.empty? || formula_q.present?
-      result = self.compute_nutrients(requested_q, formula_q)
-      requested_q.present? ? result : result[0]
-    else
-      ingredients
-    end
+    result =
+      if !requested_q.empty? || apply_formula
+        computed = ingredients.compute_nutrients(requested_q, apply_formula && formula_q)
+        requested_q.present? ? computed : [computed[0]]
+      else
+        [ingredients]
+      end
+    result.push(formula_q)
   end
 
   def self.compute_nutrients(requested_q, filter_q = nil)

@@ -66,7 +66,14 @@ module BodyTracking
         paramed_formula = Ripper.lex(@formula).map do |*, ttype, token|
           QUANTITY_TTYPES.include?(ttype) ? "params['#{token}'].to_d" : token
         end.join
-        inputs.map { |i, values| [i, get_binding(values).eval(paramed_formula)] }
+
+        inputs.map do |i, values|
+          begin
+            [i, get_binding(values).eval(paramed_formula)]
+          rescue
+            [i, nil]
+          end
+        end
       end
 
       private
@@ -82,7 +89,7 @@ module BodyTracking
       end
 
       def validate_each(record, attribute, value)
-        Formula.new(record.project, value, options).validate.each do |message, params|
+        Formula.new(record.project, value).validate.each do |message, params|
           record.errors.add(attribute, message, params)
         end
       end

@@ -13,8 +13,6 @@
 <%= render :partial => 'ingredients/form' %>
 
 <h2><%= t ".heading" %></h2>
-<%= render :partial => 'ingredients/filters',
-  :locals => {:url => filter_project_ingredients_path(@project)} %>
 <div id='ingredients'>
   <%= render :partial => 'ingredients/list' %>
 </div>

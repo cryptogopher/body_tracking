@@ -1,4 +1,7 @@
 <% if @ingredients.any? { |i| i.persisted? } %>
+  <%= render :partial => 'ingredients/filters',
+    :locals => {:url => filter_project_ingredients_path(@project)} %>
+
   <table class="list">
     <thead>
       <tr>

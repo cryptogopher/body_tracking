@@ -196,13 +196,13 @@ class IngredientsController < ApplicationController
   end
 
   def prepare_ingredients
-    @ingredients = @project.ingredients.includes(:ref_unit, :source)
+    @ingredients, @formula_q = @project.ingredients.includes(:ref_unit, :source)
       .filter(@project, session[:filters])
   end
 
   def prepare_nutrients
     @quantities = @project.quantities.where(primary: true)
-    ingredients, requested_n, extra_n = @project.ingredients
+    ingredients, requested_n, extra_n, @formula_q = @project.ingredients
       .filter(@project, session[:filters], @quantities)
 
     @nutrients = {}
