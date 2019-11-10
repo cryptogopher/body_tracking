@@ -27,8 +27,8 @@ en:
               parent_domain_mismatch: 'parent quantity has to be in the same domain'
             formula:
               invalid_formula: 'interpretation failed: %{msg}'
-              disallowed_token: 'includes disallowed token "%{token}"
-                (of type %{ttype}) at %{location}'
+              unparsable_formula: 'cannot be parsed'
+              disallowed_token: 'includes disallowed token "%{token}" (of type: %{ttype})'
               disallowed_function_call: 'includes disallowed function call: %{function}'
               unknown_quantity: 'contains undefined quantity: %{quantity}'
   body_trackers:
