@@ -118,7 +118,6 @@ module BodyTracking
             identifiers << vname
           when :@int
           else
-            byebug
             errors << [:disallowed_token, {token: token, ttype: ttype}]
           end
         end

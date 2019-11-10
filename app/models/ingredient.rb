@@ -37,7 +37,7 @@ class Ingredient < ActiveRecord::Base
     end
   end
 
-  def self.filter(project, filters = {}, requested_q = [])
+  def self.filter(project, filters = {}, requested_q = Quantity.none)
     ingredients = all
 
     if filters[:name].present?
@@ -120,7 +120,7 @@ class Ingredient < ActiveRecord::Base
 
     all_q = nutrients.merge(completed_q)
     [
-      filter_q ? ingredients.to_a.keep_if { |i| all_q[filter_q.name][i.id] } : ingredients,
+      filter_q ? ingredients.to_a.keep_if { |i| all_q[filter_q.name][i.id][0] } : ingredients,
       ingredients.map { |i| requested_q.map { |q| [q.name, all_q[q.name][i.id]] } },
       ingredients.map do |i|
         extra_q.map { |q_name| [q_name, all_q[q_name][i.id]] if all_q[q_name][i.id] }
