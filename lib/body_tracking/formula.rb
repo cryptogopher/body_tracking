@@ -83,7 +83,8 @@ module BodyTracking
         # failing test vectors:
         # - fcall disallowed: "abs(Fats)+Energy < 10"
         # working test vectors:
-        #   a.abs(Fats)+Energy < 10
+        #   Fats.abs+Energy < 10
+        #   (Energy-Calculated).abs > 10
         identifiers = []
         disallowed_functions = Set.new
 
@@ -93,7 +94,7 @@ module BodyTracking
         while stree.first
           ttype, token, *rest = stree.shift
           case ttype
-          when :program, :args_add_block
+          when :program, :args_add_block, :paren
             stree.unshift(*token)
           when :binary
             operator, token2 = rest
@@ -116,7 +117,7 @@ module BodyTracking
           when :var_ref
             vtype, vname, vloc = token
             identifiers << vname
-          when :@int
+          when :@int, :@float
           else
             errors << [:disallowed_token, {token: token, ttype: ttype}]
           end
