@@ -4,10 +4,13 @@ module BodyTracking
     QUANTITY_TTYPES = [:on_ident, :on_tstring_content, :on_const]
     FUNCTIONS = ['abs', 'nil?']
 
+    class InvalidFormula < RuntimeError; end
     class Formula
       def initialize(project, formula)
         @project = project
         @formula = formula
+        @paramed_formula = nil
+        @quantities = nil
       end
 
       def validate
@@ -60,9 +63,9 @@ module BodyTracking
           when :var_ref
             vtype, vname, vloc = token
             case vtype
-            when vtype == :@conts
+            when :@const
               identifiers << vname
-            when vtype == :@kw
+            when :@kw
               disallowed[:keyword] << token if vname != 'nil'
             end
           when :@int, :@float
@@ -76,32 +79,44 @@ module BodyTracking
 
         # 4th: check if identifiers used in formula correspond to existing quantities
         identifiers.uniq!
-        quantities = @project.quantities.where(name: identifiers).pluck(:name)
-        (identifiers - quantities).each { |q| errors << [:unknown_quantity, {quantity: q}] }
+        quantities = @project.quantities.where(name: identifiers)
+        quantities_names = quantities.pluck(:name)
+        (identifiers - quantities_names).each do |q|
+          errors << [:unknown_quantity, {quantity: q}]
+        end
+
+        if errors.empty?
+          @quantities = quantities
+          @paramed_formula = Ripper.lex(@formula).map do |*, ttype, token|
+            if QUANTITY_TTYPES.include?(ttype) && quantities_names.include?(token)
+              "params['#{token}']"
+            else
+              token
+            end
+          end.join
+        end
 
         errors
       end
 
       def valid?
-        self.validate.empty?
+        self.validate if @quantities.nil?
+        !@quantities.nil?
       end
 
       def get_quantities
-        q_names = Ripper.lex(@formula).map do |*, ttype, token|
-          token if is_token_quantity?(ttype, token)
-        end.compact
-        @project.quantities.where(name: q_names).to_a
+        raise RuntimeError, 'Invalid formula' unless self.valid?
+
+        @quantities.to_a
       end
 
       def calculate(inputs)
-        paramed_formula = Ripper.lex(@formula).map do |*, ttype, token|
-          is_token_quantity?(ttype, token) ? "params['#{token}']" : token
-        end.join
+        raise RuntimeError, 'Invalid formula' unless self.valid?
 
         inputs.map do |i, values|
           puts values.inspect
           begin
-            [i, [get_binding(values).eval(paramed_formula), nil]]
+            [i, [get_binding(values).eval(@paramed_formula), nil]]
           rescue Exception => e
             puts e.message
             [i, [nil, nil]]
@@ -110,10 +125,6 @@ module BodyTracking
       end
 
       private
-
-      def is_token_quantity?(ttype, token)
-        QUANTITY_TTYPES.include?(ttype) && !FUNCTIONS.include?(token)
-      end
 
       def get_binding(params)
         binding
