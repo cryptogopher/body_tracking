@@ -1,19 +1,21 @@
 <fieldset id="options" class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
-  <%= form_tag toggle_nutrient_column_project_ingredients_path(@project),
-    id: 'add_nutrient_column', method: :post, remote: true do %>
-  <table>
-    <tr>
-      <td style="width:100%"></td>
-      <td>
-        <%= select_tag 'id', nutrient_column_options %>
-      </td>
-      <td>
-        <%= submit_tag l(:button_add) %>
-      </td>
-    </tr>
-  </table>
-  <% end %>
+  <div>
+    <%= form_tag toggle_nutrient_column_project_ingredients_path(@project),
+      id: 'add_nutrient_column', method: :post, remote: true do %>
+      <table>
+        <tr>
+          <td style="width:100%"></td>
+          <td>
+            <%= select_tag 'id', nutrient_column_options %>
+          </td>
+          <td>
+            <%= submit_tag l(:button_add) %>
+          </td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
 </fieldset>
 
 <table class="list" style="border:none; width:100%">
