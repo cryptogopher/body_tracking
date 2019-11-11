@@ -100,8 +100,7 @@ module BodyTracking
       end
 
       def valid?
-        self.validate if @quantities.nil?
-        !@quantities.nil?
+        @quantities || self.validate.empty?
       end
 
       def get_quantities
