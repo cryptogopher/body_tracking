@@ -7,7 +7,7 @@ module BodyTracking
     class InvalidFormula < RuntimeError; end
     class Formula
       def initialize(project, formula)
-        @project = project
+        @project_quantities = Quantity.where(project: project)
         @formula = formula
         @paramed_formula = nil
         @quantities = nil
@@ -79,7 +79,7 @@ module BodyTracking
 
         # 4th: check if identifiers used in formula correspond to existing quantities
         identifiers.uniq!
-        quantities = @project.quantities.where(name: identifiers)
+        quantities = @project_quantities.where(name: identifiers)
         quantities_names = quantities.pluck(:name)
         (identifiers - quantities_names).each do |q|
           errors << [:unknown_quantity, {quantity: q}]

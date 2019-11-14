@@ -59,6 +59,7 @@ class QuantitiesController < ApplicationController
   private
 
   def quantity_params
+    params[:quantity].delete(:formula) if params[:quantity][:formula].blank?
     params.require(:quantity).permit(
       :domain,
       :parent_id,
