@@ -47,5 +47,27 @@ class CreateSchema < ActiveRecord::Migration
       t.references :unit
       t.timestamps null: false
     end
+
+    create_table :measurements do |t|
+      t.references :project
+      t.string :name
+      t.boolean :hidden
+      t.references :source
+      t.timestamps null: false
+    end
+
+    create_table :readouts do |t|
+      t.references :measurement
+      t.references :quantity
+      t.references :unit
+      t.timestamps null: false
+    end
+
+    create_table :readout_values do |t|
+      t.references :readout
+      t.decimal :value, precision: 12, scale: 6
+      t.timestamp :taken_at
+      t.timestamps null: false
+    end
   end
 end
