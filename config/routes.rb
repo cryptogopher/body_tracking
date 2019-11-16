@@ -6,6 +6,8 @@ resources :projects do
     resources :body_trackers, :only => [:index] do
       post 'defaults', on: :collection
     end
+    resources :measurements, :only => [:index, :create, :destroy] do
+    end
     resources :ingredients, :only => [:index, :create, :destroy] do
       get 'nutrients', on: :collection
       post 'toggle_nutrient_column', on: :collection

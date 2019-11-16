@@ -37,9 +37,11 @@ en:
       heading: 'Summary'
     sidebar:
       heading_body_trackers: 'Body trackers'
+      heading_measurements: 'Measurements'
       heading_diet: 'Diet'
       heading_common: 'Common'
       link_summary: 'Summary'
+      link_measurements: 'Measurements'
       link_ingredients: 'Ingredients'
       link_nutrients: 'Nutrients'
       link_sources: 'Data sources'
@@ -47,6 +49,9 @@ en:
       link_units: 'Units'
       link_defaults: 'Load defaults'
       confirm_defaults: 'This will load default quantities and units. Continue?'
+  measurements:
+    form:
+    index:
   ingredients:
     contextual:
       heading_import_ingredients: 'Import'
