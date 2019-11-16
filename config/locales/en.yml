@@ -53,6 +53,8 @@ en:
   measurements:
     form:
       heading_new_measurement: 'New measurement'
+      button_add_readout: 'Add readout'
+      button_delete_readout: 'Delete'
     index:
       heading: 'Measurements'
       link_new_measurement: 'New measurement'

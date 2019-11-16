@@ -9,7 +9,7 @@
     <div class="box tabular">
       <p><%= f.text_field :name, size: 40, required: true %></p>
       <p><%= f.select :source_id, source_options, required: false, include_blank: true %></p>
-      <% @measurements.readouts.each_with_index do |r, index| %>
+      <% @measurement.readouts.each_with_index do |r, index| %>
         <%= f.fields_for 'readouts_attributes', r, index: '' do |ff| %>
           <p class="readout">
             <%= ff.select :quantity_id, quantity_options,
