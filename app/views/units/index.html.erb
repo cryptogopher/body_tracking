@@ -4,7 +4,7 @@
 
 <div class="contextual">
   <% if User.current.allowed_to?(:manage_common, @project) %>
-    <%= link_to t(".heading_new_unit"), '#', :class => 'icon icon-add',
+    <%= link_to t(".link_new_unit"), '#', :class => 'icon icon-add',
       :onclick => '$("#add-unit").show(); $("#unit_shortname").focus(); return false;' %>
   <% end %>
 </div>

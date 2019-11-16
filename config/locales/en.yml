@@ -1,6 +1,7 @@
 # English strings go here for Rails i18n
 en:
   body_trackers_menu_caption: 'Body trackers'
+  field_readouts: 'Readouts'
   field_order: 'Order'
   field_action: 'Action'
   field_reference: 'Reference'
@@ -51,11 +52,14 @@ en:
       confirm_defaults: 'This will load default quantities and units. Continue?'
   measurements:
     form:
+      heading_new_measurement: 'New measurement'
     index:
+      heading: 'Measurements'
+      link_new_measurement: 'New measurement'
   ingredients:
     contextual:
-      heading_import_ingredients: 'Import'
-      heading_new_ingredient: 'New ingredient'
+      link_import_ingredients: 'Import'
+      link_new_ingredient: 'New ingredient'
     import:
       heading_import_ingredients: 'Import'
       label_import_select_csv_file: 'Select CSV file'
@@ -84,11 +88,11 @@ en:
   sources:
     index:
       heading: 'Data sources'
-      heading_new_source: 'New source'
+      link_new_source: 'New source'
   quantities:
     index:
       heading: 'Quantities'
-      heading_new_quantity: 'New quantity'
+      link_new_quantity: 'New quantity'
     form:
       domains:
         measurement: 'measurement'
@@ -100,4 +104,4 @@ en:
   units:
     index:
       heading: 'Units'
-      heading_new_unit: 'New unit'
+      link_new_unit: 'New unit'

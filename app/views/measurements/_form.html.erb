@@ -1,0 +1,59 @@
+<div id="add-measurement" <%= 'style=display:none;' if @measurement.errors.empty? %>>
+  <h2><%= t ".heading_new_measurement" %></h2>
+
+  <%= labelled_form_for @measurement,
+                        :url => project_measurements_path(@project),
+                        :html => {:id => 'measurement-form'} do |f| %>
+    <%= error_messages_for @measurement %>
+
+    <div class="box tabular">
+      <p><%= f.text_field :name, size: 40, required: true %></p>
+      <p><%= f.select :source_id, source_options, required: false, include_blank: true %></p>
+      <% @measurements.readouts.each_with_index do |r, index| %>
+        <%= f.fields_for 'readouts_attributes', r, index: '' do |ff| %>
+          <p class="readout">
+            <%= ff.select :quantity_id, quantity_options,
+              {include_blank: true, label: (index > 0 ? '' : :field_readouts)} %>
+            <%= ff.select :unit_id, unit_options, {label: ''} %>
+            <%= ff.check_box :_destroy, {style: "display:none", label: ''} %>
+            <%= link_to t(".button_delete_readout"), '#',
+              :class => 'icon icon-del',
+              :style => (@measurement.readouts.length > 1 ? "" : "display:none"),
+              :onclick => "deleteReadout(); return false;" %>
+          </p>
+        <% end %>
+      <% end %>
+      <p>
+        <%= link_to t(".button_add_readout"), '#', :class => 'icon icon-add',
+          :onclick => 'addReadout(); return false;' %>
+      </p>
+    </div>
+    <%= submit_tag l(:button_create) %>
+    <%= link_to l(:button_cancel), "#", :onclick => '$("#add-measurement").hide()' %>
+  <% end %>
+  <hr>
+</div>
+
+<%= javascript_tag do %>
+  function addReadout() {
+    var row = $('p.readout:visible:last');
+    var new_row = row.clone().insertAfter(row);
+    new_row.find('select[id$=_quantity_id]').val('');
+    new_row.find('select[id$=_unit_id]').val(row.find('select[id$=_unit_id]').val());
+    new_row.find('label:first').text('');
+    if ($('p.readout:visible').length > 1) {
+      $('p.readout a.icon-del').show();
+    }
+  }
+
+  function deleteReadout() {
+    var row = $(event.target).closest('p.readout');
+    row.find('[id$=_destroy]').val(1);
+    // FIXME: should only hide() row if record already saved (to send _destroy to backend)
+    row.remove();
+    $('p.readout:visible:first label:first').text('<%= t "field_readouts" %>');
+    if ($('p.readout:visible').length <= 1) {
+      $('p.readout a.icon-del').hide();
+    }
+  }
+<% end %>

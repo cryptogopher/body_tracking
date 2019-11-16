@@ -1,0 +1,34 @@
+<% if @measurements.any? { |m| m.persisted? } %>
+  <table class="list">
+    <thead>
+      <tr>
+        <th><%= l(:field_name) %></th>
+        <th><%= l(:field_source) %></th>
+        <th style="width:10%"><%= l(:field_action) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @measurements.each do |m| %>
+        <% next if m.new_record? %>
+        <tr id="measurement-<%= m.id %>" class="measurement <%= 'hidden' if m.hidden %>">
+          <td class="name">
+            <%= link_to '', toggle_measurement_path(m), {
+                  remote: true,
+                  method: :post,
+                  class: "icon icon-eye"
+                } %>
+            <%= m.name %>
+          </td>
+          <td class="source">
+            <%= m.source.name if m.source.present? %>
+          </td>
+          <td class="action">
+            <%= delete_link measurement_path(m), {remote: true, data: {}} %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>

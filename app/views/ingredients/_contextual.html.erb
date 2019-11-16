@@ -1,6 +1,6 @@
 <% if User.current.allowed_to?(:manage_common, @project) %>
-  <%= link_to t(".heading_import_ingredients"), '#', :class => 'icon icon-multiple',
+  <%= link_to t(".link_import_ingredients"), '#', :class => 'icon icon-multiple',
     :onclick => '$("#import-ingredients").show(); $("#filename").focus(); return false;' %>
-  <%= link_to t(".heading_new_ingredient"), '#', :class => 'icon icon-add',
+  <%= link_to t(".link_new_ingredient"), '#', :class => 'icon icon-add',
     :onclick => '$("#add-ingredient").show(); $("#ingredient_name").focus(); return false;' %>
 <% end %>
