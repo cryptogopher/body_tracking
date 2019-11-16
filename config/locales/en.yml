@@ -18,6 +18,11 @@ en:
   activerecord:
     errors:
       models:
+        measurement:
+          attributes:
+            readouts:
+              duplicated_quantity_unit_pair: 'you can define each quantity/unit pair only
+                once per measurement'
         ingredient:
           attributes:
             nutrients:
@@ -90,10 +95,12 @@ en:
   sources:
     index:
       heading: 'Data sources'
+      heading_new_source: 'New source'
       link_new_source: 'New source'
   quantities:
     index:
       heading: 'Quantities'
+      heading_new_quantity: 'New quantity'
       link_new_quantity: 'New quantity'
     form:
       domains:
@@ -106,4 +113,5 @@ en:
   units:
     index:
       heading: 'Units'
+      heading_new_unit: 'New unit'
       link_new_unit: 'New unit'

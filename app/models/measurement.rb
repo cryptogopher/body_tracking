@@ -11,7 +11,7 @@ class Measurement < ActiveRecord::Base
   validate do
     quantities = self.readouts.map { |r| [r.quantity_id, r.unit_id] }
     if quantities.length != quantities.uniq.length
-      errors.add(:readouts, :duplicated_quantity)
+      errors.add(:readouts, :duplicated_quantity_unit_pair)
     end
   end
 
