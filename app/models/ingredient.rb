@@ -37,6 +37,10 @@ class Ingredient < ActiveRecord::Base
     end
   end
 
+  def toggle_hidden!
+    self.toggle!(:hidden)
+  end
+
   def self.filter(project, filters = {}, requested_q = Quantity.none)
     ingredients = all
 

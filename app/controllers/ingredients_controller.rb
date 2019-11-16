@@ -49,7 +49,7 @@ class IngredientsController < ApplicationController
   end
 
   def toggle
-    @ingredient.update(hidden: !@ingredient.hidden)
+    @ingredient.toggle_hidden!
     prepare_ingredients
   end
 

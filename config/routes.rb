@@ -7,6 +7,7 @@ resources :projects do
       post 'defaults', on: :collection
     end
     resources :measurements, :only => [:index, :create, :destroy] do
+      post 'toggle', on: :member
     end
     resources :ingredients, :only => [:index, :create, :destroy] do
       get 'nutrients', on: :collection
