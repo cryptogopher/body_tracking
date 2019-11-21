@@ -1,26 +1,15 @@
 <fieldset id="filters" class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:label_filter_plural) %></legend>
   <div>
-    <%= error_messages_for @formula_q %>
-
     <%= form_tag url, id: 'filters_form', method: :get, remote: true do %>
     <table class="filter">
       <tr>
-        <td>
-          <%= text_field_tag 'filters[name]', session[:i_filters][:name], placeholder: 'name',
-            onblur: '$("#filters_form").submit(); return false;' %>
-        </td>
-        <td>
-          <%= select_tag 'filters[visibility]',
-            visibility_options(session[:i_filters][:visibility]),
-            prompt: t('.visibility_prompt'),
-            onchange: '$("#filters_form").submit(); return false;' %>
-        </td>
         <td style="width:100%;">
-          <%= text_field_tag 'filters[nutrients]', session[:i_filters][:nutrients],
-            placeholder: 'conditional expression including nutrients', size: 40,
-            style: 'box-sizing:border-box; width:100%;',
-            onblur: '$("#filters_form").submit(); return false;' %>
+        </td>
+        <td>
+          <%= select_tag 'filters[domain]', domain_options_tag(session[:q_filters][:domain]),
+            prompt: t('.domain_prompt'),
+            onchange: '$("#filters_form").submit(); return false;' %>
         </td>
         <td>
           <%= link_to l(:button_apply), '#', class: "icon icon-checked",

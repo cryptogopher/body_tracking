@@ -1,6 +1,7 @@
 class IngredientsController < ApplicationController
   require 'csv'
 
+  before_action :init_session_filters
   before_action :find_project_by_project_id,
     only: [:index, :nutrients, :create, :import, :filter, :filter_nutrients]
   before_action :find_quantity, only: [:toggle_nutrient_column]
@@ -54,13 +55,13 @@ class IngredientsController < ApplicationController
   end
 
   def filter
-    session[:filters] = params[:filters]
+    session[:i_filters] = params[:filters]
     prepare_ingredients
     render :toggle
   end
 
   def filter_nutrients
-    session[:filters] = params[:filters]
+    session[:i_filters] = params[:filters]
     prepare_nutrients
     render :toggle_nutrient_column
   end
@@ -167,6 +168,10 @@ class IngredientsController < ApplicationController
 
   private
 
+  def init_session_filters
+    session[:i_filters] ||= {}
+  end
+
   def ingredient_params
     params.require(:ingredient).permit(
       :name,
@@ -197,13 +202,13 @@ class IngredientsController < ApplicationController
 
   def prepare_ingredients
     @ingredients, @formula_q = @project.ingredients.includes(:ref_unit, :source)
-      .filter(@project, session[:filters])
+      .filter(@project, session[:i_filters])
   end
 
   def prepare_nutrients
     @quantities = @project.quantities.where(primary: true)
     ingredients, requested_n, extra_n, @formula_q = @project.ingredients
-      .filter(@project, session[:filters], @quantities)
+      .filter(@project, session[:i_filters], @quantities)
 
     @nutrients = {}
     @extra_nutrients = {}

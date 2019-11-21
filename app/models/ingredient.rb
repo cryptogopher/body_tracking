@@ -41,7 +41,7 @@ class Ingredient < ActiveRecord::Base
     self.toggle!(:hidden)
   end
 
-  def self.filter(project, filters = {}, requested_q = Quantity.none)
+  def self.filter(project, filters, requested_q = Quantity.none)
     ingredients = all
 
     if filters[:name].present?

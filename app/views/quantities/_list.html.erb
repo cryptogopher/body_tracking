@@ -1,3 +1,6 @@
+<%= render :partial => 'quantities/filters',
+  :locals => {:url => filter_project_quantities_path(@project)} %>
+
 <% if @quantities.any? { |q| q.persisted? } %>
   <table class="list">
     <thead>

@@ -34,4 +34,14 @@ class Quantity < ActiveRecord::Base
   def calculate(inputs)
     Formula.new(self.project, self.formula).calculate(inputs)
   end
+
+  def self.filter(project, filters)
+    quantities = all
+
+    if filters[:domain].present?
+      quantities = quantities.where(domain: domains[filters[:domain]])
+    end
+
+    quantities
+  end
 end

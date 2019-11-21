@@ -67,6 +67,8 @@ en:
     contextual:
       link_import_ingredients: 'Import'
       link_new_ingredient: 'New ingredient'
+    filters:
+      visibility_prompt: 'all'
     import:
       heading_import_ingredients: 'Import'
       label_import_select_csv_file: 'Select CSV file'
@@ -98,6 +100,8 @@ en:
       heading_new_source: 'New source'
       link_new_source: 'New source'
   quantities:
+    filters:
+      domain_prompt: 'all'
     index:
       heading: 'Quantities'
       heading_new_quantity: 'New quantity'

@@ -15,7 +15,7 @@ module IngredientsHelper
   end
 
   def visibility_options(selected)
-    options = [["all", nil], ["visible", 1], ["hidden", 0]]
+    options = [["visible", 1], ["hidden", 0]]
     options_for_select(options, selected)
   end
 

@@ -21,6 +21,7 @@ resources :projects do
     resources :quantities, :only => [:index, :create, :destroy] do
       post 'toggle', on: :member
       post 'up', 'down', 'left', 'right', on: :member
+      get 'filter', on: :collection
     end
     resources :units, :only => [:index, :create, :destroy]
   end
