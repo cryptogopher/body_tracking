@@ -2,9 +2,9 @@ class Quantity < ActiveRecord::Base
   include BodyTracking::Formula
 
   enum domain: {
+    diet: 0,
     measurement: 1,
-    exercise: 2,
-    diet: 0
+    exercise: 2
   }
 
   acts_as_nested_set dependent: :destroy, scope: :project

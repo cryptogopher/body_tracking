@@ -23,7 +23,7 @@
     $('[id=parent_select_'+$('#quantity_domain option:selected').val()+'] select')
       .attr('name', 'quantity[parent_id]');
   }
-  $('#quantity-form').on('click', '#quantity_domain', domainChange);
+  $('#quantity-form').on('change', '#quantity_domain', domainChange);
 
   $(document).ready(function() {
     domainChange();

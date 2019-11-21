@@ -6,6 +6,7 @@ class QuantitiesController < ApplicationController
 
   def index
     @quantity = @project.quantities.new
+    @quantity.domain = Quantity.domains[session[:q_filters][:domain]]
     prepare_quantities
   end
 
