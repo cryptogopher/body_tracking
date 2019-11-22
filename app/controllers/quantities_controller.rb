@@ -1,7 +1,7 @@
 class QuantitiesController < ApplicationController
   before_action :init_session_filters
   before_action :find_project_by_project_id, only: [:index, :create, :filter]
-  before_action :find_quantity, only: [:destroy, :toggle, :up, :down, :left, :right]
+  before_action :find_quantity, only: [:destroy, :toggle, :move]
   before_action :authorize
 
   def index
@@ -40,26 +40,19 @@ class QuantitiesController < ApplicationController
     render :toggle
   end
 
-  def up
-    @quantity.move_left if @quantity.left_sibling.present?
-    prepare_quantities
-    render :toggle
-  end
+  def move
+    direction = params[:direction].to_sym
+    case direction
+    when :up
+      @quantity.move_left
+    when :down
+      @quantity.move_right
+    when :left
+      @quantity.move_to_right_of(@quantity.parent)
+    when :right
+      @quantity.move_to_child_of(@quantity.left_sibling)
+    end if @quantity.movable?(direction)
 
-  def down
-    @quantity.move_right if @quantity.right_sibling.present?
-    prepare_quantities
-    render :toggle
-  end
-
-  def left
-    @quantity.move_to_right_of(@quantity.parent) if @quantity.parent.present?
-    prepare_quantities
-    render :toggle
-  end
-
-  def right
-    @quantity.move_to_child_of(@quantity.left_sibling) if @quantity.left_sibling.present?
     prepare_quantities
     render :toggle
   end

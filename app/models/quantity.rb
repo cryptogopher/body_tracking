@@ -23,6 +23,22 @@ class Quantity < ActiveRecord::Base
     end
   end
 
+  def movable?(direction)
+    case direction
+    when :up
+      self.left_sibling.present?
+    when :down
+      self.right_sibling.present?
+    when :left
+      self.parent.present?
+    when :right
+      left = self.left_sibling
+      left.present? && (left.domain == self.domain)
+    else
+      false
+    end
+  end
+
   def toggle_primary!
     self.toggle!(:primary)
   end

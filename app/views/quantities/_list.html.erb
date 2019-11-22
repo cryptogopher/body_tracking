@@ -32,50 +32,19 @@
               <%= q.name %>
             </td>
             <td class="order">
+              <% [:up, :down, :left, :right].each do |direction| %>
               <%=
-                if q.left_sibling.present?
-                  link_to '', up_quantity_path(q), {
+                if q.movable?(direction)
+                  link_to '', move_quantity_path(q, direction), {
                     remote: true,
                     method: :post,
-                    class: "icon icon-move-up"
+                    class: "icon icon-move-#{direction}"
                   }
                 else
                   link_to '', '', {class: "icon"}
                 end
               %>
-              <%=
-                if q.right_sibling.present?
-                  link_to '', down_quantity_path(q), {
-                    remote: true,
-                    method: :post,
-                    class: "icon icon-move-down"
-                  }
-                else
-                  link_to '', '', {class: "icon"}
-                end
-              %>
-              <%=
-                if q.parent.present?
-                  link_to '', left_quantity_path(q), {
-                    remote: true,
-                    method: :post,
-                    class: "icon icon-move-left"
-                  }
-                else
-                  link_to '', '', {class: "icon"}
-                end
-              %>
-              <%=
-                if q.left_sibling.present?
-                  link_to '', right_quantity_path(q), {
-                    remote: true,
-                    method: :post,
-                    class: "icon icon-move-right"
-                  }
-                else
-                  link_to '', '', {class: "icon"}
-                end
-              %>
+              <% end %>
             </td>
             <td class="domain"><%= q.domain %></td>
             <td class="description"><%= q.description %></td>
