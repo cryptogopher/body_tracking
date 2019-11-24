@@ -9,8 +9,9 @@
     </div>
   <% end %>
   <p><%= f.text_field :name, size: 25, required: true %></p>
-  <p><%= f.text_field :description, size: 200 %></p>
-  <p><%= f.text_field :formula, size: 200, placeholder: t('.formula_placeholder') %></p>
+  <p><%= f.text_field :description, style: "width: 100%;" %></p>
+  <p><%= f.text_field :formula, placeholder: t('.formula_placeholder'),
+      style: "width: 100%;" %></p>
   <p><%= f.check_box :primary %></p>
 </div>
 

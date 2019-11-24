@@ -17,6 +17,10 @@ table.list td.value {
   white-space: nowrap;
   max-width: 1px;
 }
+table.list td.form {
+  padding-right: 2px;
+  text-align: left;
+}
 fieldset#filters table.filter td {padding-left: 8px;}
 
 .icon-move-left { background-image: url(../images/1leftarrow.png); }

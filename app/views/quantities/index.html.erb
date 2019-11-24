@@ -5,7 +5,7 @@
 <div class="contextual">
   <% if User.current.allowed_to?(:manage_common, @project) %>
     <%= link_to t(".link_new_quantity"), '#', :class => 'icon icon-add',
-      :onclick => '$("#add-quantity").show(); $("#quantity_name").focus(); return false;' %>
+      :onclick => '$("#add-quantity").toggle(); $("#quantity_name").focus(); return false;' %>
   <% end %>
 </div>
 
@@ -24,5 +24,5 @@
 
 <h2><%= t ".heading" %></h2>
 <div id='quantities'>
-  <%= render :partial => 'quantities/list' %>
+  <%= render :partial => 'quantities/index' %>
 </div>

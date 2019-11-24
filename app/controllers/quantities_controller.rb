@@ -1,7 +1,7 @@
 class QuantitiesController < ApplicationController
   before_action :init_session_filters
   before_action :find_project_by_project_id, only: [:index, :create, :filter]
-  before_action :find_quantity, only: [:destroy, :toggle, :move]
+  before_action :find_quantity, only: [:edit, :update, :destroy, :toggle, :move]
   before_action :authorize
 
   def index
@@ -21,6 +21,17 @@ class QuantitiesController < ApplicationController
     end
   end
 
+  def filter
+    session[:q_filters] = params[:filters]
+    prepare_quantities
+    render :toggle
+  end
+
+  def edit
+    prepare_quantities
+    render :toggle
+  end
+
   def destroy
     if @quantity.destroy
       flash[:notice] = 'Deleted quantity'
@@ -32,12 +43,6 @@ class QuantitiesController < ApplicationController
   def toggle
     @quantity.toggle_primary!
     prepare_quantities
-  end
-
-  def filter
-    session[:q_filters] = params[:filters]
-    prepare_quantities
-    render :toggle
   end
 
   def move
