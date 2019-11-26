@@ -9,6 +9,7 @@
         <th><%= l(:field_order) %></th>
         <th><%= l(:field_domain) %></th>
         <th><%= l(:field_description) %></th>
+        <th><%= l(:field_formula) %></th>
         <th><%= l(:field_action) %></th>
       </tr>
     </thead>
@@ -47,6 +48,7 @@
           </td>
           <td class="domain"><%= q.domain %></td>
           <td class="description"><%= q.description %></td>
+          <td class="formula"><%= checked_image q.formula.present? %></td>
           <td class="action">
             <%=
               link_to l(:button_edit), edit_quantity_path(q), {
@@ -69,7 +71,8 @@
                 <%= submit_tag l(:button_save) %>
                 <%=
                   link_to l(:button_cancel), "#",
-                    onclick: '$(this).closest("tr").remove(); $("#quantities a.icon-edit").css("visibility", "visible"); '
+                    onclick: '$(this).closest("tr").remove();
+                    $("#quantities a.icon-edit").css("visibility", "visible");'
                 %>
               <% end %>
             </div>

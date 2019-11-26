@@ -8,9 +8,11 @@ class BodyTrackersController < ApplicationController
   def defaults
     # Units
     available = @project.units.pluck(:shortname)
-    defaults = Unit.where(project: nil).pluck(:name, :shortname)
-    defaults.delete_if { |n, s| available.include?(s) }
-    @project.units.create(defaults.map { |n, s| {name: n, shortname: s} })
+    defaults = Unit.where(project: nil).map do |u|
+      u.attributes.except('id', 'project_id', 'created_at', 'updated_at')
+    end
+    defaults.delete_if { |u| available.include?(u['shortname']) }
+    @project.units.create(defaults)
 
     new_units = defaults.length
     flash[:notice] = "Loaded #{new_units > 0 ? new_units : "no" } new" \
@@ -22,13 +24,10 @@ class BodyTrackersController < ApplicationController
     defaults = Quantity.where(project: nil)
     Quantity.each_with_level(defaults) do |q, level|
       unless available.has_key?([q.name, q.domain])
-        obj = @project.quantities.create({
-          domain: q.domain,
-          parent: q.parent ? available[[q.parent.name, q.parent.domain]] : nil,
-          name: q.name,
-          description: q.description,
-          primary: q.primary
-        })
+        attrs = q.attributes.except('id', 'project_id', 'parent_id', 'lft', 'rgt',
+                                    'created_at', 'updated_at')
+        attrs['parent'] = q.parent ? available[[q.parent.name, q.parent.domain]] : nil
+        obj = @project.quantities.create(attrs)
         available[[q.name, q.domain]] = obj
       end
     end
@@ -39,9 +38,11 @@ class BodyTrackersController < ApplicationController
 
     # Sources
     available = @project.sources.pluck(:name)
-    defaults = Source.where(project: nil).pluck(:name, :description)
-    defaults.delete_if { |n, d| available.include?(n) }
-    @project.sources.create(defaults.map { |n, d| {name: n, description: d} })
+    defaults = Source.where(project: nil).map do |s|
+      s.attributes.except('id', 'project_id', 'created_at', 'updated_at')
+    end
+    defaults.delete_if { |s| available.include?(s['name']) }
+    @project.sources.create(defaults)
 
     new_sources = defaults.length
     flash[:notice] += " and #{new_sources > 0 ? new_sources : "no" } new" \
