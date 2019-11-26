@@ -51,7 +51,8 @@
             <%=
               link_to l(:button_edit), edit_quantity_path(q), {
                 remote: true,
-                class: "icon icon-edit"
+                class: "icon icon-edit",
+                style: (action_name == "edit") ? "visibility: hidden;" : ""
               }
             %>
             <%= delete_link quantity_path(q), {remote: true, data: {}} %>
@@ -67,7 +68,8 @@
                 <%= render :partial => 'quantities/form', :locals => { :f => f } %>
                 <%= submit_tag l(:button_save) %>
                 <%=
-                  link_to l(:button_cancel), "#", :onclick => '$("#edit-quantity").hide()'
+                  link_to l(:button_cancel), "#",
+                    onclick: '$(this).closest("tr").remove(); $("#quantities a.icon-edit").css("visibility", "visible"); '
                 %>
               <% end %>
             </div>
