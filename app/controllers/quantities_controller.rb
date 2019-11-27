@@ -1,4 +1,6 @@
 class QuantitiesController < ApplicationController
+  menu_item :body_trackers
+
   before_action :init_session_filters
   before_action :find_project_by_project_id, only: [:index, :parents, :create, :filter]
   before_action :find_quantity, only: [:edit, :update, :destroy, :toggle, :move]

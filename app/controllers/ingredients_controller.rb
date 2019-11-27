@@ -1,6 +1,8 @@
 class IngredientsController < ApplicationController
   require 'csv'
 
+  menu_item :body_trackers
+
   before_action :init_session_filters
   before_action :find_project_by_project_id,
     only: [:index, :nutrients, :create, :import, :filter, :filter_nutrients]

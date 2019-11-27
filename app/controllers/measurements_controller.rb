@@ -1,4 +1,6 @@
 class MeasurementsController < ApplicationController
+  menu_item :body_trackers
+
   before_action :find_project_by_project_id, only: [:index, :create]
   before_action :find_measurement, only: [:destroy, :toggle]
   before_action :authorize
