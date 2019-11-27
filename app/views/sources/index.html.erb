@@ -1,11 +1,11 @@
 <% content_for :sidebar do %>
-  <%= render :partial => 'body_trackers/sidebar' %>
+  <%= render partial: 'body_trackers/sidebar' %>
 <% end %>
 
 <div class="contextual">
   <% if User.current.allowed_to?(:manage_common, @project) %>
-    <%= link_to t(".link_new_source"), '#', :class => 'icon icon-add',
-      :onclick => '$("#add-source").show(); $("#source_name").focus(); return false;' %>
+    <%= link_to t(".link_new_source"), '#', class: 'icon icon-add',
+      onclick: '$("#add-source").show(); $("#source_name").focus(); return false;' %>
   <% end %>
 </div>
 
@@ -13,11 +13,11 @@
   <h2><%= t ".heading_new_source" %></h2>
 
   <%= labelled_form_for @source,
-                        :url => project_sources_path(@project),
-                        :html => {:id => 'source-form'} do |f| %>
-    <%= render :partial => 'sources/form', :locals => { :f => f } %>
+                        url: project_sources_path(@project),
+                        html: {id: 'source-form'} do |f| %>
+    <%= render partial: 'sources/form', locals: {f: f} %>
     <%= submit_tag l(:button_create) %>
-    <%= link_to l(:button_cancel), "#", :onclick => '$("#add-source").hide()' %>
+    <%= link_to l(:button_cancel), "#", onclick: '$("#add-source").hide(); return false;' %>
   <% end %>
   <hr>
 </div>

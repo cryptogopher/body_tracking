@@ -16,8 +16,8 @@ class CreateSchema < ActiveRecord::Migration
       t.boolean :primary
       # fields for awesome_nested_set
       t.references :parent
-      t.integer :lft, :null => false, :index => true
-      t.integer :rgt, :null => false, :index => true
+      t.integer :lft, null: false, index: true
+      t.integer :rgt, null: false, index: true
       t.timestamps null: false
     end
 

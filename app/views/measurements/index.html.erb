@@ -1,17 +1,17 @@
 <% content_for :sidebar do %>
-  <%= render :partial => 'body_trackers/sidebar' %>
+  <%= render partial: 'body_trackers/sidebar' %>
 <% end %>
 
 <div class="contextual">
   <% if User.current.allowed_to?(:manage_common, @project) %>
-    <%= link_to t(".link_new_measurement"), '#', :class => 'icon icon-add',
-      :onclick => '$("#add-measurement").show(); $("#measurement_name").focus(); return false;' %>
+    <%= link_to t(".link_new_measurement"), '#', class: 'icon icon-add',
+      onclick: '$("#add-measurement").show(); $("#measurement_name").focus(); return false;' %>
   <% end %>
 </div>
 
-<%= render :partial => 'measurements/form' %>
+<%= render partial: 'measurements/form' %>
 
 <h2><%= t ".heading" %></h2>
 <div id='measurements'>
-  <%= render :partial => 'measurements/list' %>
+  <%= render partial: 'measurements/list' %>
 </div>

@@ -1,5 +1,5 @@
-<%= render :partial => 'quantities/filters',
-  :locals => {:url => filter_project_quantities_path(@project)} %>
+<%= render partial: 'quantities/filters',
+  locals: {url: filter_project_quantities_path(@project)} %>
 
 <% if @quantities.any? { |q| q.persisted? } %>
   <table class="list">
@@ -68,7 +68,7 @@
               <%= labelled_form_for @quantity, url: quantity_path(@quantity), method: :patch,
                 remote: true, html: {id: 'quantity-edit-form'} do |f| %>
 
-                <%= render :partial => 'quantities/form', :locals => { :f => f } %>
+                <%= render partial: 'quantities/form', locals: {f: f} %>
                 <%= submit_tag l(:button_save) %>
                 <%=
                   link_to l(:button_cancel), "#",

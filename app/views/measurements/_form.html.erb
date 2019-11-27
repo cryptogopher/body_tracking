@@ -2,8 +2,8 @@
   <h2><%= t ".heading_new_measurement" %></h2>
 
   <%= labelled_form_for @measurement,
-                        :url => project_measurements_path(@project),
-                        :html => {:id => 'measurement-form'} do |f| %>
+                        url: project_measurements_path(@project),
+                        html: {id: 'measurement-form'} do |f| %>
     <%= error_messages_for @measurement %>
 
     <div class="box tabular">
@@ -17,19 +17,20 @@
             <%= ff.select :unit_id, unit_options, {label: ''} %>
             <%= ff.check_box :_destroy, {style: "display:none", label: ''} %>
             <%= link_to t(".button_delete_readout"), '#',
-              :class => 'icon icon-del',
-              :style => (@measurement.readouts.length > 1 ? "" : "display:none"),
-              :onclick => "deleteReadout(); return false;" %>
+              class: 'icon icon-del',
+              style: (@measurement.readouts.length > 1 ? "" : "display:none"),
+              onclick: "deleteReadout(); return false;" %>
           </p>
         <% end %>
       <% end %>
       <p>
-        <%= link_to t(".button_add_readout"), '#', :class => 'icon icon-add',
-          :onclick => 'addReadout(); return false;' %>
+        <%= link_to t(".button_add_readout"), '#', class: 'icon icon-add',
+          onclick: 'addReadout(); return false;' %>
       </p>
     </div>
     <%= submit_tag l(:button_create) %>
-    <%= link_to l(:button_cancel), "#", :onclick => '$("#add-measurement").hide()' %>
+    <%= link_to l(:button_cancel), "#",
+      onclick: '$("#add-measurement").hide(); return false;' %>
   <% end %>
   <hr>
 </div>

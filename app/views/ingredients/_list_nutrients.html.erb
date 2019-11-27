@@ -1,8 +1,8 @@
-<%= render :partial => 'ingredients/filters',
-  :locals => {:url => filter_nutrients_project_ingredients_path(@project)} %>
+<%= render partial: 'ingredients/filters',
+  locals: {url: filter_nutrients_project_ingredients_path(@project)} %>
 
 <% if @nutrients.any? %>
-  <%= render :partial => 'ingredients/options' %>
+  <%= render partial: 'ingredients/options' %>
 
   <table class="nutrients list odd-even">
     <thead>

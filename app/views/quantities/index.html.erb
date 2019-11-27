@@ -1,11 +1,11 @@
 <% content_for :sidebar do %>
-  <%= render :partial => 'body_trackers/sidebar' %>
+  <%= render partial: 'body_trackers/sidebar' %>
 <% end %>
 
 <div class="contextual">
   <% if User.current.allowed_to?(:manage_common, @project) %>
-    <%= link_to t(".link_new_quantity"), '#', :class => 'icon icon-add',
-      :onclick => '$("#add-quantity").toggle(); $("#quantity_name").focus(); return false;' %>
+    <%= link_to t(".link_new_quantity"), '#', class: 'icon icon-add',
+      onclick: '$("#add-quantity").toggle(); $("#quantity_name").focus(); return false;' %>
   <% end %>
 </div>
 
@@ -13,9 +13,9 @@
   <h2><%= t ".heading_new_quantity" %></h2>
 
   <%= labelled_form_for @quantity,
-                        :url => project_quantities_path(@project),
-                        :html => {:id => 'quantity-add-form'} do |f| %>
-    <%= render :partial => 'quantities/form', :locals => { :f => f } %>
+                        url: project_quantities_path(@project),
+                        html: {id: 'quantity-add-form'} do |f| %>
+    <%= render partial: 'quantities/form', locals: {f: f} %>
     <%= submit_tag l(:button_create) %>
     <%= link_to l(:button_cancel), "#", onclick: '$("#add-quantity").hide(); return false;' %>
   <% end %>
@@ -24,5 +24,5 @@
 
 <h2><%= t ".heading" %></h2>
 <div id='quantities'>
-  <%= render :partial => 'quantities/index' %>
+  <%= render partial: 'quantities/index' %>
 </div>

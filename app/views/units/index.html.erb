@@ -1,11 +1,11 @@
 <% content_for :sidebar do %>
-  <%= render :partial => 'body_trackers/sidebar' %>
+  <%= render partial: 'body_trackers/sidebar' %>
 <% end %>
 
 <div class="contextual">
   <% if User.current.allowed_to?(:manage_common, @project) %>
-    <%= link_to t(".link_new_unit"), '#', :class => 'icon icon-add',
-      :onclick => '$("#add-unit").show(); $("#unit_shortname").focus(); return false;' %>
+    <%= link_to t(".link_new_unit"), '#', class: 'icon icon-add',
+      onclick: '$("#add-unit").show(); $("#unit_shortname").focus(); return false;' %>
   <% end %>
 </div>
 
@@ -13,11 +13,11 @@
   <h2><%= t ".heading_new_unit" %></h2>
 
   <%= labelled_form_for @unit,
-                        :url => project_units_path(@project),
-                        :html => {:id => 'unit-form'} do |f| %>
-    <%= render :partial => 'units/form', :locals => { :f => f } %>
+                        url: project_units_path(@project),
+                        html: {id: 'unit-form'} do |f| %>
+    <%= render partial: 'units/form', locals: {f: f} %>
     <%= submit_tag l(:button_create) %>
-    <%= link_to l(:button_cancel), "#", :onclick => '$("#add-unit").hide()' %>
+    <%= link_to l(:button_cancel), "#", onclick: '$("#add-unit").hide(); return false;' %>
   <% end %>
   <hr>
 </div>

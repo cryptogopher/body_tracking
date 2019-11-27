@@ -1,4 +1,4 @@
 $('div[id^=flash_]').remove();
 $('#content').prepend('<%= escape_javascript(render_flash_messages) %>');
-$('#quantities').html('<%= escape_javascript(render :partial => 'quantities/index') %>');
+$('#quantities').html('<%= escape_javascript(render partial: 'quantities/index') %>');
 $('#quantity_domain').trigger('change');

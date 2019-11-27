@@ -3,13 +3,13 @@
 
 resources :projects do
   shallow do
-    resources :body_trackers, :only => [:index] do
+    resources :body_trackers, only: [:index] do
       post 'defaults', on: :collection
     end
-    resources :measurements, :only => [:index, :create, :destroy] do
+    resources :measurements, only: [:index, :create, :destroy] do
       post 'toggle', on: :member
     end
-    resources :ingredients, :only => [:index, :create, :destroy] do
+    resources :ingredients, only: [:index, :create, :destroy] do
       post 'toggle', on: :member
       collection do
         get 'nutrients'
@@ -19,8 +19,8 @@ resources :projects do
         post 'import'
       end
     end
-    resources :sources, :only => [:index, :create, :destroy]
-    resources :quantities, :only => [:index, :create, :edit, :update, :destroy] do
+    resources :sources, only: [:index, :create, :destroy]
+    resources :quantities, only: [:index, :create, :edit, :update, :destroy] do
       member do
         post 'toggle'
         post 'move/:direction', to: 'quantities#move', as: :move
@@ -30,6 +30,6 @@ resources :projects do
         get 'filter'
       end
     end
-    resources :units, :only => [:index, :create, :destroy]
+    resources :units, only: [:index, :create, :destroy]
   end
 end
