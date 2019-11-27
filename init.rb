@@ -19,7 +19,7 @@ Redmine::Plugin.register :body_tracking do
       :measurements => [:index],
       :ingredients => [:index, :nutrients, :filter, :filter_nutrients],
       :sources => [:index],
-      :quantities => [:index, :filter],
+      :quantities => [:index, :parents, :filter],
       :units => [:index],
     }, read: true
     permission :manage_common, {

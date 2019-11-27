@@ -25,7 +25,10 @@ resources :projects do
         post 'toggle'
         post 'move/:direction', to: 'quantities#move', as: :move
       end
-      get 'filter', on: :collection
+      collection do
+        get 'parents'
+        get 'filter'
+      end
     end
     resources :units, :only => [:index, :create, :destroy]
   end

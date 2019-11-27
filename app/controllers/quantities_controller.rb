@@ -1,6 +1,6 @@
 class QuantitiesController < ApplicationController
   before_action :init_session_filters
-  before_action :find_project_by_project_id, only: [:index, :create, :filter]
+  before_action :find_project_by_project_id, only: [:index, :parents, :create, :filter]
   before_action :find_quantity, only: [:edit, :update, :destroy, :toggle, :move]
   before_action :authorize
 
@@ -8,6 +8,11 @@ class QuantitiesController < ApplicationController
     @quantity = @project.quantities.new
     @quantity.domain = Quantity.domains[session[:q_filters][:domain]] || @quantity.domain
     prepare_quantities
+  end
+
+  def parents
+    @form = params[:form]
+    @domain = params[:quantity][:domain]
   end
 
   def create

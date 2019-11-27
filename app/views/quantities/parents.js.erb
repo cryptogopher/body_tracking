@@ -1,0 +1,5 @@
+$('<%= "##{@form} " if @form %>#quantity_parent_id').empty().append(
+  '<%= escape_javascript(options_for_select(
+    parent_options(@domain).unshift([t('quantities.form.null_parent'), nil])
+  )) %>'
+);
