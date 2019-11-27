@@ -29,12 +29,12 @@ class QuantitiesController < ApplicationController
   def filter
     session[:q_filters] = params[:filters]
     prepare_quantities
-    render :toggle
+    render :index
   end
 
   def edit
     prepare_quantities
-    render :toggle
+    render :index
   end
 
   def destroy
@@ -42,7 +42,7 @@ class QuantitiesController < ApplicationController
       flash[:notice] = 'Deleted quantity'
     end
     prepare_quantities
-    render :toggle
+    render :index
   end
 
   def toggle
@@ -64,7 +64,7 @@ class QuantitiesController < ApplicationController
     end if @quantity.movable?(direction)
 
     prepare_quantities
-    render :toggle
+    render :index
   end
 
   private
