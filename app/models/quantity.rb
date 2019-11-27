@@ -19,6 +19,7 @@ class Quantity < ActiveRecord::Base
 
   after_initialize do
     if new_record?
+      self.domain ||= :diet
       self.primary = false if self.primary.nil?
     end
   end

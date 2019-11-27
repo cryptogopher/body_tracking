@@ -14,10 +14,10 @@
 
   <%= labelled_form_for @quantity,
                         :url => project_quantities_path(@project),
-                        :html => {:id => 'quantity-form'} do |f| %>
+                        :html => {:id => 'quantity-add-form'} do |f| %>
     <%= render :partial => 'quantities/form', :locals => { :f => f } %>
     <%= submit_tag l(:button_create) %>
-    <%= link_to l(:button_cancel), "#", :onclick => '$("#add-quantity").hide()' %>
+    <%= link_to l(:button_cancel), "#", onclick: '$("#add-quantity").hide(); return false;' %>
   <% end %>
   <hr>
 </div>

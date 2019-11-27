@@ -1,11 +1,12 @@
 <%= error_messages_for @quantity %>
 
 <div class="box tabular">
-  <p><%= f.select :domain, domain_options, required: true %></p>
+  <p><%= f.select :domain, domain_options, {required: true} %></p>
   <% Quantity.domains.each_key do |d| %>
-    <div id="parent_select_<%= d %>" style="display: none">
-      <p><%= f.select :parent_id, parent_options(d),
-        {required: true, label: :field_parent_quantity} %></p>
+    <div id="parent_select_<%= d %>" <%= 'style=display:none;' if @quantity.domain != d %>>
+      <p><%= f.select :parent_id, parent_options(d), {required: true,
+                                                      label: :field_parent_quantity,
+                                                      include_blank: t('.null_parent')} %></p>
     </div>
   <% end %>
   <p><%= f.text_field :name, size: 25, required: true %></p>
@@ -17,15 +18,17 @@
 
 <%= javascript_tag do %>
   function domainChange() {
-    $('[id^=parent_select_]').prop('disabled', true).hide();
-    $('[id^=parent_select_] select').attr('name', 'placeholder');
-    $('[id=parent_select_'+$('#quantity_domain option:selected').val()+']')
-      .prop('disabled', false).show();
-    $('[id=parent_select_'+$('#quantity_domain option:selected').val()+'] select')
+    box = $(this).closest('div');
+    box.find('[id^=parent_select_]').prop('disabled', true).hide();
+    box.find('[id^=parent_select_] select').attr('name', 'placeholder');
+    domain = $(this).val();
+    box.find('[id=parent_select_'+domain+']').prop('disabled', false).show();
+    box.find('[id=parent_select_'+domain+'] select')
       .attr('name', 'quantity[parent_id]');
   }
-  $('#quantity-form').on('change', '#quantity_domain', domainChange);
+  $('form').on('change', '#quantity_domain', domainChange);
 
+  //Firefox does not emit 'change' signal when preserving form over reload
   $(document).ready(function() {
     domainChange();
   });
