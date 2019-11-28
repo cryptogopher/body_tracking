@@ -65,8 +65,10 @@
         <tr>
           <td class="form" colspan="6">
             <div id="edit-quantity">
-              <%= labelled_form_for @quantity, url: quantity_path(@quantity), method: :patch,
-                remote: true, html: {id: 'quantity-edit-form'} do |f| %>
+              <%= labelled_form_for @quantity,
+                url: quantity_path(@quantity),
+                method: :patch, remote: true,
+                html: {id: 'quantity-edit-form', name: 'quantity-edit-form'} do |f| %>
 
                 <%= render partial: 'quantities/form', locals: {f: f} %>
                 <%= submit_tag l(:button_save) %>

@@ -2,8 +2,8 @@
   <h2><%= t ".heading_import_ingredients" %></h2>
 
   <%= form_tag import_project_ingredients_path(@project),
-               multipart: true,
-               id: 'import-form' do %>
+    id: 'import-form', name: 'import-form', multipart: true do %>
+
     <div class="box tabular">
       <p>
       <label><%= t ".label_import_select_csv_file" %></label>

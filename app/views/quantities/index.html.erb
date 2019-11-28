@@ -13,8 +13,9 @@
   <h2><%= t ".heading_new_quantity" %></h2>
 
   <%= labelled_form_for @quantity,
-                        url: project_quantities_path(@project),
-                        html: {id: 'quantity-add-form'} do |f| %>
+    url: project_quantities_path(@project),
+    html: {id: 'quantity-add-form', name: 'quantity-add-form'} do |f| %>
+
     <%= render partial: 'quantities/form', locals: {f: f} %>
     <%= submit_tag l(:button_create) %>
     <%= link_to l(:button_cancel), "#", onclick: '$("#add-quantity").hide(); return false;' %>

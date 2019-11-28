@@ -1,7 +1,9 @@
 <fieldset id="filters" class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:label_filter_plural) %></legend>
   <div>
-    <%= form_tag url, id: 'filters_form', method: :get, remote: true do %>
+    <%= form_tag url, id: 'filters-form', name: 'filters-form',
+      method: :get, remote: true do %>
+
     <table class="filter">
       <tr>
         <td style="width:100%;">
@@ -9,16 +11,16 @@
         <td>
           <%= select_tag 'filters[domain]', domain_options_tag(session[:q_filters][:domain]),
             prompt: t('.domain_prompt'),
-            onchange: '$("#filters_form").submit(); return false;' %>
+            onchange: '$("#filters-form").submit();' %>
         </td>
         <td>
           <%= link_to l(:button_apply), '#', class: "icon icon-checked",
-            onclick: '$("#filters_form").submit(); return false;' %>
+            onclick: '$("#filters-form").submit(); return false;' %>
         </td>
         <td>
           <%= link_to l(:button_clear), '#', class: "icon icon-reload",
-            onclick: '$("#filters_form input, #filters_form select").val("");
-                      $("#filters_form").submit(); return false;' %>
+            onclick: '$("#filters-form input, #filters-form select").val("");
+                      $("#filters-form").submit(); return false;' %>
         </td>
       </tr>
     </table>

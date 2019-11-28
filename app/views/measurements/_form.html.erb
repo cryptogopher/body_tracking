@@ -2,8 +2,9 @@
   <h2><%= t ".heading_new_measurement" %></h2>
 
   <%= labelled_form_for @measurement,
-                        url: project_measurements_path(@project),
-                        html: {id: 'measurement-form'} do |f| %>
+    url: project_measurements_path(@project),
+    html: {id: 'measurement-add-form', name: 'measurement-add-form'} do |f| %>
+
     <%= error_messages_for @measurement %>
 
     <div class="box tabular">

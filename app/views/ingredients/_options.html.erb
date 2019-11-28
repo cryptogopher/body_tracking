@@ -2,7 +2,9 @@
   <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
   <div>
     <%= form_tag toggle_nutrient_column_project_ingredients_path(@project),
-      id: 'add_nutrient_column', method: :post, remote: true do %>
+      id: 'nutrient-column-add-form', name: 'nutrient-column-add-form',
+      method: :post, remote: true do %>
+
       <table>
         <tr>
           <td style="width:100%"></td>
