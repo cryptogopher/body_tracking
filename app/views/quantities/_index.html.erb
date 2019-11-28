@@ -61,7 +61,9 @@
             <%= delete_link quantity_path(q), {remote: true, data: {}} %>
           </td>
         </tr>
-        <% next unless (action_name == "edit") && (q == @quantity) %>
+        <% next unless (q == @quantity) &&
+          ((action_name == "edit") || (action_name == "update" && @quantity.errors.present?))
+        %>
         <tr>
           <td class="form" colspan="6">
             <div id="edit-quantity">

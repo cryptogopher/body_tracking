@@ -39,6 +39,14 @@ class QuantitiesController < ApplicationController
     render :index
   end
 
+  def update
+    if @quantity.update(quantity_params)
+      flash[:notice] = 'Updated quantity'
+    end
+    prepare_quantities
+    render :index
+  end
+
   def destroy
     if @quantity.destroy
       flash[:notice] = 'Deleted quantity'
