@@ -17,8 +17,14 @@
     html: {id: 'quantity-add-form', name: 'quantity-add-form'} do |f| %>
 
     <%= render partial: 'quantities/form', locals: {f: f} %>
-    <%= submit_tag l(:button_create) %>
-    <%= link_to l(:button_cancel), "#", onclick: '$("#add-quantity").hide(); return false;' %>
+
+    <div class="tabular">
+      <p>
+        <%= submit_tag l(:button_create) %>
+        <%= link_to l(:button_cancel), "#",
+          onclick: '$("#add-quantity").hide(); return false;' %>
+      </p>
+    </div>
   <% end %>
   <hr>
 </div>

@@ -38,8 +38,7 @@
                 link_to '', move_quantity_path(q, direction), {
                   remote: true,
                   method: :post,
-                  class: "icon icon-move icon-move-#{direction}",
-                  style: (action_name == "edit") ? "visibility: hidden;" : ""
+                  class: "icon icon-move icon-move-#{direction}"
                 }
               else
                 link_to '', '', {class: "icon", style: "visibility: hidden;"}
@@ -54,8 +53,7 @@
             <%=
               link_to l(:button_edit), edit_quantity_path(q), {
                 remote: true,
-                class: "icon icon-edit",
-                style: (action_name == "edit") ? "visibility: hidden;" : ""
+                class: "icon icon-edit"
               }
             %>
             <%= delete_link quantity_path(q), {remote: true, data: {}} %>
@@ -73,14 +71,14 @@
                 html: {id: 'quantity-edit-form', name: 'quantity-edit-form'} do |f| %>
 
                 <%= render partial: 'quantities/form', locals: {f: f} %>
-                <%= submit_tag l(:button_save) %>
-                <%=
-                  link_to l(:button_cancel), "#",
-                    onclick: '$(this).closest("tr").remove();
-                    $("#quantities a.icon-edit").css("visibility", "visible");
-                    $("#quantities a.icon-move").css("visibility", "visible");
-                    return false;'
-                %>
+
+                <div class="tabular">
+                  <p>
+                    <%= submit_tag l(:button_save) %>
+                    <%= link_to l(:button_cancel), "#",
+                      onclick: '$(this).closest("tr").remove(); return false;' %>
+                  </p>
+                </div>
               <% end %>
             </div>
           </td>
