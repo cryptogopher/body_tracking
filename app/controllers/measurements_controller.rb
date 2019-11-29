@@ -16,7 +16,7 @@ class MeasurementsController < ApplicationController
   def create
     @measurement = @project.measurements.new(measurement_params)
     if @measurement.save
-      flash[:notice] = 'Created newmeasurement'
+      flash[:notice] = 'Created new measurement'
       redirect_to :back
     else
       prepare_measurements
@@ -41,7 +41,7 @@ class MeasurementsController < ApplicationController
 
   private
 
-  def ingredient_params
+  def measurement_params
     params.require(:measurement).permit(
       :name,
       :source_id,
