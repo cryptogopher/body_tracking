@@ -11,37 +11,37 @@ class LoadDefaults < ActiveRecord::Migration
 
         # https://www.fsai.ie/uploadedFiles/Consol_Reg1169_2011.pdf
         # https://www.fsai.ie/legislation/food_legislation/food_information_fic/nutrition_labelling.html
-        e = Quantity.create project: nil, domain: :diet, parent: nil, name: "Energy",
+        e1 = Quantity.create project: nil, domain: :diet, parent: nil, name: "Energy",
           description: "Total energy", primary: true
 
-        p = Quantity.create project: nil, domain: :diet, parent: nil, name: "Proteins",
+        p1 = Quantity.create project: nil, domain: :diet, parent: nil, name: "Proteins",
           description: "Total amount of proteins", primary: true
 
-        f = Quantity.create project: nil, domain: :diet, parent: nil, name: "Fats",
+        f1 = Quantity.create project: nil, domain: :diet, parent: nil, name: "Fats",
           description: "Total lipids, including phospholipids", primary: true
-        f1 = Quantity.create project: nil, domain: :diet, parent: f, name: "Fatty acids",
+        f2 = Quantity.create project: nil, domain: :diet, parent: f1, name: "Fatty acids",
           description: ""
-        f2 = Quantity.create project: nil, domain: :diet, parent: f1, name: "Saturated",
+        f3 = Quantity.create project: nil, domain: :diet, parent: f2, name: "Saturated",
           description: "Fatty acids without double bond"
-        f3 = Quantity.create project: nil, domain: :diet, parent: f1, name: "Unsaturated",
+        f4 = Quantity.create project: nil, domain: :diet, parent: f2, name: "Unsaturated",
           description: ""
-        f4 = Quantity.create project: nil, domain: :diet, parent: f3, name: "Monounsaturated",
+        f5 = Quantity.create project: nil, domain: :diet, parent: f4, name: "Monounsaturated",
           description: "Fatty acids with one cis double bond"
-        f5 = Quantity.create project: nil, domain: :diet, parent: f3, name: "Polyunsaturated",
+        f6 = Quantity.create project: nil, domain: :diet, parent: f4, name: "Polyunsaturated",
           description: "Fatty acids with two or more cis, cis-methylene interrupted" \
           " double bonds; PUFA"
-        f6 = Quantity.create project: nil, domain: :diet, parent: f3, name: "Trans",
+        f7 = Quantity.create project: nil, domain: :diet, parent: f4, name: "Trans",
           description: "Fatty acids with at least one non-conjugated C-C double bond in the" \
           " trans configuration"
-        f7 = Quantity.create project: nil, domain: :diet, parent: f5, name: "Omega-3 (n-3)",
+        f8 = Quantity.create project: nil, domain: :diet, parent: f6, name: "Omega-3 (n-3)",
           description: ""
-        f8 = Quantity.create project: nil, domain: :diet, parent: f5, name: "Omega-6 (n-6)",
+        f9 = Quantity.create project: nil, domain: :diet, parent: f6, name: "Omega-6 (n-6)",
           description: ""
-        f9 = Quantity.create project: nil, domain: :diet, parent: f7, name: "ALA 18:3(n-3)",
+        f10 = Quantity.create project: nil, domain: :diet, parent: f8, name: "ALA 18:3(n-3)",
           description: "alpha-Linolenic acid"
-        f10 = Quantity.create project: nil, domain: :diet, parent: f7, name: "EPA 20:5(n-3)",
+        f11 = Quantity.create project: nil, domain: :diet, parent: f8, name: "EPA 20:5(n-3)",
           description: "Eicosapentaenoic acid; also icosapentaenoic acid"
-        f11 = Quantity.create project: nil, domain: :diet, parent: f7, name: "DHA 22:6(n-3)",
+        f12 = Quantity.create project: nil, domain: :diet, parent: f8, name: "DHA 22:6(n-3)",
           description: "Docosahexaenoic acid"
 
         c1 = Quantity.create project: nil, domain: :diet, parent: nil, name: "Carbohydrates",
@@ -122,8 +122,21 @@ class LoadDefaults < ActiveRecord::Migration
         v21 = Quantity.create project: nil, domain: :diet, parent: v1, name: "Vitamin K",
           description: ""
 
+        b1 = Quantity.create project: nil, domain: :measurement, parent: nil,
+          name: "Body composition", description: ""
+        b2 = Quantity.create project: nil, domain: :measurement, parent: b1,
+          name: "Weight", description: "Total weight"
+        b3 = Quantity.create project: nil, domain: :measurement, parent: b1,
+          name: "Fat", description: "Fat weight"
+        b4 = Quantity.create project: nil, domain: :measurement, parent: b1,
+          name: "Muscle", description: "Muscle weight"
+        b5 = Quantity.create project: nil, domain: :measurement, parent: b1,
+          name: "RM", description: "Resting metabolism"
+        b6 = Quantity.create project: nil, domain: :measurement, parent: b1,
+          name: "VF", description: "Visceral fat"
+
         # Calculated quantities go at the and to make sure dependencies exist
-        e1 = Quantity.create project: nil, domain: :diet, parent: e, name: "Calculated",
+        e2 = Quantity.create project: nil, domain: :diet, parent: e1, name: "Calculated",
           description: "Total energy calculated from macronutrients", primary: true,
           formula: "4*Proteins + 9*Fats + 4*Carbohydrates"
 
