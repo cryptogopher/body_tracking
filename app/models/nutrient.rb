@@ -4,7 +4,7 @@ class Nutrient < ActiveRecord::Base
   belongs_to :unit, required: true
 
   validates :quantity, uniqueness: {scope: :ingredient_id}
-  validates :amount, numericality: {greater_thani_or_equal_to: 0.0}
+  validates :amount, numericality: {greater_than_or_equal_to: 0.0}
 
   after_initialize do
     if new_record?

@@ -67,7 +67,7 @@
   function deleteNutrient() {
     var row = $(event.target).closest('p.nutrient');
     row.find('[id$=_destroy]').val(1);
-    // FIXME: should only hide()  row if record already saved (to send _destroy to backend)
+    // FIXME: should only hide() row if record already saved (to send _destroy to backend)
     row.remove();
     $('p.nutrient:visible:first label:first').text('<%= t "field_nutrients" %>');
     if ($('p.nutrient:visible').length <= 1) {

@@ -4,4 +4,5 @@ class Readout < ActiveRecord::Base
   belongs_to :unit, required: true
 
   validates :quantity, uniqueness: {scope: [:measurement_id, :unit_id]}
+  validates :value, numericality: true
 end

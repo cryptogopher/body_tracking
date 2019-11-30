@@ -5,7 +5,7 @@ class Measurement < ActiveRecord::Base
   has_many :readouts, inverse_of: :measurement, dependent: :destroy, validate: true
   validates :readouts, presence: true
   accepts_nested_attributes_for :readouts, allow_destroy: true, reject_if: proc { |attrs|
-    attrs['quantity_id'].blank?
+    attrs['quantity_id'].blank? && attrs['value'].blank?
   }
   # Readout (quantity_id, unit_id) pair uniqueness check for nested attributes
   validate do
@@ -15,7 +15,7 @@ class Measurement < ActiveRecord::Base
     end
   end
 
-  validates :name, presence: true, uniqueness: {scope: :project_id}
+  validates :name, presence: true
 
   after_initialize do
     if new_record?

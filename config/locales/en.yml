@@ -60,6 +60,7 @@ en:
       heading_new_measurement: 'New measurement'
       button_add_readout: 'Add readout'
       button_delete_readout: 'Delete'
+      null_source: '- unspecified -'
     index:
       heading: 'Measurements'
       link_new_measurement: 'New measurement'

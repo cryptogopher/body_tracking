@@ -49,6 +49,7 @@ class MeasurementsController < ApplicationController
       [
         :id,
         :quantity_id,
+        :value,
         :unit_id,
         :_destroy
       ]

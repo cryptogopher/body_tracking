@@ -9,9 +9,27 @@
   <% end %>
 </div>
 
-<%= render partial: 'measurements/form' %>
+<div id="add-measurement" <%= 'style=display:none;' if @measurement.errors.empty? %>>
+  <h2><%= t ".heading_new_measurement" %></h2>
+
+  <%= labelled_form_for @measurement,
+    url: project_measurements_path(@project),
+    html: {id: 'measurement-add-form', name: 'measurement-add-form'} do |f| %>
+
+    <%= render partial: 'measurements/form', locals: {f: f} %>
+
+    <div class="tabular">
+      <p>
+        <%= submit_tag l(:button_create) %>
+        <%= link_to l(:button_cancel), "#",
+          onclick: '$("#add-measurement").hide(); return false;' %>
+      </p>
+    </div>
+  <% end %>
+  <hr>
+</div>
 
 <h2><%= t ".heading" %></h2>
 <div id='measurements'>
-  <%= render partial: 'measurements/list' %>
+  <%= render partial: 'measurements/index' %>
 </div>
