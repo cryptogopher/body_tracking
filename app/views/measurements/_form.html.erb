@@ -4,11 +4,16 @@
   <p><%= f.select :source_id, source_options,
     {required: false, include_blank: t('.null_source')} %></p>
   <p><%= f.text_field :name, size: 40, required: true %></p>
+  <p>
+    <%= f.date_field :taken_at_date, required: true %>
+    <%= f.time_field :taken_at_time, value: @measurement.taken_at.strftime("%H:%M"),
+      required: true, label: '' %>
+  </p>
   <% @measurement.readouts.each_with_index do |r, index| %>
     <%= f.fields_for 'readouts_attributes', r, index: '' do |ff| %>
       <p class="readout">
         <%= ff.select :quantity_id, quantity_options,
-          {include_blank: true, label: (index > 0 ? '' : :field_readouts)} %>
+          {include_blank: true, required: true, label: (index > 0 ? '' : :field_readouts)} %>
         <%= ff.number_field :value, {size: 8, step: :any, label: ''} %>
         <%= ff.select :unit_id, unit_options, {label: ''} %>
         <%= ff.check_box :_destroy, {style: "display:none", label: ''} %>

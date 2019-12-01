@@ -2,7 +2,7 @@ class MeasurementsController < ApplicationController
   menu_item :body_trackers
 
   before_action :find_project_by_project_id, only: [:index, :create]
-  before_action :find_measurement, only: [:destroy, :toggle]
+  before_action :find_measurement, only: [:destroy, :retake]
   before_action :authorize
 
   def index
@@ -31,11 +31,10 @@ class MeasurementsController < ApplicationController
       flash[:notice] = 'Deleted measurement'
     end
     prepare_measurements
-    render :toggle
+    render :index
   end
 
-  def toggle
-    @measurement.toggle_hidden!
+  def retake
     prepare_measurements
   end
 

@@ -16,14 +16,30 @@ class Measurement < ActiveRecord::Base
   end
 
   validates :name, presence: true
+  validates :taken_at, presence: true
 
   after_initialize do
     if new_record?
       self.hidden = false if self.hidden.nil?
+      self.taken_at = Time.now
     end
   end
 
   def toggle_hidden!
     self.toggle!(:hidden)
+  end
+
+  def taken_at_date
+    self.taken_at
+  end
+  def taken_at_date=(value)
+    self.taken_at = Time.parse(value, self.taken_at)
+  end
+
+  def taken_at_time
+    self.taken_at
+  end
+  def taken_at_time=(value)
+    self.taken_at = Time.parse(value, self.taken_at)
   end
 end

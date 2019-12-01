@@ -2,11 +2,12 @@
 en:
   body_trackers_menu_caption: 'Body trackers'
   field_readouts: 'Readouts'
+  field_taken_at_date: 'Taken at'
   field_order: 'Order'
   field_action: 'Action'
   field_reference: 'Reference'
   field_group: 'Group'
-  field_source: 'Data source'
+  field_source: 'Source'
   field_source_ident: 'Source identifier'
   field_nutrients: 'Nutrients:'
   field_domain: 'Domain'
@@ -15,6 +16,7 @@ en:
   field_primary: 'Primary'
   field_shortname: 'Short name'
   button_primary: 'Primary'
+  button_retake: 'Retake'
   activerecord:
     errors:
       models:

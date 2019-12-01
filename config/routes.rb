@@ -6,7 +6,7 @@ resources :projects, shallow: true do
     collection do
       post 'defaults'
       resources :measurements, only: [:index, :create, :destroy] do
-        post 'toggle', on: :member
+        get 'retake', on: :member
       end
       resources :ingredients, only: [:index, :create, :destroy] do
         post 'toggle', on: :member
