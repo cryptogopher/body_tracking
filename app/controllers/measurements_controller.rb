@@ -2,7 +2,7 @@ class MeasurementsController < ApplicationController
   menu_item :body_trackers
 
   before_action :find_project_by_project_id, only: [:index, :create]
-  before_action :find_measurement, only: [:destroy, :retake]
+  before_action :find_measurement, only: [:edit, :update, :destroy, :retake]
   before_action :authorize
 
   def index
@@ -23,6 +23,19 @@ class MeasurementsController < ApplicationController
       @measurement.readouts.new if @measurement.readouts.empty?
       render :index
     end
+  end
+
+  def edit
+    prepare_measurements
+    render :index
+  end
+
+  def update
+    if @measurement.update(measurement_params)
+      flash[:notice] = 'Updated measurement'
+    end
+    prepare_measurements
+    render :index
   end
 
   def destroy

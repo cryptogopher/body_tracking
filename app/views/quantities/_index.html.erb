@@ -50,18 +50,16 @@
           <td class="description"><%= q.description %></td>
           <td class="formula"><%= checked_image q.formula.present? %></td>
           <td class="action">
-            <%=
-              link_to l(:button_edit), edit_quantity_path(q), {
-                remote: true,
-                class: "icon icon-edit"
-              }
-            %>
+            <%= link_to l(:button_edit), edit_quantity_path(q), {
+              remote: true,
+              class: "icon icon-edit"
+            } %>
             <%= delete_link quantity_path(q), {remote: true, data: {}} %>
           </td>
         </tr>
         <% next unless (q == @quantity) &&
-          ((action_name == "edit") || (action_name == "update" && @quantity.errors.present?))
-        %>
+          ((action_name == "edit") ||
+           (action_name == "update" && @quantity.errors.present?)) %>
         <tr>
           <td class="form" colspan="6">
             <div id="edit-quantity">

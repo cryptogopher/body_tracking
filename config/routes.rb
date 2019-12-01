@@ -5,7 +5,7 @@ resources :projects, shallow: true do
   resources :body_trackers, only: [:index] do
     collection do
       post 'defaults'
-      resources :measurements, only: [:index, :create, :destroy] do
+      resources :measurements, only: [:index, :create, :edit, :update, :destroy] do
         get 'retake', on: :member
       end
       resources :ingredients, only: [:index, :create, :destroy] do
