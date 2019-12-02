@@ -7,7 +7,8 @@ class Measurement < ActiveRecord::Base
   accepts_nested_attributes_for :readouts, allow_destroy: true, reject_if: proc { |attrs|
     attrs['quantity_id'].blank? && attrs['value'].blank?
   }
-  # Readout (quantity_id, unit_id) pair uniqueness check for nested attributes
+  # Readout quantity_id + unit_id uniqueness validation. Cannot be effectively
+  # checked on Readout model level.
   validate do
     quantities = self.readouts.map { |r| [r.quantity_id, r.unit_id] }
     if quantities.length != quantities.uniq.length

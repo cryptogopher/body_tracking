@@ -39,7 +39,6 @@ class MeasurementsController < ApplicationController
   end
 
   def destroy
-    # FIXME: don't destroy if there are any readout values
     if @measurement.destroy
       flash[:notice] = 'Deleted measurement'
     end

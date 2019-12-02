@@ -22,7 +22,6 @@ class SourcesController < ApplicationController
   end
 
   def destroy
-    # FIXME: do not destroy if anything depends on it
     if @source.destroy
       flash[:notice] = 'Deleted source'
     end

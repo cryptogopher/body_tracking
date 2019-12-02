@@ -22,7 +22,6 @@ class UnitsController < ApplicationController
   end
 
   def destroy
-    # FIXME: do not destroy if anything depends on it
     if @unit.destroy
       flash[:notice] = 'Deleted unit'
     end

@@ -7,6 +7,12 @@ class Quantity < ActiveRecord::Base
     exercise: 2
   }
 
+  # Has to go before any 'dependent:' association
+  before_destroy do
+    # FIXME: disallow destruction if any object depends on this quantity
+    nil
+  end
+
   acts_as_nested_set dependent: :destroy, scope: :project
   belongs_to :project, required: false
 

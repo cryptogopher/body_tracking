@@ -43,7 +43,6 @@ class IngredientsController < ApplicationController
   end
 
   def destroy
-    # FIXME: don't destroy if any meal depend on ingredient
     if @ingredient.destroy
       flash[:notice] = 'Deleted ingredient'
     end

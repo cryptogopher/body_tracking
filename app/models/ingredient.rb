@@ -6,6 +6,12 @@ class Ingredient < ActiveRecord::Base
     meat: 1
   }
 
+  # Has to go before any 'dependent:' association
+  before_destroy do
+    # FIXME: disallow destruction if any object depends on this quantity
+    nil
+  end
+
   belongs_to :project, required: true
   belongs_to :ref_unit, class_name: 'Unit', required: true
   belongs_to :source, required: false
