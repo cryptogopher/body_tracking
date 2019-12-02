@@ -12,11 +12,12 @@
   <% @measurement.readouts.each_with_index do |r, index| %>
     <%= f.fields_for 'readouts_attributes', r, index: '' do |ff| %>
       <p class="readout">
+        <%= ff.hidden_field :id %>
         <%= ff.select :quantity_id, quantity_options,
           {include_blank: true, required: true, label: (index > 0 ? '' : :field_readouts)} %>
         <%= ff.number_field :value, {size: 8, step: :any, label: ''} %>
         <%= ff.select :unit_id, unit_options, {label: ''} %>
-        <%= ff.check_box :_destroy, {style: "display:none", label: ''} %>
+        <%= ff.hidden_field :_destroy %>
         <%= link_to t(".button_delete_readout"), '#',
           class: 'icon icon-del',
           style: (@measurement.readouts.length > 1 ? "" : "display:none"),
@@ -34,8 +35,9 @@
   function addReadout() {
     var row = $('p.readout:visible:last');
     var new_row = row.clone().insertAfter(row);
-    new_row.find('input[id$=_value], select[id$=_quantity_id]').val('');
-    new_row.find('select[id$=_unit_id]').val(row.find('select[id$=_unit_id]').val());
+    new_row.find('input[id$=__id], input[id$=__value], select[id$=_quantity__id]').val('');
+    new_row.find('select[id$=__unit_id]').val(row.find('select[id$=__unit_id]').val());
+    new_row.find('input[id$=__destroy]').val('false');
     new_row.find('label:first').text('');
     if ($('p.readout:visible').length > 1) {
       $('p.readout a.icon-del').show();
@@ -44,9 +46,12 @@
 
   function deleteReadout() {
     var row = $(event.target).closest('p.readout');
-    row.find('[id$=_destroy]').val(1);
-    // FIXME: should only hide() row if record already saved (to send _destroy to backend)
-    row.remove();
+    if (row.find('input[id$=__id]').val()) {
+      row.hide();
+      row.find('input[id$=__destroy]').val('true');
+    } else {
+      row.remove();
+    }
     $('p.readout:visible:first label:first').text('<%= t "field_readouts" %>');
     if ($('p.readout:visible').length <= 1) {
       $('p.readout a.icon-del').hide();
