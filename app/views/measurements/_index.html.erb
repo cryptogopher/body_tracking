@@ -13,7 +13,10 @@
         <% next if m.new_record? %>
         <tr id="measurement-<%= m.id %>" class="measurement <%= 'hidden' if m.hidden %>">
           <td class="date"><%= m.taken_at.strftime("%F %R") %></td>
-          <td class="name"><%= m.name %></td>
+          <td class="name">
+            <%= m.name %>
+            <small><%= " (#{m.readouts.size} readouts)" %></small>
+          </td>
           <td class="source"><%= m.source.name if m.source.present? %></td>
           <td class="action">
             <%= link_to l(:button_retake), retake_measurement_path(m), {
@@ -31,7 +34,7 @@
           ((action_name == "edit") ||
            (action_name == "update" && @measurement.errors.present?)) %>
         <tr>
-          <td class="form" colspan="4">
+          <td class="form" colspan="5">
             <div id="edit-measurement">
               <%= labelled_form_for @measurement,
                 url: measurement_path(@measurement),

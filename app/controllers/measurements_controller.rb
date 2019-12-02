@@ -77,6 +77,6 @@ class MeasurementsController < ApplicationController
   end
 
   def prepare_measurements
-    @measurements = @project.measurements.includes(:source)
+    @measurements = @project.measurements.includes(:source, :readouts)
   end
 end
