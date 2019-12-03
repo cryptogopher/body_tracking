@@ -14,8 +14,10 @@
         <tr id="measurement-<%= m.id %>" class="measurement <%= 'hidden' if m.hidden %>">
           <td class="date"><%= m.taken_at.strftime("%F %R") %></td>
           <td class="name">
-            <%= m.name %>
-            <small><%= " (#{m.readouts.size} readouts)" %></small>
+            <div style="float:left;"><%= m.name %></div>
+            <div style="float:right;">
+              <small><%= " (#{pluralize(m.readouts.size, 'readout')})" %></small>
+            </div>
           </td>
           <td class="source"><%= m.source.name if m.source.present? %></td>
           <td class="action">

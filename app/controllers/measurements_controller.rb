@@ -47,7 +47,9 @@ class MeasurementsController < ApplicationController
   end
 
   def retake
+    @measurement = @measurement.dup
     prepare_measurements
+    redirect_to project_measurements_path(@project)
   end
 
   private

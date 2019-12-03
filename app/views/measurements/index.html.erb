@@ -5,11 +5,13 @@
 <div class="contextual">
   <% if User.current.allowed_to?(:manage_common, @project) %>
     <%= link_to t(".link_new_measurement"), '#', class: 'icon icon-add',
-      onclick: '$("#add-measurement").show(); $("#measurement_name").focus(); return false;' %>
+      onclick: '$("#add-measurement").toggle(); $("#measurement_name").focus(); return false;'
+    %>
   <% end %>
 </div>
 
-<div id="add-measurement" <%= 'style=display:none;' if @measurement.errors.empty? %>>
+<% hide_add_form = @measurement.errors.empty? && (action_name != "retake") %>
+<div id="add-measurement" <%= 'style=display:none;' if hide_add_form %>>
   <h2><%= t ".heading_new_measurement" %></h2>
 
   <%= labelled_form_for @measurement,
