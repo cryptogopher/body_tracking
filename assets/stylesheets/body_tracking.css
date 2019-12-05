@@ -29,7 +29,10 @@ fieldset#filters table.filter td {padding-left: 8px;}
 .icon-bullet-open { background-image: url(../../../images/bullet_toggle_minus.png); }
 .icon-bullet-closed { background-image: url(../../../images/bullet_toggle_plus.png); }
 
-input[type=number] {-moz-appearance:textfield;}
+input[type=number] {
+  -moz-appearance:textfield;
+  text-align: right;
+}
 input[type=date], input[type=time], input[type=number] {
   border:1px solid #9EB1C2;
   padding: 3px;
