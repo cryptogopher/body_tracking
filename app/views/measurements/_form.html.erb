@@ -6,7 +6,7 @@
   <p><%= f.text_field :name, size: 40, required: true %></p>
   <p>
     <%= f.date_field :taken_at_date, required: true %>
-    <%= f.time_field :taken_at_time, value: @measurement.taken_at.strftime("%H:%M"),
+    <%= f.time_field :taken_at_time, value: @measurement.taken_at.getlocal.strftime("%R"),
       required: true, label: '' %>
   </p>
   <% @measurement.readouts.each_with_index do |r, index| %>
@@ -26,35 +26,35 @@
     <% end %>
   <% end %>
   <p>
-    <%= link_to t(".button_add_readout"), '#', class: 'icon icon-add',
-      onclick: 'addReadout(); return false;' %>
+    <%= link_to t(".button_new_readout"), '#', class: 'icon icon-add',
+      onclick: 'newReadout(); return false;' %>
   </p>
 </div>
 
 <%= javascript_tag do %>
-  function addReadout() {
-    var row = $('p.readout:visible:last');
+  function newReadout() {
+    var form = $(event.target).closest('form');
+    var row = form.find('p.readout:visible:last');
     var new_row = row.clone().insertAfter(row);
     new_row.find('input[id$=__id], input[id$=__value], select[id$=_quantity__id]').val('');
     new_row.find('select[id$=__unit_id]').val(row.find('select[id$=__unit_id]').val());
-    new_row.find('input[id$=__destroy]').val('false');
-    new_row.find('label:first').text('');
-    if ($('p.readout:visible').length > 1) {
-      $('p.readout a.icon-del').show();
-    }
+    new_row.find('input[id$=__destroy]').val('');
+    new_row.find('label:first').hide();
+    form.find('p.readout:visible a.icon-del').show();
   }
 
   function deleteReadout() {
+    var form = $(event.target).closest('form');
     var row = $(event.target).closest('p.readout');
     if (row.find('input[id$=__id]').val()) {
       row.hide();
-      row.find('input[id$=__destroy]').val('true');
+      row.find('input[id$=__destroy]').val('1');
     } else {
       row.remove();
     }
-    $('p.readout:visible:first label:first').text('<%= t "field_readouts" %>');
-    if ($('p.readout:visible').length <= 1) {
-      $('p.readout a.icon-del').hide();
+    form.find('p.readout:visible:first label:first').show();
+    if (form.find('p.readout:visible').length <= 1) {
+      form.find('p.readout:visible a.icon-del').hide();
     }
   }
 <% end %>

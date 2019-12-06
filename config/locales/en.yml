@@ -59,12 +59,13 @@ en:
       confirm_defaults: 'This will load default quantities and units. Continue?'
   measurements:
     form:
-      button_add_readout: 'Add readout'
+      button_new_readout: 'Add readout'
       button_delete_readout: 'Delete'
       null_source: '- unspecified -'
+    new_form:
+      heading_new_measurement: 'New measurement'
     index:
       heading: 'Measurements'
-      heading_new_measurement: 'New measurement'
       link_new_measurement: 'New measurement'
   ingredients:
     contextual:

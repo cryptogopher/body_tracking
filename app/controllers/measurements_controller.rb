@@ -1,33 +1,31 @@
 class MeasurementsController < ApplicationController
   menu_item :body_trackers
 
-  before_action :find_project_by_project_id, only: [:index, :create]
+  before_action :find_project_by_project_id, only: [:index, :new, :create]
   before_action :find_measurement, only: [:edit, :update, :destroy, :retake]
   before_action :authorize
 
   def index
+    prepare_measurements
+  end
+
+  def new
     @measurement = @project.measurements.new
     @measurement.readouts.new
-
-    prepare_measurements
-    @measurements << @measurement
   end
 
   def create
     @measurement = @project.measurements.new(measurement_params)
     if @measurement.save
       flash[:notice] = 'Created new measurement'
-      redirect_to :back
-    else
       prepare_measurements
+    else
       @measurement.readouts.new if @measurement.readouts.empty?
-      render :index
+      render :new
     end
   end
 
   def edit
-    prepare_measurements
-    render :index
   end
 
   def update

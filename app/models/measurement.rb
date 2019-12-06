@@ -10,7 +10,9 @@ class Measurement < ActiveRecord::Base
   # Readout quantity_id + unit_id uniqueness validation. Cannot be effectively
   # checked on Readout model level.
   validate do
-    quantities = self.readouts.map { |r| [r.quantity_id, r.unit_id] }
+    quantities = self.readouts.map do |r|
+      [r.quantity_id, r.unit_id] unless r.marked_for_destruction?
+    end
     if quantities.length != quantities.uniq.length
       errors.add(:readouts, :duplicated_quantity_unit_pair)
     end
@@ -31,14 +33,14 @@ class Measurement < ActiveRecord::Base
   end
 
   def taken_at_date
-    self.taken_at
+    self.taken_at.getlocal
   end
   def taken_at_date=(value)
     self.taken_at = Time.parse(value, self.taken_at)
   end
 
   def taken_at_time
-    self.taken_at
+    self.taken_at.getlocal
   end
   def taken_at_time=(value)
     self.taken_at = Time.parse(value, self.taken_at)

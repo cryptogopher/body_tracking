@@ -12,7 +12,7 @@
       <% @measurements.each do |m| %>
         <% next if m.new_record? %>
         <tr id="measurement-<%= m.id %>" class="measurement <%= 'hidden' if m.hidden %>">
-          <td class="date"><%= m.taken_at.strftime("%F %R") %></td>
+          <td class="date"><%= m.taken_at.getlocal.strftime("%F %R") %></td>
           <td class="name">
             <div style="float:left;"><%= m.name %></div>
             <div style="float:right;">
@@ -32,30 +32,15 @@
             <%= delete_link measurement_path(m), {remote: true, data: {}} %>
           </td>
         </tr>
-        <% next unless (m == @measurement) &&
-          ((action_name == "edit") ||
-           (action_name == "update" && @measurement.errors.present?)) %>
-        <tr>
-          <td class="form" colspan="5">
-            <div id="edit-measurement">
-              <%= labelled_form_for @measurement,
-                url: measurement_path(@measurement),
-                method: :patch, remote: true,
-                html: {id: 'measurement-edit-form', name: 'measurement-edit-form'} do |f| %>
-
-                <%= render partial: 'measurements/form', locals: {f: f} %>
-
-                <div class="tabular">
-                  <p>
-                    <%= submit_tag l(:button_save) %>
-                    <%= link_to l(:button_cancel), "#",
-                      onclick: '$(this).closest("tr").remove(); return false;' %>
-                  </p>
-                </div>
-              <% end %>
-            </div>
-          </td>
-        </tr>
+        <% if (m == @measurement) && @measurement.errors.present? %>
+          <tr>
+            <td class="form" colspan="5">
+              <div id="edit-measurement">
+                <%= render partial: 'measurements/edit_form' %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>

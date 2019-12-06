@@ -1,0 +1,15 @@
+<%= labelled_form_for @measurement,
+  url: measurement_path(@measurement),
+  method: :patch, remote: true,
+  html: {id: 'measurement-edit-form', name: 'measurement-edit-form'} do |f| %>
+
+  <%= render partial: 'measurements/form', locals: {f: f} %>
+
+  <div class="tabular">
+    <p>
+      <%= submit_tag l(:button_save) %>
+      <%= link_to l(:button_cancel), "#",
+        onclick: '$(this).closest("tr").remove(); return false;' %>
+    </p>
+  </div>
+<% end %>
