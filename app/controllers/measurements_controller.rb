@@ -42,8 +42,6 @@ class MeasurementsController < ApplicationController
     if @measurement.destroy
       flash[:notice] = 'Deleted measurement'
     end
-    prepare_measurements
-    render :index
   end
 
   def retake
