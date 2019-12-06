@@ -31,9 +31,11 @@ class MeasurementsController < ApplicationController
   def update
     if @measurement.update(measurement_params)
       flash[:notice] = 'Updated measurement'
+      prepare_measurements
+      render :index
+    else
+      render :edit
     end
-    prepare_measurements
-    render :index
   end
 
   def destroy

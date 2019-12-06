@@ -32,15 +32,6 @@
             <%= delete_link measurement_path(m), {remote: true, data: {}} %>
           </td>
         </tr>
-        <% if (m == @measurement) && @measurement.errors.present? %>
-          <tr>
-            <td class="form" colspan="5">
-              <div id="edit-measurement">
-                <%= render partial: 'measurements/edit_form' %>
-              </div>
-            </td>
-          </tr>
-        <% end %>
       <% end %>
     </tbody>
   </table>
