@@ -2,7 +2,7 @@
   <table class="list">
     <thead>
       <tr>
-        <th><%= l(:field_taken_at_date) %></th>
+        <th style="width:5%"><%= l(:field_taken_at_date) %></th>
         <th><%= l(:field_name) %></th>
         <th><%= l(:field_source) %></th>
         <th style="width:10%"><%= l(:field_action) %></th>
@@ -12,7 +12,9 @@
       <% @measurements.each do |m| %>
         <% next if m.new_record? %>
         <tr id="measurement-<%= m.id %>" class="measurement <%= 'hidden' if m.hidden %>">
-          <td class="date"><%= m.taken_at.getlocal.strftime("%F %R") %></td>
+          <td class="date">
+            <%= m.taken_at.getlocal.strftime("%F <small>%R</small>").html_safe %>
+          </td>
           <td class="name">
             <div style="float:left;"><%= m.name %></div>
             <div style="float:right;">

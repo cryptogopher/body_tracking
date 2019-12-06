@@ -5,6 +5,7 @@ table.nutrients.list td.space {border-top: none; border-bottom: none;}
 table.nutrients.list td.value {border-top: none;}
 table.list tr.ingredient.hidden {opacity: 0.4}
 table.list td.action,
+table.list td.date,
 table.list td.name {white-space: nowrap;}
 table.list td.action,
 table.list td.value {text-align: right;}
