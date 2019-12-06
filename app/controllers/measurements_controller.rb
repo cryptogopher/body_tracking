@@ -45,9 +45,12 @@ class MeasurementsController < ApplicationController
   end
 
   def retake
+    readouts = @measurement.readouts.map(&:dup)
     @measurement = @measurement.dup
-    prepare_measurements
-    redirect_to project_measurements_path(@project)
+    @measurement.readouts = readouts
+    @measurement.taken_at = Time.now
+    @measurement.readouts.each { |r| r.value = nil }
+    render :new
   end
 
   private
