@@ -2,10 +2,11 @@ class MeasurementsController < ApplicationController
   menu_item :body_trackers
 
   before_action :find_project_by_project_id, only: [:index, :new, :create]
-  before_action :find_measurement, only: [:edit, :update, :destroy, :retake]
+  before_action :find_measurement, only: [:edit, :update, :destroy, :retake, :readouts]
   before_action :authorize
 
   def index
+    session[:m_scope] = {}
     prepare_measurements
   end
 
@@ -53,6 +54,11 @@ class MeasurementsController < ApplicationController
     render :new
   end
 
+  def readouts
+    session[:m_scope] = {name: @measurement.name}
+    prepare_measurements
+  end
+
   private
 
   def measurement_params
@@ -81,5 +87,6 @@ class MeasurementsController < ApplicationController
 
   def prepare_measurements
     @measurements = @project.measurements.includes(:source, :readouts)
+      .where(session[:m_scope])
   end
 end

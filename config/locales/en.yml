@@ -58,6 +58,8 @@ en:
       link_defaults: 'Load defaults'
       confirm_defaults: 'This will load default quantities and units. Continue?'
   measurements:
+    contextual:
+      link_new_measurement: 'New measurement'
     form:
       button_new_readout: 'Add readout'
       button_delete_readout: 'Delete'
@@ -66,7 +68,6 @@ en:
       heading_new_measurement: 'New measurement'
     index:
       heading: 'Measurements'
-      link_new_measurement: 'New measurement'
   ingredients:
     contextual:
       link_import_ingredients: 'Import'

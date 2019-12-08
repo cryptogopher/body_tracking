@@ -9,7 +9,11 @@
 <div id="new-measurement">
 </div>
 
-<h2><%= t ".heading" %></h2>
+<h2>
+  <%= link_to t("measurements.index.heading"), project_measurements_path(@project) %>
+  >
+  <%= @measurements.first.name %>
+</h2>
 <div id='measurements'>
   <%= render partial: 'measurements/index' %>
 </div>
