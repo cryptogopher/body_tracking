@@ -71,7 +71,7 @@ class IngredientsController < ApplicationController
     warnings = []
 
     if params.has_key?(:file)
-      quantities = @project.quantities.map { |q| [q.name, q] }.to_h
+      quantities = @project.quantities.diet.map { |q| [q.name, q] }.to_h
       units = @project.units.map { |u| [u.shortname, u] }.to_h
       sources = @project.sources.map { |s| [s.name, s] }.to_h
       ingredients_params = []
@@ -207,7 +207,7 @@ class IngredientsController < ApplicationController
   end
 
   def prepare_nutrients
-    @quantities = @project.quantities.where(primary: true)
+    @quantities = @project.quantities.diet.where(primary: true)
     ingredients, requested_n, extra_n, @formula_q = @project.ingredients
       .filter(@project, session[:i_filters], @quantities)
 

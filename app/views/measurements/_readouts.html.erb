@@ -1,0 +1,68 @@
+<% if @readouts.any? %>
+  <%= render partial: 'measurements/options' %>
+
+  <table class="readouts list odd-even">
+    <thead>
+      <tr>
+        <% total_width = 3 + @quantities.length %>
+        <th style="width:<%= 3 * 100/total_width%>%"><%= l(:field_name) %></th>
+        <% @quantities.each do |q| %>
+          <th style="width:<%= 100/total_width %>%"><%= q.name %></th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @readouts.each do |m, values| %>
+        <% row_class = "measurement #{cycle('odd', 'even')}" %>
+        <tr id="measurement-<%= m.id %>" class="primary <%= row_class %>">
+          <td class="date" style="cursor: pointer;" onclick="$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', 'tr').toggle(); return false;">
+            <span class="icon icon-bullet-closed"><%= format_datetime(m) %></span>
+          </td>
+          <% values.each do |*, value| %>
+            <td class="primary value"><%= value %></td>
+          <% end %>
+        </tr>
+
+        <tr class="<%= row_class %>" style="display:none">
+          <td class="date" style="cursor: pointer;" onclick="$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', 'tr').toggle(); return false;">
+            <span class="icon icon-bullet-closed"><%= format_datetime(m) %></span>
+          </td>
+          <% values.each do |q_name, *| %>
+            <td class="primary quantity"><%= q_name %></td>
+          <% end %>
+        </tr>
+        <tr class="<%= row_class %>" style="display:none">
+          <td class="space"></td>
+          <% values.each do |*, value| %>
+            <td class="primary value"><%= value %></td>
+          <% end %>
+        </tr>
+
+        <% extras = @extra_readouts[i] %>
+        <% extras.each_slice(@quantities.length).with_index do |values, index| %>
+          <tr class="extra <%= row_class %>" style="display:none">
+            <td class="space"></td>
+            <% values.each do |q_name, *| %>
+              <td class="extra quantity"><%= q_name %></td>
+            <% end %>
+            <% if @quantities.length > values.length %>
+              <td class="space" colspan="<%= @quantities.length-values.length %>"></td>
+            <% end %>
+          </tr>
+          <tr class="extra <%= row_class %>" style="display:none">
+            <td class="space"></td>
+            <% values.each do |*, value| %>
+              <td class="extra value"><%= value %></td>
+            <% end %>
+            <% if @quantities.length > values.length %>
+              <td class="space" colspan="<%= @quantities.length-values.length %>"></td>
+            <% end %>
+          </tr>
+        <% end %>
+
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>

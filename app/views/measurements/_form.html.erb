@@ -6,8 +6,8 @@
   <p><%= f.text_field :name, size: 40, required: true %></p>
   <p>
     <%= f.date_field :taken_at_date, required: true %>
-    <%= f.time_field :taken_at_time, value: @measurement.taken_at.getlocal.strftime("%R"),
-      required: true, label: '' %>
+    <%= f.time_field :taken_at_time, value: format_time(@measurement), required: true,
+      label: '' %>
   </p>
   <% @measurement.readouts.each_with_index do |r, index| %>
     <%= f.fields_for 'readouts_attributes', r, index: '' do |ff| %>

@@ -1,4 +1,12 @@
 module MeasurementsHelper
+  def format_datetime(m)
+    m.taken_at.getlocal.strftime("%F <small>%R</small>").html_safe
+  end
+
+  def format_time(m)
+    m.taken_at.getlocal.strftime("%R")
+  end
+
   def quantity_options
     nested_set_options(@project.quantities.measurement) do |q|
       raw("#{'&ensp;' * q.level}#{q.name}")
