@@ -1,7 +1,7 @@
 module BodyTracking
   module ProjectPatch
     Project.class_eval do
-      has_many :measurements, -> { order "taken_at DESC" }, dependent: :destroy
+      has_many :measurements, -> { order "taken_at DESC" }, dependent: :destroy, extend: ItemsWithQuantities
       has_many :ingredients, -> { order "name" }, dependent: :destroy
 
       has_many :sources, dependent: :destroy
