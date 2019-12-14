@@ -5,10 +5,11 @@ module IngredientsHelper
     end
   end
 
-  def nutrient_column_options
+  def toggle_column_options
     disabled = []
+    enabled_columns = @project.nutrients_column_view.quantities
     options = nested_set_options(@project.quantities.diet) do |q|
-      disabled << q.id if q.primary
+      disabled << q.id if enabled_columns.include?(q)
       raw("#{'&ensp;' * q.level}#{q.name}")
     end
     options_for_select(options, disabled: disabled)

@@ -9,9 +9,7 @@ resources :projects, shallow: true do
         member do
           get 'retake'
           get 'readouts'
-        end
-        collection do
-          post 'toggle_quantity'
+          post 'toggle_column'
         end
       end
       resources :ingredients, only: [:index, :create, :destroy] do
@@ -20,14 +18,13 @@ resources :projects, shallow: true do
           get 'nutrients'
           get 'filter'
           get 'filter_nutrients'
-          post 'toggle_nutrient_column'
           post 'import'
+          post 'toggle_column'
         end
       end
       resources :sources, only: [:index, :create, :destroy]
       resources :quantities, only: [:index, :create, :edit, :update, :destroy] do
         member do
-          post 'toggle'
           post 'move/:direction', to: 'quantities#move', as: :move
         end
         collection do

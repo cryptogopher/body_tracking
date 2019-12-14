@@ -1,15 +1,15 @@
 <fieldset id="options" class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
   <div>
-    <%= form_tag toggle_nutrient_column_project_ingredients_path(@project),
-      id: 'nutrient-column-add-form', name: 'nutrient-column-add-form',
+    <%= form_tag toggle_column_project_ingredients_path(@project),
+      id: 'toggle-column-form', name: 'toggle-column-form',
       method: :post, remote: true do %>
 
       <table>
         <tr>
           <td style="width:100%"></td>
           <td>
-            <%= select_tag 'id', nutrient_column_options %>
+            <%= select_tag 'id', toggle_column_options %>
           </td>
           <td>
             <%= submit_tag l(:button_add) %>
@@ -27,7 +27,7 @@
     <% @quantities.each do |q| %>
       <td class="action" style="width:<%= 100/total_width %>%">
         <%= link_to l(:button_hide),
-          toggle_nutrient_column_project_ingredients_path(@project, id: q.id),
+          toggle_column_project_ingredients_path(@project, quantity_id: q.id),
           {class: "icon icon-close", method: :post, remote: true} %>
       </td>
     <% end %>

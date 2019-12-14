@@ -6,7 +6,7 @@ class IngredientsController < ApplicationController
   before_action :init_session_filters
   before_action :find_project_by_project_id,
     only: [:index, :nutrients, :create, :import, :filter, :filter_nutrients]
-  before_action :find_quantity, only: [:toggle_nutrient_column]
+  before_action :find_quantity_by_quantity_id, only: [:toggle_column]
   before_action :find_ingredient, only: [:destroy, :toggle]
   before_action :authorize
 
@@ -25,8 +25,8 @@ class IngredientsController < ApplicationController
     prepare_nutrients
   end
 
-  def toggle_nutrient_column
-    @quantity.toggle_primary!
+  def toggle_column
+    @project.nutrients_column_view.toggle_column!(@quantity)
     prepare_nutrients
   end
 
@@ -207,7 +207,7 @@ class IngredientsController < ApplicationController
   end
 
   def prepare_nutrients
-    @quantities = @project.quantities.diet.where(primary: true)
+    @quantities = @project.nutrients_column_view.quantities
     ingredients, requested_n, extra_n, @formula_q = @project.ingredients
       .filter(@project, session[:i_filters], @quantities)
 

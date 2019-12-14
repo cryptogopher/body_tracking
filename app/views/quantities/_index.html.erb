@@ -19,18 +19,9 @@
           next if q.new_record?
           quantity_class = "quantity"
           quantity_class += " project idnt idnt-#{level+1}"
-          quantity_class += " primary" if q.primary
         %>
         <tr id="quantity-<%= q.id %>" class="<%= quantity_class %>">
-          <td class="name">
-            <%= link_to '', toggle_quantity_path(q), {
-                  remote: true,
-                  method: :post,
-                  class: "icon #{q.primary ? "icon-fav" : "icon-fav-off"}"
-                }
-            %>
-            <%= q.name %>
-          </td>
+          <td class="name"><%= q.name %></td>
           <td class="order">
             <% [:up, :down, :left, :right].each do |direction| %>
             <%=

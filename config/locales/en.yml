@@ -13,9 +13,7 @@ en:
   field_domain: 'Domain'
   field_parent_quantity: 'Parent'
   field_formula: 'Formula'
-  field_primary: 'Primary'
   field_shortname: 'Short name'
-  button_primary: 'Primary'
   button_retake: 'Retake'
   activerecord:
     errors:

@@ -13,7 +13,6 @@ class CreateSchema < ActiveRecord::Migration
       t.string :name
       t.string :formula
       t.string :description
-      t.boolean :primary
       # fields for awesome_nested_set
       t.references :parent
       t.integer :lft, null: false, index: true

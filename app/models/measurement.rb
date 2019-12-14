@@ -28,6 +28,33 @@ class Measurement < ActiveRecord::Base
     end
   end
 
+  # Copy/rename ColumnView on Measurement rename
+  after_save do
+    old_column_view = self.project.column_views
+      .find_by(name: self.name_was, domain: :measurement)
+    return unless old_column_view
+
+    if self.project.measurements.exists?(name: self.name_was)
+      return unless old_column_view.quantities.exist?
+      self.column_view.quantities.create(old_column_view.quantities)
+      self.column_view.save!
+    else
+      old_column_view.name = self.name
+      old_column_view.save!
+    end
+  end, if: :name_changed?
+
+  # Destroy ColumnView after last Measurement destruction
+  after_destroy do
+    unless self.project.measurements.exists?(name: self.name)
+      self.column_view.destroy!
+    end
+  end
+
+  def column_view
+    self.project.column_views.find_or_create_by(name: self.name, domain: :measurement)
+  end
+
   def toggle_hidden!
     self.toggle!(:hidden)
   end

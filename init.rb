@@ -24,10 +24,10 @@ Redmine::Plugin.register :body_tracking do
     }, read: true
     permission :manage_common, {
       body_trackers: [:defaults],
-      measurements: [:new, :create, :edit, :update, :destroy, :retake, :toggle_quantity],
-      ingredients: [:create, :destroy, :toggle, :import, :toggle_nutrient_column],
+      measurements: [:new, :create, :edit, :update, :destroy, :retake, :toggle_column],
+      ingredients: [:create, :destroy, :toggle, :import, :toggle_column],
       sources: [:create, :destroy],
-      quantities: [:create, :edit, :update, :destroy, :toggle, :move],
+      quantities: [:create, :edit, :update, :destroy, :move],
       units: [:create, :destroy],
     }, require: :loggedin
   end

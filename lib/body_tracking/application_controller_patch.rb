@@ -3,13 +3,15 @@ module BodyTracking
     ApplicationController.class_eval do
       private
 
-      # :find_* methods are called before :authorize,
-      # @project is required for :authorize to succeed
-      def find_quantity
-        @quantity = Quantity.find(params[:id])
+      def find_quantity(id = params[:id])
+        @quantity = Quantity.find(id)
         @project = @quantity.project
       rescue ActiveRecord::RecordNotFound
         render_404
+      end
+
+      def find_quantity_by_quantity_id
+        find_quantity(params[:quantity_id])
       end
     end
   end

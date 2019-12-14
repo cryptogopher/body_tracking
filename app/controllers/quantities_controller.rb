@@ -3,7 +3,7 @@ class QuantitiesController < ApplicationController
 
   before_action :init_session_filters
   before_action :find_project_by_project_id, only: [:index, :parents, :create, :filter]
-  before_action :find_quantity, only: [:edit, :update, :destroy, :toggle, :move]
+  before_action :find_quantity, only: [:edit, :update, :destroy, :move]
   before_action :authorize
 
   def index
@@ -55,11 +55,6 @@ class QuantitiesController < ApplicationController
     render :index
   end
 
-  def toggle
-    @quantity.toggle_primary!
-    prepare_quantities
-  end
-
   def move
     direction = params[:direction].to_sym
     case direction
@@ -90,8 +85,7 @@ class QuantitiesController < ApplicationController
       :parent_id,
       :name,
       :description,
-      :formula,
-      :primary
+      :formula
     )
   end
 

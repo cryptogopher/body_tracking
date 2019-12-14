@@ -3,8 +3,9 @@ class MeasurementsController < ApplicationController
 
   before_action :init_session_filters
   before_action :find_project_by_project_id, only: [:index, :new, :create]
-  before_action :find_quantity, only: [:toggle_quantity]
-  before_action :find_measurement, only: [:edit, :update, :destroy, :retake, :readouts]
+  before_action :find_quantity_by_quantity_id, only: [:toggle_column]
+  before_action :find_measurement,
+    only: [:edit, :update, :destroy, :retake, :readouts, :toggle_column]
   before_action :authorize
 
   def index
@@ -61,8 +62,8 @@ class MeasurementsController < ApplicationController
     prepare_readouts
   end
 
-  def toggle_quantity
-    @quantity.toggle_primary!
+  def toggle_column
+    @measurement.column_view.toggle_column!(@quantity)
     prepare_readouts
   end
 
@@ -103,7 +104,7 @@ class MeasurementsController < ApplicationController
   end
 
   def prepare_readouts
-    @quantities = @project.quantities.measurement.where(primary: true)
+    @quantities = @measurement.column_view.quantities
     @measurements, @requested_r, @extra_r, @formula_q = @project.measurements
       .includes(:source)
       .filter(session[:m_filters], @quantities)

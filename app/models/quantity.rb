@@ -15,6 +15,7 @@ class Quantity < ActiveRecord::Base
 
   acts_as_nested_set dependent: :destroy, scope: :project
   belongs_to :project, required: false
+  has_and_belongs_to_many :column_views
 
   validates :name, presence: true, uniqueness: {scope: :project_id}
   validates :domain, inclusion: {in: domains.keys}
@@ -26,7 +27,6 @@ class Quantity < ActiveRecord::Base
   after_initialize do
     if new_record?
       self.domain ||= :diet
-      self.primary = false if self.primary.nil?
     end
   end
 
@@ -44,10 +44,6 @@ class Quantity < ActiveRecord::Base
     else
       false
     end
-  end
-
-  def toggle_primary!
-    self.toggle!(:primary)
   end
 
   def formula_quantities

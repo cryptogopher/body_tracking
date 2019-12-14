@@ -12,10 +12,11 @@ module MeasurementsHelper
     amount.nil? ? '-' : "#{amount} [#{unitname || '-'}]"
   end
 
-  def quantity_toggle_options
+  def toggle_column_options
     disabled = []
+    enabled_columns = @measurement.column_view.quantities
     options = nested_set_options(@project.quantities.measurement) do |q|
-      disabled << q.id if q.primary
+      disabled << q.id if enabled_columns.include?(q)
       raw("#{'&ensp;' * q.level}#{q.name}")
     end
     options_for_select(options, disabled: disabled)

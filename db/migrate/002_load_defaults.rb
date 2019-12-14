@@ -12,13 +12,13 @@ class LoadDefaults < ActiveRecord::Migration
         # https://www.fsai.ie/uploadedFiles/Consol_Reg1169_2011.pdf
         # https://www.fsai.ie/legislation/food_legislation/food_information_fic/nutrition_labelling.html
         e1 = Quantity.create project: nil, domain: :diet, parent: nil, name: "Energy",
-          description: "Total energy", primary: true
+          description: "Total energy"
 
         p1 = Quantity.create project: nil, domain: :diet, parent: nil, name: "Proteins",
-          description: "Total amount of proteins", primary: true
+          description: "Total amount of proteins"
 
         f1 = Quantity.create project: nil, domain: :diet, parent: nil, name: "Fats",
-          description: "Total lipids, including phospholipids", primary: true
+          description: "Total lipids, including phospholipids"
         f2 = Quantity.create project: nil, domain: :diet, parent: f1, name: "Fatty acids",
           description: ""
         f3 = Quantity.create project: nil, domain: :diet, parent: f2, name: "Saturated",
@@ -45,7 +45,7 @@ class LoadDefaults < ActiveRecord::Migration
           description: "Docosahexaenoic acid"
 
         c1 = Quantity.create project: nil, domain: :diet, parent: nil, name: "Carbohydrates",
-          description: "Total amount of carbohydrates", primary: true
+          description: "Total amount of carbohydrates"
         c2 = Quantity.create project: nil, domain: :diet, parent: c1, name: "Digestible",
           description: ""
         c3 = Quantity.create project: nil, domain: :diet, parent: c2, name: "Sugars",
@@ -137,7 +137,7 @@ class LoadDefaults < ActiveRecord::Migration
 
         # Calculated quantities go at the and to make sure dependencies exist
         e2 = Quantity.create project: nil, domain: :diet, parent: e1, name: "Calculated",
-          description: "Total energy calculated from macronutrients", primary: true,
+          description: "Total energy calculated from macronutrients",
           formula: "4*Proteins + 9*Fats + 4*Carbohydrates"
 
         Source.create project: nil, name: "nutrition label",
