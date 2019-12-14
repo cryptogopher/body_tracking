@@ -21,6 +21,17 @@ class CreateSchema < ActiveRecord::Migration
       t.timestamps null: false
     end
 
+    create_table :column_views do |t|
+      t.references :project
+      t.string :name
+      t.integer :domain
+    end
+
+    create_table :quantities_column_views do |t|
+      t.references :quantity
+      t.references :column_view
+    end
+
     create_table :sources do |t|
       t.references :project
       t.string :name
