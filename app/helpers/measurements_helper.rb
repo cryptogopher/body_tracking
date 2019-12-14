@@ -7,6 +7,20 @@ module MeasurementsHelper
     m.taken_at.getlocal.strftime("%R")
   end
 
+  def format_value(value)
+    amount, unitname = value
+    amount.nil? ? '-' : "#{amount} [#{unitname || '-'}]"
+  end
+
+  def quantity_toggle_options
+    disabled = []
+    options = nested_set_options(@project.quantities.measurement) do |q|
+      disabled << q.id if q.primary
+      raw("#{'&ensp;' * q.level}#{q.name}")
+    end
+    options_for_select(options, disabled: disabled)
+  end
+
   def quantity_options
     nested_set_options(@project.quantities.measurement) do |q|
       raw("#{'&ensp;' * q.level}#{q.name}")

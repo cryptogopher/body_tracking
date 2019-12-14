@@ -3,6 +3,7 @@ class MeasurementsController < ApplicationController
 
   before_action :init_session_filters
   before_action :find_project_by_project_id, only: [:index, :new, :create]
+  before_action :find_quantity, only: [:toggle_quantity]
   before_action :find_measurement, only: [:edit, :update, :destroy, :retake, :readouts]
   before_action :authorize
 
@@ -60,6 +61,11 @@ class MeasurementsController < ApplicationController
     prepare_readouts
   end
 
+  def toggle_quantity
+    @quantity.toggle_primary!
+    prepare_readouts
+  end
+
   private
 
   def init_session_filters
@@ -91,29 +97,15 @@ class MeasurementsController < ApplicationController
   end
 
   def prepare_measurements
-    @measurements = @project.measurements.includes(:source, :readouts)
+    @measurements, @formula_q = @project.measurements
+      .includes(:source, :readouts)
       .filter(session[:m_filters])
   end
 
   def prepare_readouts
     @quantities = @project.quantities.measurement.where(primary: true)
-    measurements, requested_r, extra_r, @formula_q = @project.measurements.includes(:source)
-      .filter(@project, session[:i_filters], @quantities)
-
-    @nutrients = {}
-    @extra_nutrients = {}
-    ingredients.each_with_index do |i, index|
-      @nutrients[i] = []
-      requested_n[index].each do |q_name, value|
-        amount, unitname = value
-        @nutrients[i] << [q_name, amount.nil? ? '-' : "#{amount} [#{unitname || '-'}]"]
-      end
-
-      @extra_nutrients[i] = []
-      extra_n[index].each do |q_name, value|
-        amount, unitname = value
-        @extra_nutrients[i] << [q_name, amount.nil? ? '-' : "#{amount} [#{unitname || '-'}]"]
-      end
-    end
+    @measurements, @requested_r, @extra_r, @formula_q = @project.measurements
+      .includes(:source)
+      .filter(session[:m_filters], @quantities)
   end
 end

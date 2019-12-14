@@ -1,6 +1,6 @@
 module BodyTracking
   module ItemsWithQuantities
-    def filter(filters, requested_q = Quantity.none)
+    def filter(filters, requested_q = nil)
       items = all.where(filters[:scope])
 
       if filters[:name].present?
@@ -21,9 +21,9 @@ module BodyTracking
       apply_formula = formula_q.present? && formula_q.valid?
 
       result =
-        if !requested_q.empty? || apply_formula
+        if requested_q || apply_formula
           computed = items.compute_quantities(requested_q, apply_formula && formula_q)
-          requested_q.present? ? computed : [computed[0]]
+          requested_q ? computed : [computed[0]]
         else
           [items]
         end
@@ -32,21 +32,20 @@ module BodyTracking
 
     def compute_quantities(requested_q, filter_q = nil)
       items = all
+      requested_q ||= Quantity.none
       unchecked_q = requested_q.map { |q| [q, nil] }
       unchecked_q << [filter_q, nil] if filter_q
 
       subitems = Hash.new { |h,k| h[k] = {} }
-      subitems_scope = case proxy_association.klass
-                       when Measurement
-                         item_primary_key = :measurement_id
-                         Readout.where(measurement: items)
-                       when Ingredient
-                         item_primary_key = :ingredient_id
-                         Nutrient.where(ingredient: items)
-                       end
+      item_class = proxy_association.klass
+      subitem_type = item_class.nested_attributes_options.keys.first.to_s
+      subitem_reflection = item_class.reflections[subitem_type]
+      subitem_class = subitem_reflection.klass
+      subitems_scope = subitem_class.where(subitem_reflection.options[:inverse_of] => items)
+      item_foreign_key = subitem_reflection.foreign_key
       subitems_scope.includes(:quantity, :unit)
         .order('quantities.lft')
-        .pluck(item_primary_key, 'quantities.name', :amount, 'units.shortname')
+        .pluck(item_foreign_key, 'quantities.name', :value, 'units.shortname')
         .each { |item_id, q_name, a, u_id| subitems[q_name][item_id] = [a, u_id] }
 
       extra_q = subitems.keys - requested_q.pluck(:name)

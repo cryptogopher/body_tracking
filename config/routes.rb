@@ -10,6 +10,9 @@ resources :projects, shallow: true do
           get 'retake'
           get 'readouts'
         end
+        collection do
+          post 'toggle_quantity'
+        end
       end
       resources :ingredients, only: [:index, :create, :destroy] do
         post 'toggle', on: :member
