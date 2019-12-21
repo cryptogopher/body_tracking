@@ -10,7 +10,8 @@ module BodyTracking
       has_many :units, dependent: :destroy
 
       def nutrients_column_view
-        self.column_views.find_or_create_by(name: 'Nutrients', domain: :diet)
+        self.column_views
+          .find_or_create_by(name: 'Nutrients', domain: ColumnView.domains[:diet])
       end
     end
   end

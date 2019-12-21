@@ -26,9 +26,9 @@ class CreateSchema < ActiveRecord::Migration
       t.integer :domain
     end
 
-    create_table :quantities_column_views do |t|
-      t.references :quantity
+    create_table :column_views_quantities do |t|
       t.references :column_view
+      t.references :quantity
     end
 
     create_table :sources do |t|

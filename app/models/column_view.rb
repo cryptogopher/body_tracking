@@ -12,6 +12,7 @@ class ColumnView < ActiveRecord::Base
     column = self.quantities.find(q.id)
     self.quantites.destroy(column)
   rescue ActiveRecord::RecordNotFound
-    self.quantities.create!(quantity: q)
+    # Cannot 'create' association, as ColumnView (parent) may not be saved yet
+    self.quantities.append(q).save!
   end
 end
