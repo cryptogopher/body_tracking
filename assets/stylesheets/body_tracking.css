@@ -1,20 +1,20 @@
 table.list tr.quantity.primary td.name {font-weight: bold;}
-table.nutrients.list td.name,
-table.nutrients.list td.quantity,
-table.readouts.list td.date,
-table.readouts.list td.quantity {text-align: left; border-bottom: none;}
-table.nutrients.list td.space,
-table.readouts.list td.space {border-top: none; border-bottom: none;}
-table.nutrients.list td.value,
-table.readouts.list td.value {border-top: none;}
+
 table.list tr.ingredient.hidden {opacity: 0.4}
+
+table.list .date,
+table.list .name,
+table.list .quantity {text-align: left;}
+
+table.list .action,
+table.list .value {text-align: right;}
+
+table.list .space {border-top: none; border-bottom: none;}
+
+table.list th,
 table.list td.action,
 table.list td.date,
-table.list td.name {white-space: nowrap;}
-table.list td.action,
-table.list td.value {text-align: right;}
-table.nutrients.list th,
-table.nutrients.list td.name,
+table.list td.name,
 table.list td.quantity,
 table.list td.value {
   overflow: hidden;
@@ -22,17 +22,21 @@ table.list td.value {
   white-space: nowrap;
   max-width: 1px;
 }
+
 table.list td.form {
   padding-right: 2px;
   text-align: left;
 }
+
 fieldset#filters table.filter td {padding-left: 8px;}
+
 
 .icon-move-left { background-image: url(../images/1leftarrow.png); }
 .icon-move-right { background-image: url(../images/1rightarrow.png); }
 .icon-eye { background-image: url(../images/eye.png); }
 .icon-bullet-open { background-image: url(../../../images/bullet_toggle_minus.png); }
 .icon-bullet-closed { background-image: url(../../../images/bullet_toggle_plus.png); }
+
 
 input[type=number] {
   -moz-appearance:textfield;
