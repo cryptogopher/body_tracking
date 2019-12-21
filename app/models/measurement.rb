@@ -69,7 +69,8 @@ class Measurement < ActiveRecord::Base
     return unless old_column_view
 
     if self.project.measurements.exists?(name: self.name_was)
-      self.column_view.quantities.append(old_column_view.quantities).save!
+      self.column_view.quantities.append(old_column_view.quantities)
+      self.save!
     else
       old_column_view.update!(name: self.name)
     end

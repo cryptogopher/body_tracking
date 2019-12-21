@@ -2,7 +2,7 @@ class ColumnView < ActiveRecord::Base
   enum domain: Quantity.domains
 
   belongs_to :project, required: true
-  has_and_belongs_to_many :quantities
+  has_and_belongs_to_many :quantities, -> { order "lft" }
 
   validates :name, presence: true, uniqueness: {scope: :domain}
   validates :domain, inclusion: {in: domains.keys}
@@ -10,9 +10,10 @@ class ColumnView < ActiveRecord::Base
   # TODO: enforce column_view - quantity 'domain' identity
   def toggle_column!(q)
     column = self.quantities.find(q.id)
-    self.quantites.destroy(column)
+    self.quantities.destroy(column)
   rescue ActiveRecord::RecordNotFound
     # Cannot 'create' association, as ColumnView (parent) may not be saved yet
-    self.quantities.append(q).save!
+    self.quantities.append(q)
+    self.save!
   end
 end

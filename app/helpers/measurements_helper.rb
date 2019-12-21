@@ -1,6 +1,7 @@
 module MeasurementsHelper
   def format_datetime(m)
-    m.taken_at.getlocal.strftime("%F <small>%R</small>").html_safe
+    m.taken_at.getlocal
+      .strftime("%F <small>%R&emsp;(#{time_ago_in_words(m.taken_at)} ago)</small>").html_safe
   end
 
   def format_time(m)

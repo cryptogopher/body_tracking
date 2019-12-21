@@ -9,11 +9,10 @@ table.list .quantity {text-align: left;}
 table.list .action,
 table.list .value {text-align: right;}
 
-table.list .space {border-top: none; border-bottom: none;}
+table.list td.action,
+table.list td.date {white-space: nowrap;}
 
 table.list th,
-table.list td.action,
-table.list td.date,
 table.list td.name,
 table.list td.quantity,
 table.list td.value {
