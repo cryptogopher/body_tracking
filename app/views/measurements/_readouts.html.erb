@@ -5,10 +5,16 @@
     <thead>
       <tr>
         <% total_width = 3 + @quantities.length %>
-        <th style="width:<%= 3 * 100/total_width%>%"><%= l(:field_taken_at_date) %></th>
+        <th style="width:<%= 2 * 100/total_width%>%"><%= l(:field_taken_at_date) %></th>
         <% @quantities.each do |q| %>
-          <th style="width:<%= 100/total_width %>%"><%= q.name %></th>
+          <th style="width:<%= 100/total_width %>%"><%= q.name %>
+            <div style="float:right;">
+              <%= link_to '', toggle_column_measurement_path(@measurement, quantity_id: q.id),
+                {class: "icon icon-close", method: :post, remote: true} %>
+            </div>
+          </th>
         <% end %>
+        <th style="width:<%= 100/total_width %>%"><%= l(:field_action) %></th>
       </tr>
     </thead>
     <tbody>
@@ -21,6 +27,7 @@
           <% @requested_r[index].each do |*, value| %>
             <td class="primary value"><%= format_value(value) %></td>
           <% end %>
+          <td class="action"><%= action_links(m) %></td>
         </tr>
 
         <tr class="<%= row_class %>" style="display:none">
@@ -38,6 +45,7 @@
               <p class="value"><%= format_value(value) %></p>
             </td>
           <% end %>
+          <td rowspan="<%= rows %>" class="action"><%= action_links(m) %></td>
         </tr>
 
         <% next unless @quantities.length > 0 %>

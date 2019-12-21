@@ -1,7 +1,8 @@
 module MeasurementsHelper
   def format_datetime(m)
     m.taken_at.getlocal
-      .strftime("%F <small>%R&emsp;(#{time_ago_in_words(m.taken_at)} ago)</small>").html_safe
+      .strftime("%F <small>%R&emsp;(~#{time_ago_in_words(m.taken_at)} ago)</small>")
+      .html_safe
   end
 
   def format_time(m)
@@ -39,5 +40,13 @@ module MeasurementsHelper
     @project.sources.map do |s|
       [s.name, s.id]
     end
+  end
+
+  def action_links(m)
+    link_to(l(:button_retake), retake_measurement_path(m),
+            {remote: true, class: "icon icon-reload"}) +
+    link_to(l(:button_edit), edit_measurement_path(m),
+            {remote: true, class: "icon icon-edit"}) +
+    delete_link(measurement_path(m), {remote: true, data: {}})
   end
 end
