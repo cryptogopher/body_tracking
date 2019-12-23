@@ -12,6 +12,8 @@ table.list .value {text-align: right;}
 table.list td.action,
 table.list td.date {white-space: nowrap;}
 
+table.list th {padding-right: 0;}
+
 table.list th,
 table.list td.name,
 table.list td.quantity,

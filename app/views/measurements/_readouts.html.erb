@@ -7,11 +7,12 @@
         <% total_width = 3 + @quantities.length %>
         <th style="width:<%= 2 * 100/total_width%>%"><%= l(:field_taken_at_date) %></th>
         <% @quantities.each do |q| %>
-          <th style="width:<%= 100/total_width %>%"><%= q.name %>
+          <th style="width:<%= 100/total_width %>%">
             <div style="float:right;">
               <%= link_to '', toggle_column_measurement_path(@measurement, quantity_id: q.id),
                 {class: "icon icon-close", method: :post, remote: true} %>
             </div>
+            <%= q.name %>
           </th>
         <% end %>
         <th style="width:<%= 100/total_width %>%"><%= l(:field_action) %></th>
@@ -40,8 +41,8 @@
             <span class="icon icon-bullet-closed"><%= format_datetime(m) %></span>
           </td>
           <% @requested_r[index].each do |q_name, value| %>
-            <td class="primary">
-              <p class="quantity"><%= q_name %></p>
+            <td class="primary quantity">
+              <%= q_name %>
               <p class="value"><%= format_value(value) %></p>
             </td>
           <% end %>
@@ -52,8 +53,8 @@
         <% @extra_r[index].each_slice(@quantities.length).with_index do |values| %>
           <tr class="extra <%= row_class %>" style="display:none">
             <% values.each do |q_name, value| %>
-              <td class="extra">
-                <p class="quantity"><%= q_name %></p>
+              <td class="extra quantity">
+                <%= q_name %>
                 <p class="value"><%= format_value(value) %></p>
               </td>
             <% end %>
