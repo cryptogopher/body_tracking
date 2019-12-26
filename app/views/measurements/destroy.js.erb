@@ -1,5 +1,5 @@
 $('div[id^=flash_]').remove();
 $('#content').prepend('<%= j render_flash_messages %>');
 <% if @measurement.destroyed? %>
-  $('tr[id=measurement-<%= @measurement.id %>]').remove();
+  $('tr[id=measurement-<%= @measurement.id %>]').nextUntil('tr.primary').addBack().remove();
 <% end %>

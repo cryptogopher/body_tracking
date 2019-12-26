@@ -22,7 +22,12 @@ class MeasurementsController < ApplicationController
     @measurement = @project.measurements.new(measurement_params)
     if @measurement.save
       flash[:notice] = 'Created new measurement'
-      prepare_measurements
+      if session[:m_filters][:scope].empty?
+        prepare_measurements
+      else
+        prepare_readouts
+        render :create_readouts
+      end
     else
       @measurement.readouts.new if @measurement.readouts.empty?
       render :new
@@ -35,8 +40,13 @@ class MeasurementsController < ApplicationController
   def update
     if @measurement.update(measurement_params)
       flash[:notice] = 'Updated measurement'
-      prepare_measurements
-      render :index
+      if session[:m_filters][:scope].empty?
+        prepare_measurements
+        render :index
+      else
+        prepare_readouts
+        render :readouts
+      end
     else
       render :edit
     end
@@ -65,6 +75,7 @@ class MeasurementsController < ApplicationController
   def toggle_column
     @measurement.column_view.toggle_column!(@quantity)
     prepare_readouts
+    render :readouts
   end
 
   private

@@ -11,7 +11,8 @@
     <tbody>
       <% @measurements.each do |m| %>
         <% next if m.new_record? %>
-        <tr id="measurement-<%= m.id %>" class="measurement <%= 'hidden' if m.hidden %>">
+        <tr id="measurement-<%= m.id %>"
+            class="primary measurement <%= 'hidden' if m.hidden %>">
           <td class="date"><%= format_datetime(m) %></td>
           <td class="name">
             <div style="float:left;">
