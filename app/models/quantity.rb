@@ -16,6 +16,7 @@ class Quantity < ActiveRecord::Base
   acts_as_nested_set dependent: :destroy, scope: :project
   belongs_to :project, required: false
   has_and_belongs_to_many :column_views
+  has_many :readouts
 
   validates :name, presence: true, uniqueness: {scope: :project_id}
   validates :domain, inclusion: {in: domains.keys}

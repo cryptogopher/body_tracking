@@ -38,6 +38,12 @@ class BodyTrackersController < ApplicationController
     flash[:notice] += ", #{new_quantities > 0 ? new_quantities : "no" } new" \
       " #{'quantity'.pluralize(new_quantities)}"
 
+    ncv = @project.nutrients_column_view
+    if ncv.quantities.count == 0
+      ncv.quantities.append(@project.quantities.roots.first(6))
+      ncv.save!
+    end
+
     # Sources
     available = @project.sources.pluck(:name)
     defaults = Source.where(project: nil).map do |s|

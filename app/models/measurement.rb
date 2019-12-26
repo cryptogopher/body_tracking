@@ -28,6 +28,7 @@ class Measurement < ActiveRecord::Base
     end
   end
 
+  after_create :seed_column_view, if: -> {self.column_view.quantities.count == 0}
   after_save :cleanup_column_view, if: :name_changed?
 
   # Destroy ColumnView after last Measurement destruction
@@ -62,6 +63,13 @@ class Measurement < ActiveRecord::Base
 
   private
 
+  def seed_column_view
+    quantities = self.project.quantities.joins(:readouts).includes(readouts: [:measurement])
+      .where(measurements: {name: self.name}).first(6)
+    self.column_view.quantities.append(quantities)
+    self.column_view.save!
+  end
+
   # Copy/rename ColumnView on Measurement rename
   def cleanup_column_view
     old_column_view = self.project.column_views
@@ -70,7 +78,7 @@ class Measurement < ActiveRecord::Base
 
     if self.project.measurements.exists?(name: self.name_was)
       self.column_view.quantities.append(old_column_view.quantities)
-      self.save!
+      self.column_view.save!
     else
       old_column_view.update!(name: self.name)
     end
