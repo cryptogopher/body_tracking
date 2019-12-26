@@ -10,8 +10,8 @@ table.list .action,
 table.list .value {text-align: right;}
 
 table.list th.closable {padding-right: 0;}
-table.list .unshrinkable {white-space: nowrap;}
-table.list .shrinkable {
+table.list .unwrappable {white-space: nowrap;}
+table.list .ellipsible {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

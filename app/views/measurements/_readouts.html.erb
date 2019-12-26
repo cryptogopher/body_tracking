@@ -7,7 +7,7 @@
         <% total_width = 3 + @quantities.length %>
         <th style="width:<%= 2 * 100/total_width%>%"><%= l(:field_taken_at_date) %></th>
         <% @quantities.each do |q| %>
-          <th style="width:<%= 100/total_width %>%" class="closable shrinkable">
+          <th style="width:<%= 100/total_width %>%" class="closable ellipsible">
             <div style="float:right;position:relative;">
               <%= link_to '', toggle_column_measurement_path(@measurement, quantity_id: q.id),
                 {class: "icon icon-close", method: :post, remote: true} %>
@@ -22,14 +22,14 @@
       <% @measurements.each_with_index do |m, index| %>
         <% row_class = "measurement #{cycle('odd', 'even')}" %>
         <tr id="measurement-<%= m.id %>" class="primary <%= row_class %>">
-          <td class="date unshrinkable" style="cursor: pointer;"
+          <td class="date unwrappable" style="cursor: pointer;"
               onclick="$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', '.measurement').toggle(); return false;">
             <span class="icon icon-bullet-closed"><%= format_datetime(m) %></span>
           </td>
           <% @requested_r[index].each do |*, value| %>
-            <td class="primary value shrinkable"><%= format_value(value) %></td>
+            <td class="primary value ellipsible"><%= format_value(value) %></td>
           <% end %>
-          <td class="action unshrinkable"><%= action_links(m) %></td>
+          <td class="action unwrappable"><%= action_links(m) %></td>
         </tr>
 
         <tr class="<%= row_class %>" style="display:none">
@@ -38,24 +38,24 @@
              else
                rows = 1
              end %>
-          <td rowspan="<%= rows %>" class="date unshrinkable" style="cursor: pointer;"
+          <td rowspan="<%= rows %>" class="date unwrappable" style="cursor: pointer;"
               onclick="$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', '.measurement').toggle(); return false;">
             <span class="icon icon-bullet-open"><%= format_datetime(m) %></span>
           </td>
           <% @requested_r[index].each do |q_name, value| %>
-            <td class="primary quantity shrinkable">
+            <td class="primary quantity ellipsible">
               <%= q_name %>
               <p class="value"><%= format_value(value) %></p>
             </td>
           <% end %>
-          <td rowspan="<%= rows %>" class="action unshrinkable"><%= action_links(m) %></td>
+          <td rowspan="<%= rows %>" class="action unwrappable"><%= action_links(m) %></td>
         </tr>
 
         <% next unless @quantities.length > 0 %>
         <% @extra_r[index].each_slice(@quantities.length).with_index do |values| %>
           <tr class="extra <%= row_class %>" style="display:none">
             <% values.each do |q_name, value| %>
-              <td class="extra quantity shrinkable">
+              <td class="extra quantity ellipsible">
                 <%= q_name %>
                 <p class="value"><%= format_value(value) %></p>
               </td>

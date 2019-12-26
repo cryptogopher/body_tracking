@@ -21,7 +21,7 @@
           quantity_class += " project idnt idnt-#{level+1}"
         %>
         <tr id="quantity-<%= q.id %>" class="<%= quantity_class %>">
-          <td class="name unshrinkable"><%= q.name %></td>
+          <td class="name unwrappable"><%= q.name %></td>
           <td class="order">
             <% [:up, :down, :left, :right].each do |direction| %>
             <%=
@@ -40,7 +40,7 @@
           <td class="domain"><%= q.domain %></td>
           <td class="description"><%= q.description %></td>
           <td class="formula"><%= checked_image q.formula.present? %></td>
-          <td class="action unshrinkable">
+          <td class="action unwrappable">
             <%= link_to l(:button_edit), edit_quantity_path(q), {
               remote: true,
               class: "icon icon-edit"
