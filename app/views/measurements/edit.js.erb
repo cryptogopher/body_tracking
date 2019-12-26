@@ -1,5 +1,9 @@
 <%= render partial: 'body_trackers/flash' %>
 $('tr[id=measurement-<%= @measurement.id %>]').nextUntil('tr.primary', ':not(.measurement)')
   .remove();
-$('tr[id=measurement-<%= @measurement.id %>]').nextAll('tr.primary').first()
-  .before('<tr><td class="form" colspan="5"><div id="edit-measurement"><%= j render partial: "measurements/edit_form" %></div></td></tr>');
+var columns = $('table > thead > tr > th').length;
+$('tr[id=measurement-<%= @measurement.id %>]').nextAll('tr.primary').first().before(
+  '<tr><td class="form" colspan="'+columns+'">' +
+  '<div id="edit-measurement"><%= j render partial: "measurements/edit_form" %></div>' +
+  '</td></tr>'
+);
