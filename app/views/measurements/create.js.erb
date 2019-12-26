@@ -1,4 +1,8 @@
 $('div[id^=flash_]').remove();
 $('#content').prepend('<%= j render_flash_messages %>');
 $('#new-measurement').empty();
-$('#measurements').html('<%= j render partial: 'measurements/index' %>');
+<% if defined? @quantities %>
+  $('#readouts').html('<%= j render partial: 'measurements/readouts' %>');
+<% else %>
+  $('#measurements').html('<%= j render partial: 'measurements/index' %>');
+<% end %>
