@@ -1,3 +1,2 @@
-$('div[id^=flash_]').remove();
-$('#content').prepend('<%= j render_flash_messages %>');
+<%= render partial: 'body_trackers/flash' %>
 $('#new-measurement').html('<%= j render partial: 'measurements/new_form' %>');
