@@ -1,3 +1,7 @@
 <% content_for :header_tags do %>
   <%= stylesheet_link_tag 'body_tracking', plugin: 'body_tracking' %>
 <% end %>
+
+<% content_for :sidebar do %>
+  <%= render partial: 'body_trackers/sidebar' %>
+<% end %>

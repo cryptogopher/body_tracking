@@ -1,7 +1,3 @@
-<% content_for :sidebar do %>
-  <%= render partial: 'body_trackers/sidebar' %>
-<% end %>
-
 <div class="contextual">
   <% if User.current.allowed_to?(:manage_common, @project) %>
     <%= link_to t(".link_new_source"), '#', class: 'icon icon-add',
