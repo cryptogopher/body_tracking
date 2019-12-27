@@ -23,7 +23,6 @@ class Measurement < ActiveRecord::Base
 
   after_initialize do
     if new_record?
-      self.hidden = false if self.hidden.nil?
       self.taken_at = Time.now
     end
   end
@@ -41,10 +40,6 @@ class Measurement < ActiveRecord::Base
   def column_view
     self.project.column_views
       .find_or_create_by(name: self.name, domain: ColumnView.domains[:measurement])
-  end
-
-  def toggle_hidden!
-    self.toggle!(:hidden)
   end
 
   def taken_at_date

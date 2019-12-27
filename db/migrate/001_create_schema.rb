@@ -62,7 +62,6 @@ class CreateSchema < ActiveRecord::Migration
       t.references :project
       t.string :name
       t.references :source
-      t.boolean :hidden
       t.timestamp :taken_at
       t.timestamps null: false
     end
