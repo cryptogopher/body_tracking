@@ -13,7 +13,7 @@
         <% next if m.new_record? %>
         <tr id="measurement-<%= m.id %>"
             class="primary measurement <%= 'hidden' if m.hidden %>">
-          <td class="date"><%= format_datetime(m) %></td>
+          <td class="date unwrappable"><%= format_datetime(m) %></td>
           <td class="name">
             <div style="float:left;">
               <%= link_to m.name, readouts_measurement_path(m) %>
@@ -23,9 +23,7 @@
             </div>
           </td>
           <td class="source"><%= m.source.name if m.source.present? %></td>
-          <td class="action">
-            <%= action_links(m) %>
-          </td>
+          <td class="action unwrappable"><%= action_links(m) %></td>
         </tr>
       <% end %>
     </tbody>
