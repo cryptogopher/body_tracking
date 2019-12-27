@@ -88,6 +88,7 @@ class IngredientsController < ApplicationController
 
         i_params = {
           name: r.delete('Name'),
+          comment: r.delete('Comment'),
           ref_amount: 100.0,
           ref_unit: units['g'],
           group: r.delete('Group') || :other,
@@ -176,6 +177,7 @@ class IngredientsController < ApplicationController
   def ingredient_params
     params.require(:ingredient).permit(
       :name,
+      :comment,
       :ref_amount,
       :ref_unit_id,
       :group,

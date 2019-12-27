@@ -18,7 +18,8 @@
       <% @nutrients.each do |i, values| %>
         <% row_class = "ingredient#{' hidden' if i.hidden} #{cycle('odd', 'even')}" %>
         <tr id="ingredient-<%= i.id %>" class="primary <%= row_class %>">
-          <td class="name" style="cursor: pointer;" onclick="$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', 'tr').toggle(); return false;">
+          <td class="name ellipsible" style="cursor: pointer;"
+              onclick="$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', 'tr').toggle(); return false;">
             <span class="icon icon-bullet-closed"><%= i.name %></span>
           </td>
           <% values.each do |*, value| %>
