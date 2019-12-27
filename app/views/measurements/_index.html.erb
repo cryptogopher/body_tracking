@@ -1,3 +1,6 @@
+<%= render partial: 'measurements/filters',
+  locals: {url: filter_project_measurements_path(@project)} %>
+
 <% if @measurements.any? { |m| m.persisted? } %>
   <table class="list">
     <thead>

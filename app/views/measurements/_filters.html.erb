@@ -1,0 +1,34 @@
+<fieldset id="filters" class="collapsible">
+  <legend onclick="toggleFieldset(this);"><%= l(:label_filter_plural) %></legend>
+  <div>
+    <%= error_messages_for @formula_q %>
+
+    <%= form_tag url, id: 'filters-form', name: 'filters-form',
+      method: :get, remote: true do %>
+
+    <table class="filter">
+      <tr>
+        <td>
+          <%= text_field_tag 'filters[name]', session[:m_filters][:name], placeholder: 'name',
+            onblur: '$("#filters-form").submit(); return false;' %>
+        </td>
+        <td style="width:100%;">
+          <%= text_field_tag 'filters[formula]', session[:m_filters][:formula],
+            placeholder: 'conditional expression including readouts', size: 40,
+            style: 'box-sizing:border-box; width:100%;',
+            onblur: '$("#filters-form").submit(); return false;' %>
+        </td>
+        <td>
+          <%= link_to l(:button_apply), '#', class: "icon icon-checked",
+            onclick: '$("#filters-form").submit(); return false;' %>
+        </td>
+        <td>
+          <%= link_to l(:button_clear), '#', class: "icon icon-reload",
+            onclick: '$("#filters-form input, #filters-form select").val("");
+                      $("#filters-form").submit(); return false;' %>
+        </td>
+      </tr>
+    </table>
+    <% end %>
+  </div>
+</fieldset>

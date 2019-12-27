@@ -1,3 +1,6 @@
+<%= render partial: 'measurements/filters',
+  locals: {url: filter_project_measurements_path(@project)} %>
+
 <% if @measurements.any? %>
   <%= render partial: 'measurements/options' %>
 
@@ -9,7 +12,8 @@
         <% @quantities.each do |q| %>
           <th style="width:<%= 100/total_width %>%" class="closable ellipsible">
             <div style="float:right;position:relative;">
-              <%= link_to '', toggle_column_measurement_path(@measurement, quantity_id: q.id),
+              <%= link_to '',
+                toggle_column_measurement_path(@scoping_measurement, quantity_id: q.id),
                 {class: "icon icon-close", method: :post, remote: true} %>
             </div>
             <%= q.name %>

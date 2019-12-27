@@ -11,6 +11,9 @@ resources :projects, shallow: true do
           get 'readouts'
           post 'toggle_column'
         end
+        collection do
+          get 'filter'
+        end
       end
       resources :ingredients, only: [:index, :create, :destroy] do
         post 'toggle', on: :member

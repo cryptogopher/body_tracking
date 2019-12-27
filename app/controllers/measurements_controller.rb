@@ -2,7 +2,7 @@ class MeasurementsController < ApplicationController
   menu_item :body_trackers
 
   before_action :init_session_filters
-  before_action :find_project_by_project_id, only: [:index, :new, :create]
+  before_action :find_project_by_project_id, only: [:index, :new, :create, :filter]
   before_action :find_quantity_by_quantity_id, only: [:toggle_column]
   before_action :find_measurement,
     only: [:edit, :update, :destroy, :retake, :readouts, :toggle_column]
@@ -68,6 +68,13 @@ class MeasurementsController < ApplicationController
     render :index
   end
 
+  def filter
+    session[:m_filters][:name] = params[:filters][:name]
+    session[:m_filters][:formula] = params[:filters][:formula]
+    readouts_view? ? prepare_readouts : prepare_measurements
+    render :index
+  end
+
   private
 
   def init_session_filters
@@ -105,10 +112,14 @@ class MeasurementsController < ApplicationController
   end
 
   def prepare_readouts
-    @quantities = @measurement.column_view.quantities
+    @scoping_measurement = @project.measurements.where(session[:m_filters][:scope]).first!
+    @quantities = @scoping_measurement.column_view.quantities
     @measurements, @requested_r, @extra_r, @formula_q = @project.measurements
       .includes(:source)
       .filter(session[:m_filters], @quantities)
+  rescue ActiveRecord::RecordNotFound
+    session[:m_filters][:scope] = {}
+    render_404
   end
 
   def readouts_view?
