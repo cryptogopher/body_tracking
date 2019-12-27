@@ -21,7 +21,11 @@
           quantity_class += " project idnt idnt-#{level+1}"
         %>
         <tr id="quantity-<%= q.id %>" class="<%= quantity_class %>">
-          <td class="name unwrappable"><%= q.name %></td>
+          <td class="name unwrappable">
+            <div class="icon <%= q.column_views.empty? ? 'icon-fav-off' : 'icon-fav' %>">
+              <%= q.name %>
+            </div>
+          </td>
           <td class="order">
             <% [:up, :down, :left, :right].each do |direction| %>
             <%=

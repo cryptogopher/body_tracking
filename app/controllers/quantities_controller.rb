@@ -91,5 +91,6 @@ class QuantitiesController < ApplicationController
 
   def prepare_quantities
     @quantities = @project.quantities.filter(@project, session[:q_filters])
+      .includes(:column_views)
   end
 end
