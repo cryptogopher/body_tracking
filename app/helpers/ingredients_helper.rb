@@ -38,4 +38,8 @@ module IngredientsHelper
       [translations[k.to_sym], k]
     end
   end
+
+  def action_links(i)
+    delete_link(ingredient_path(i), {remote: true, data: {}})
+  end
 end

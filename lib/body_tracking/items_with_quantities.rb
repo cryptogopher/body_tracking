@@ -1,5 +1,14 @@
 module BodyTracking
   module ItemsWithQuantities
+    QUANTITY_DOMAINS = {
+      Measurement => :measurement,
+      Ingredient => :diet
+    }
+    VALUE_COLUMNS = {
+      Measurement => :value,
+      Ingredient => :amount
+    }
+
     def filter(filters, requested_q = nil)
       items = all.where(filters[:scope])
 
@@ -12,7 +21,7 @@ module BodyTracking
       end
 
       project = proxy_association.owner
-      domain = {Measurement => :measurement, Ingredient => :diet}[proxy_association.klass]
+      domain = QUANTITY_DOMAINS[proxy_association.klass]
       formula_q = if filters[:formula].present?
                     project.quantities.new(name: '__internal_q',
                                            formula: filters[:formula],
@@ -45,7 +54,8 @@ module BodyTracking
       item_foreign_key = subitem_reflection.foreign_key
       subitems_scope.includes(:quantity, :unit)
         .order('quantities.lft')
-        .pluck(item_foreign_key, 'quantities.name', :value, 'units.shortname')
+        .pluck(item_foreign_key, 'quantities.name', VALUE_COLUMNS[item_class],
+               'units.shortname')
         .each { |item_id, q_name, a, u_id| subitems[q_name][item_id] = [a, u_id] }
 
       extra_q = subitems.keys - requested_q.pluck(:name)

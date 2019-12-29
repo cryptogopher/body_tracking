@@ -9,11 +9,6 @@ module MeasurementsHelper
     m.taken_at.getlocal.strftime("%R")
   end
 
-  def format_value(value)
-    amount, unitname = value
-    amount.nil? ? '-' : "#{amount} [#{unitname || '-'}]"
-  end
-
   def toggle_column_options
     disabled = []
     enabled_columns = @scoping_measurement.column_view.quantities

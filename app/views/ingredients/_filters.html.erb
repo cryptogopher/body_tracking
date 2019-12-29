@@ -19,7 +19,7 @@
             onchange: '$("#filters-form").submit();' %>
         </td>
         <td style="width:100%;">
-          <%= text_field_tag 'filters[nutrients]', session[:i_filters][:nutrients],
+          <%= text_field_tag 'filters[formula]', session[:i_filters][:formula],
             placeholder: 'conditional expression including nutrients', size: 40,
             style: 'box-sizing:border-box; width:100%;',
             onblur: '$("#filters-form").submit(); return false;' %>

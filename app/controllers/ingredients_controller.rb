@@ -3,6 +3,8 @@ class IngredientsController < ApplicationController
 
   menu_item :body_trackers
 
+  helper :body_trackers
+
   before_action :init_session_filters
   before_action :find_project_by_project_id,
     only: [:index, :nutrients, :create, :import, :filter, :filter_nutrients]
@@ -204,29 +206,14 @@ class IngredientsController < ApplicationController
   end
 
   def prepare_ingredients
-    @ingredients, @formula_q = @project.ingredients.includes(:ref_unit, :source)
-      .filter(@project, session[:i_filters])
+    @ingredients, @formula_q = @project.ingredients
+      .includes(:ref_unit, :source)
+      .filter(session[:i_filters])
   end
 
   def prepare_nutrients
     @quantities = @project.nutrients_column_view.quantities
-    ingredients, requested_n, extra_n, @formula_q = @project.ingredients
-      .filter(@project, session[:i_filters], @quantities)
-
-    @nutrients = {}
-    @extra_nutrients = {}
-    ingredients.each_with_index do |i, index|
-      @nutrients[i] = []
-      requested_n[index].each do |q_name, value|
-        amount, unitname = value
-        @nutrients[i] << [q_name, amount.nil? ? '-' : "#{amount} [#{unitname || '-'}]"]
-      end
-
-      @extra_nutrients[i] = []
-      extra_n[index].each do |q_name, value|
-        amount, unitname = value
-        @extra_nutrients[i] << [q_name, amount.nil? ? '-' : "#{amount} [#{unitname || '-'}]"]
-      end
-    end
+    @ingredients, @requested_n, @extra_n, @formula_q = @project.ingredients
+      .filter(session[:i_filters], @quantities)
   end
 end

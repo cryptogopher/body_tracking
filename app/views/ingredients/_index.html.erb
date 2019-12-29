@@ -32,9 +32,7 @@
             <%= i.source.name if i.source.present? %>
             <%= ", #{i.source_ident}" if i.source_ident.present? %>
           </td>
-          <td class="action unwrappable">
-            <%= delete_link ingredient_path(i), {remote: true, data: {}} %>
-          </td>
+          <td class="action unwrappable"><%= action_links(i) %></td>
         </tr>
       <% end %>
     </tbody>

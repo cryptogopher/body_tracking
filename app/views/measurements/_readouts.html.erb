@@ -22,6 +22,7 @@
         <th style="width:<%= 100/total_width %>%"><%= l(:field_action) %></th>
       </tr>
     </thead>
+
     <tbody>
       <% @measurements.each_with_index do |m, index| %>
         <% row_class = "measurement #{cycle('odd', 'even')}" %>
