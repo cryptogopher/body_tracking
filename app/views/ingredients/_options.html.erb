@@ -1,7 +1,7 @@
 <fieldset id="options" class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
   <div>
-    <%= form_tag toggle_column_project_ingredients_path(@project),
+    <%= form_tag toggle_column_project_ingredients_path(@project, view_mode: current_view),
       id: 'toggle-column-form', name: 'toggle-column-form',
       method: :post, remote: true do %>
 

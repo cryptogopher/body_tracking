@@ -4,43 +4,47 @@ class IngredientsController < ApplicationController
   menu_item :body_trackers
 
   helper :body_trackers
+  helper_method :current_view
 
   before_action :init_session_filters
   before_action :find_project_by_project_id,
-    only: [:index, :nutrients, :create, :import, :filter, :filter_nutrients]
+    only: [:index, :new, :create, :nutrients, :filter, :import]
   before_action :find_quantity_by_quantity_id, only: [:toggle_column]
-  before_action :find_ingredient, only: [:destroy, :toggle]
+  before_action :find_ingredient, only: [:edit, :update, :destroy, :toggle]
   before_action :authorize
 
   def index
+    self.current_view = :ingredients
+    prepare_items
+  end
+
+  def new
     @ingredient = @project.ingredients.new
     # passing attr for Nutrient after_initialize
     @ingredient.nutrients.new(ingredient: @ingredient)
-
-    prepare_ingredients
-    @ingredients << @ingredient
-  end
-
-  def nutrients
-    @ingredient = @project.ingredients.new
-    @ingredient.nutrients.new(ingredient: @ingredient)
-    prepare_nutrients
-  end
-
-  def toggle_column
-    @project.nutrients_column_view.toggle_column!(@quantity)
-    prepare_nutrients
   end
 
   def create
     @ingredient = @project.ingredients.new(ingredient_params)
     if @ingredient.save
       flash[:notice] = 'Created new ingredient'
-      redirect_to :back
+      prepare_items
     else
-      prepare_ingredients
       @ingredient.nutrients.new(ingredient: @ingredient) if @ingredient.nutrients.empty?
+      render :new
+    end
+  end
+
+  def edit
+  end
+
+  def update
+    if @ingredient.update(ingredient_params)
+      flash[:notice] = 'Updated ingredient'
+      prepare_items
       render :index
+    else
+      render :edit
     end
   end
 
@@ -48,25 +52,28 @@ class IngredientsController < ApplicationController
     if @ingredient.destroy
       flash[:notice] = 'Deleted ingredient'
     end
-    prepare_ingredients
-    render :toggle
   end
 
   def toggle
     @ingredient.toggle_hidden!
-    prepare_ingredients
+    prepare_items
+  end
+
+  def nutrients
+    self.current_view = :nutrients
+    prepare_items
+  end
+
+  def toggle_column
+    @project.nutrients_column_view.toggle_column!(@quantity)
+    prepare_items
+    render :index
   end
 
   def filter
     session[:i_filters] = params[:filters]
-    prepare_ingredients
-    render :toggle
-  end
-
-  def filter_nutrients
-    session[:i_filters] = params[:filters]
-    prepare_nutrients
-    render :toggle_nutrient_column
+    prepare_items
+    render :index
   end
 
   def import
@@ -215,5 +222,16 @@ class IngredientsController < ApplicationController
     @quantities = @project.nutrients_column_view.quantities
     @ingredients, @requested_n, @extra_n, @formula_q = @project.ingredients
       .filter(session[:i_filters], @quantities)
+  end
+
+  def prepare_items
+    (current_view == :nutrients) ? prepare_nutrients : prepare_ingredients
+  end
+
+  def current_view
+    @current_view || (params[:view_mode] == "nutrients" ? :nutrients : :ingredients)
+  end
+  def current_view=(cv)
+    @current_view = cv
   end
 end

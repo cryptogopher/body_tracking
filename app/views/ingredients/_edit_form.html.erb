@@ -1,0 +1,15 @@
+<%= labelled_form_for @ingredient,
+  url: ingredient_path(@ingredient, view_mode: current_view),
+  method: :patch, remote: true,
+  html: {id: 'ingredient-edit-form', name: 'ingredient-edit-form'} do |f| %>
+
+  <%= render partial: 'ingredients/form', locals: {f: f} %>
+
+  <div class="tabular">
+    <p>
+      <%= submit_tag l(:button_save) %>
+      <%= link_to l(:button_cancel), "#",
+        onclick: '$(this).closest("tr").remove(); return false;' %>
+    </p>
+  </div>
+<% end %>

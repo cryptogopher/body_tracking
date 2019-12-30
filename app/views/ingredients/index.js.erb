@@ -1,0 +1,6 @@
+<%= render partial: 'body_trackers/flash' %>
+<% if current_view == :nutrients %>
+  $('#nutrients').html('<%= j render partial: 'ingredients/nutrients' %>');
+<% else %>
+  $('#ingredients').html('<%= j render partial: 'ingredients/index' %>');
+<% end %>

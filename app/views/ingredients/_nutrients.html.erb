@@ -1,5 +1,5 @@
 <%= render partial: 'ingredients/filters',
-  locals: {url: filter_nutrients_project_ingredients_path(@project)} %>
+  locals: {url: filter_project_ingredients_path(@project, view_mode: current_view)} %>
 
 <% if @ingredients.any? %>
   <%= render partial: 'ingredients/options' %>
@@ -13,7 +13,8 @@
           <th style="width:<%= 100/total_width %>%" class="closable ellipsible">
             <div style="float:right;position:relative;">
               <%= link_to '',
-                toggle_column_project_ingredients_path(@project, quantity_id: q.id),
+                toggle_column_project_ingredients_path(@project, quantity_id: q.id,
+                                                       view_mode: current_view),
                 {class: "icon icon-close", method: :post, remote: true} %>
             </div>
             <%= q.name %>

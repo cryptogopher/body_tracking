@@ -1,3 +1,2 @@
-$('div[id^=flash_]').remove();
-$('#content').prepend('<%= escape_javascript(render_flash_messages) %>');
-$('#ingredients').html('<%= escape_javascript(render partial: 'ingredients/index') %>');
+<%= render partial: 'body_trackers/flash' %>
+$('#ingredients').html('<%= j render partial: 'ingredients/index' %>');

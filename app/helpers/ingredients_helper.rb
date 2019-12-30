@@ -40,6 +40,8 @@ module IngredientsHelper
   end
 
   def action_links(i)
+    link_to(l(:button_edit), edit_ingredient_path(i, view_mode: current_view),
+            {remote: true, class: "icon icon-edit"}) +
     delete_link(ingredient_path(i), {remote: true, data: {}})
   end
 end

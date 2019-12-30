@@ -16,7 +16,8 @@
     <tbody>
       <% @ingredients.each do |i| %>
         <% next if i.new_record? %>
-        <tr id="ingredient-<%= i.id %>" class="ingredient <%= 'hidden' if i.hidden %>">
+        <tr id="ingredient-<%= i.id %>"
+            class="ingredient primary<%= ' hidden' if i.hidden %>">
           <td class="name ellipsible">
             <%= link_to '', toggle_ingredient_path(i), {
                   remote: true,

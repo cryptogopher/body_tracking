@@ -15,14 +15,13 @@ resources :projects, shallow: true do
           get 'filter'
         end
       end
-      resources :ingredients, only: [:index, :create, :destroy] do
+      resources :ingredients, only: [:index, :new, :create, :edit, :update, :destroy] do
         post 'toggle', on: :member
         collection do
           get 'nutrients'
-          get 'filter'
-          get 'filter_nutrients'
-          post 'import'
           post 'toggle_column'
+          get 'filter'
+          post 'import'
         end
       end
       resources :sources, only: [:index, :create, :destroy]
