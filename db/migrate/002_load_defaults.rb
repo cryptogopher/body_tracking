@@ -138,7 +138,7 @@ class LoadDefaults < ActiveRecord::Migration
         # Calculated quantities go at the and to make sure dependencies exist
         e2 = Quantity.create project: nil, domain: :diet, parent: e1, name: "Calculated",
           description: "Total energy calculated from macronutrients",
-          formula: "4*Proteins + 9*Fats + 4*Carbohydrates"
+          formula: "4*(Proteins || 0) + 9*(Fats || 0) + 4*(Carbohydrates || 0)"
 
         Source.create project: nil, name: "nutrition label",
           description: "nutrition facts taken from package nutrition label"
