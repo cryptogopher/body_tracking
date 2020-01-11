@@ -69,6 +69,7 @@ module BodyTracking
         # quantity not computable (no formula) or not requiring calculation/computed
         if q.formula.blank? || (subitems[q.name].length == items.count)
           completed_q[q.name] = subitems.delete(q.name) { {} }
+          completed_q[q.name].default = [nil, nil]
           next
         end
 
@@ -81,17 +82,12 @@ module BodyTracking
 
         # quantity with formula has all dependencies satisfied, requires calculation
         if deps.empty?
+          output_ids = items.select { |i| subitems[q.name][i.id].nil? }.map(&:id)
           input_q = q.formula_quantities
-          inputs = items.select { |i| subitems[q.name][i.id].nil? }.map do |i|
-            [
-              i,
-              input_q.map do |i_q|
-                subitem_data = completed_q[i_q.name][i.id] || [nil, nil]
-                [i_q.name, subitem_data[0]]
-              end.to_h
-            ]
+          inputs = input_q.map { |i_q| [i_q, completed_q[i_q.name].values_at(*output_ids)] }
+          q.calculate(inputs.to_h).each_with_index do |result, index|
+            subitems[q.name][output_ids[index]] = result
           end
-          q.calculate(inputs).each { |i, result| subitems[q.name][i.id] = result }
           unchecked_q.unshift([q, deps])
           next
         end

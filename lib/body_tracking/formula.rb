@@ -89,11 +89,13 @@ module BodyTracking
           @quantities = quantities
           @paramed_formula = Ripper.lex(@formula).map do |*, ttype, token|
             if QUANTITY_TTYPES.include?(ttype) && quantities_names.include?(token)
-              "params['#{token}']"
+              "params['#{token}'][_index]"
             else
               token
             end
           end.join
+          @paramed_formula =
+            "params.values.first.each_with_index.map { |*, _index| #{@paramed_formula} }"
         end
 
         errors
@@ -112,14 +114,13 @@ module BodyTracking
       def calculate(inputs)
         raise RuntimeError, 'Invalid formula' unless self.valid?
 
-        inputs.map do |i, values|
-          puts values.inspect
-          begin
-            [i, [get_binding(values).eval(@paramed_formula), nil]]
-          rescue Exception => e
-            puts e.message
-            [i, [nil, nil]]
-          end
+        values = inputs.map { |q, v| [q.name, v.transpose[0]] }.to_h
+        puts values.inspect
+        begin
+          get_binding(values).eval(@paramed_formula).map { |x| [x, nil] }
+        rescue Exception => e
+          puts e.message
+          [[nil, nil]] * inputs.values.first.length
         end
       end
 
