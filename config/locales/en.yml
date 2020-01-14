@@ -37,7 +37,7 @@ en:
               unparsable_formula: 'cannot be parsed'
               disallowed_token: 'includes disallowed token "%{token}" (of type: %{ttype})'
               disallowed_keyword: 'includes disallowed keyword: "%{keyword}"'
-              disallowed_function: 'includes disallowed function call: %{function}'
+              disallowed_method: 'includes disallowed method call: %{method}'
               unknown_quantity: 'contains undefined quantity: %{quantity}'
   body_trackers:
     index:
