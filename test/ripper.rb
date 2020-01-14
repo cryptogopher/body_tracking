@@ -28,16 +28,28 @@ class DemoBuilder < Ripper::SexpBuilder
   (PARSER_EVENTS - events).each do |event|
     module_eval(<<-End, __FILE__, __LINE__ + 1)
       def on_#{event}(*args)
-        @disallowed[:token] << [args[1], event]
+        @disallowed[:token] << [args, '#{event}']
+        [:bt_unimplemented, args]
       end
     End
   end
 
   def on_program(stmts)
-    puts @identifiers.inspect
     @paramed_formula = join_stmts(stmts)
-    puts @paramed_formula
-    puts @arguments.inspect
+    [@identifiers, @paramed_formula, @arguments]
+  end
+
+  def on_string_content
+    ''
+  end
+
+  def on_string_add(str, new_str)
+    str << new_str
+  end
+
+  def on_string_literal(str)
+    @identifiers << str
+    [:bt_quantity, str]
   end
 
   def on_args_new
@@ -100,7 +112,8 @@ class DemoBuilder < Ripper::SexpBuilder
       end <<
       dot.to_s <<
       case right[0]
-      when :bt_method
+      when :bt_ident
+        @disallowed[:method] << right[1] unless METHODS.include?(right[1])
         right[1]
       else
         raise NotImplementedError
@@ -114,8 +127,13 @@ class DemoBuilder < Ripper::SexpBuilder
   end
 
   def on_vcall(token)
-    @identifiers << token[1]
-    [:bt_quantity, token[1]]
+    case token[0]
+    when :bt_ident
+      @identifiers << token[1]
+      [:bt_quantity, token[1]]
+    else
+      raise NotImplementedError
+    end
   end
   
   def on_method_add_arg(method, paren)
@@ -138,11 +156,13 @@ class DemoBuilder < Ripper::SexpBuilder
     var_ref[0] == :bt_quantity ? var_ref : raise(NotImplementedError)
   end
 
-  silenced_events = [:lparen, :rparen, :op, :period, :sp, :int, :float]
+  silenced_events = [:lparen, :rparen, :op, :period, :sp, :int, :float,
+                     :tstring_beg, :tstring_end]
   (SCANNER_EVENTS - silenced_events).each do |event|
     module_eval(<<-End, __FILE__, __LINE__ + 1)
       def on_#{event}(token)
-        @disallowed[:token] << [token, event]
+        @disallowed[:token] << [token, '#{event}']
+        [:bt_unimplemented, token]
       end
     End
   end
@@ -153,12 +173,15 @@ class DemoBuilder < Ripper::SexpBuilder
   end
 
   def on_ident(token)
-    @disallowed[:method] << token unless METHODS.include?(token)
-    [:bt_method, token]
+    [:bt_ident, token]
   end
 
   def on_kw(token)
     @disallowed[:keyword] << token unless token == 'nil'
+  end
+
+  def on_tstring_content(token)
+    token
   end
 
   def join_stmts(stmts)
@@ -175,8 +198,12 @@ class DemoBuilder < Ripper::SexpBuilder
 end
 
 #src = "1 + 1"
-src = "(Weight/Height.all(3*Dupa).lastBefore(TakenAt)^2) + 2*Other*Other"
+src = "(Weight/Height.all(3*Dupa).lastBefore(TakenAt)^2) + 2*Other*'Other'*other"
 #src = "a = 2; b = a"
-pp DemoBuilder.new(src).parse
-puts "(params['Weight'][_index]/params['Height'].all(args['0']).lastBefore(params['TakenAt'])^2)+2*params['Other'][_index]*params['Other'][_index]"
+#
 pp Ripper.sexp_raw(src)
+
+parser = DemoBuilder.new(src)
+pp parser.parse
+pp parser.errors
+puts "(params['Weight'][_index]/params['Height'].all(args['0']).lastBefore(params['TakenAt'])^2)+2*params['Other'][_index]*params['Other'][_index]*params['other'][_index]"
