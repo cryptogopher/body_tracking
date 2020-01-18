@@ -8,8 +8,7 @@ class DemoBuilder < Ripper::SexpBuilder
     super(*args)
     @disallowed = Hash.new { |h,k| h[k] = Set.new }
     @identifiers = Set.new
-    @paramed_formula = nil
-    @arguments = []
+    @parts = []
   end
 
   def errors
@@ -22,7 +21,9 @@ class DemoBuilder < Ripper::SexpBuilder
 
   private
 
-  METHODS = ['abs', 'nil?']
+  DECIMAL_METHODS = ['abs', 'nil?']
+  QUANTITY_METHODS = ['all', 'lastBefore']
+  METHODS = DECIMAL_METHODS + QUANTITY_METHODS
 
   events = private_instance_methods(false).grep(/\Aon_/) {$'.to_sym}
   (PARSER_EVENTS - events).each do |event|
@@ -35,8 +36,8 @@ class DemoBuilder < Ripper::SexpBuilder
   end
 
   def on_program(stmts)
-    @paramed_formula = join_stmts(stmts)
-    [@identifiers, @paramed_formula, @arguments]
+    @parts << {type: :indexed, content: join_stmts(stmts)}
+    [@identifiers, @parts]
   end
 
   def on_string_content
@@ -73,10 +74,8 @@ class DemoBuilder < Ripper::SexpBuilder
       when :bt_quantity
         "params['#{token}']"
       when :bt_expression
-        # FIXME: 'token' expression has to be evaluated in block with _index and
-        # result stored in @arguments
-        @arguments << token
-        "args['#{@arguments.length - 1}']"
+        @parts << {type: :indexed, content: token}
+        "parts[#{@parts.length - 1}]"
       else
         raise NotImplementedError
       end
@@ -100,30 +99,53 @@ class DemoBuilder < Ripper::SexpBuilder
   end
 
   def on_call(left, dot, right)
-    [
-      :bt_method_call,
-      case left[0]
-      when :bt_quantity
-        "params['#{left[1]}']"
-      when :bt_method_call
-        "#{left[1]}"
-      else
-        raise NotImplementedError
-      end <<
-      dot.to_s <<
+    method, mtype =
       case right[0]
       when :bt_ident
-        @disallowed[:method] << right[1] unless METHODS.include?(right[1])
-        right[1]
+        case
+        when DECIMAL_METHODS.include?(right[1])
+          [right[1], :numeric_method]
+        when QUANTITY_METHODS.include?(right[1])
+          [right[1], :quantity_method]
+        else
+          @disallowed[:method] << right[1]
+          [right[1], :unknown_method]
+        end
       else
         raise NotImplementedError
       end
-    ]
+
+    case left[0]
+    when :bt_quantity
+      if mtype == :quantity_method
+        part_index = @parts.length
+        @parts << {type: :unindexed, content: "params['#{left[1]}']#{dot.to_s}#{method}"}
+        [:bt_quantity_method_call, "parts[#{part_index}]", part_index]
+      else
+        [:bt_numeric_method_call, "params['#{left[1]}'][_index]#{dot.to_s}#{method}"]
+      end
+    when :bt_quantity_method_call
+      if mtype == :quantity_method
+        @parts[left[2]][:content] << "#{dot.to_s}#{method}"
+        left
+      else
+        [:bt_numeric_method_call, "#{left[1]}#{dot.to_s}#{method}"]
+      end
+    when :bt_numeric_method_call
+      if mtype == :quantity_method
+        # TODO: add error reporting
+        raise NotImplementedError
+      else
+        [:bt_numeric_method_call, "#{left[1]}#{dot.to_s}#{method}"]
+      end
+    else
+      raise NotImplementedError
+    end
   end
 
   def on_fcall(token)
     @disallowed[:method] = token[1]
-    [:bt_method, token[1]]
+    [:bt_numeric_method_call, token[1]]
   end
 
   def on_vcall(token)
@@ -137,10 +159,15 @@ class DemoBuilder < Ripper::SexpBuilder
   end
   
   def on_method_add_arg(method, paren)
-    [
-      :bt_method_call,
-      "#{method[1]}#{paren}"
-    ]
+    case method[0]
+    when :bt_quantity_method_call
+      @parts[method[2]][:content] << paren
+      method
+    when :bt_numeric_method_call
+      [:bt_numeric_method_call, "#{method[1]}#{paren}"]
+    else
+      raise NotImplementedError
+    end
   end
 
   def on_binary(left, op, right)
@@ -206,4 +233,5 @@ pp Ripper.sexp_raw(src)
 parser = DemoBuilder.new(src)
 pp parser.parse
 pp parser.errors
-puts "(params['Weight'][_index]/params['Height'].all(args['0']).lastBefore(params['TakenAt'])^2)+2*params['Other'][_index]*params['Other'][_index]*params['other'][_index]"
+puts src
+puts "  (params['Weight'][_index]/params['Height'].all(args['0']).lastBefore(params['TakenAt'])^2)+2*params['Other'][_index]*params['Other'][_index]*params['other'][_index]"
