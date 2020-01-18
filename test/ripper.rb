@@ -72,7 +72,7 @@ class DemoBuilder < Ripper::SexpBuilder
       ttype, token = arg
       case ttype
       when :bt_quantity
-        "params['#{token}']"
+        "quantities['#{token}']"
       when :bt_expression
         @parts << {type: :indexed, content: token}
         "parts[#{@parts.length - 1}]"
@@ -119,10 +119,10 @@ class DemoBuilder < Ripper::SexpBuilder
     when :bt_quantity
       if mtype == :quantity_method
         part_index = @parts.length
-        @parts << {type: :unindexed, content: "params['#{left[1]}']#{dot.to_s}#{method}"}
+        @parts << {type: :unindexed, content: "quantities['#{left[1]}']#{dot.to_s}#{method}"}
         [:bt_quantity_method_call, "parts[#{part_index}]", part_index]
       else
-        [:bt_numeric_method_call, "params['#{left[1]}'][_index]#{dot.to_s}#{method}"]
+        [:bt_numeric_method_call, "quantities['#{left[1]}'][_index]#{dot.to_s}#{method}"]
       end
     when :bt_quantity_method_call
       if mtype == :quantity_method
@@ -174,7 +174,7 @@ class DemoBuilder < Ripper::SexpBuilder
     [
       :bt_expression,
       [left, right].map do |side|
-        side[0] == :bt_quantity ? "params['#{side[1]}'][_index]" : "#{side[1]}"
+        side[0] == :bt_quantity ? "quantities['#{side[1]}'][_index]" : "#{side[1]}"
       end.join(op.to_s)
     ]
   end
