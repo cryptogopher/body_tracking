@@ -79,6 +79,7 @@ module BodyTracking
       end
     end
 
+
     class FormulaBuilder < Ripper::SexpBuilder
       def initialize(*args)
         super(*args)
