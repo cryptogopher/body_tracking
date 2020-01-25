@@ -14,13 +14,6 @@ module BodyTracking
       end
 
       def validate
-        # TODO: add tests
-        # failing test vectors:
-        # - fcall disallowed: "abs(Fats)+Energy < 10"
-        # working test vectors:
-        #   ((Energy-Calculated)/Energy).abs > 0.2
-        #   Fats.nil? || Fats/Proteins > 2
-
         parser = FormulaBuilder.new(@formula)
         identifiers, parts = parser.parse
         errors = parser.errors
@@ -191,7 +184,7 @@ module BodyTracking
               [right[1], :unknown_method]
             end
           else
-            raise NotImplementedError
+            raise NotImplementedError, right.inspect
           end
 
         case left[0]
@@ -211,7 +204,7 @@ module BodyTracking
           else
             [:bt_numeric_method_call, "#{left[1]}#{dot.to_s}#{method}"]
           end
-        when :bt_numeric_method_call
+        when :bt_numeric_method_call, :bt_expression
           if mtype == :quantity_method
             # TODO: add error reporting
             raise NotImplementedError
@@ -219,7 +212,7 @@ module BodyTracking
             [:bt_numeric_method_call, "#{left[1]}#{dot.to_s}#{method}"]
           end
         else
-          raise NotImplementedError
+          raise NotImplementedError, left.inspect
         end
       end
 
@@ -279,8 +272,16 @@ module BodyTracking
         [:bt_quantity, token]
       end
 
+      def on_float(token)
+        [:bt_expression, token]
+      end
+
       def on_ident(token)
         [:bt_ident, token]
+      end
+
+      def on_int(token)
+        [:bt_expression, token]
       end
 
       def on_kw(token)
@@ -295,10 +296,12 @@ module BodyTracking
         stmts.map do |stmt|
           ttype, token = stmt
           case ttype
-          when :bt_expression
+          when :bt_expression, :bt_numeric_method_call
             token
+          when :bt_quantity
+            "quantities['#{token}'][_index]"
           else
-            raise NotImplementedError
+            raise NotImplementedError, stmt.inspect
           end
         end.join(';')
       end
