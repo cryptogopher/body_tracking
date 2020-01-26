@@ -29,6 +29,24 @@ class Quantity < ActiveRecord::Base
     if new_record?
       self.domain ||= :diet
     end
+    @formula = Formula.new(self.project, self.formula)
+  end
+
+  def formula=(value)
+    @formula = Formula.new(self.project, value)
+    super(value)
+  end
+
+  def formula_valid?
+    @formula.valid?
+  end
+
+  def formula_quantities
+    @formula.get_quantities
+  end
+
+  def calculate(inputs)
+    @formula.calculate(inputs)
   end
 
   def movable?(direction)
@@ -45,14 +63,6 @@ class Quantity < ActiveRecord::Base
     else
       false
     end
-  end
-
-  def formula_quantities
-    Formula.new(self.project, self.formula).get_quantities
-  end
-
-  def calculate(inputs)
-    Formula.new(self.project, self.formula).calculate(inputs)
   end
 
   def self.filter(project, filters)

@@ -4,6 +4,7 @@ module BodyTracking
     require 'set'
 
     class InvalidFormula < RuntimeError; end
+    class InvalidInputs < RuntimeError; end
 
     class Formula
       def initialize(project, formula)
@@ -33,28 +34,36 @@ module BodyTracking
       end
 
       def get_quantities
-        raise RuntimeError, 'Invalid formula' unless self.valid?
+        raise(InvalidFormula, 'Invalid formula') unless self.valid?
 
         @quantities.to_a
       end
 
-      #"params.values.first.each_with_index.map { |*, _index| #{@paramed_formula} }"
       def calculate(inputs)
-        raise RuntimeError, 'Invalid formula' unless self.valid?
+        byebug
+        params = inputs.map { |q, v| [q.name, v.transpose[0]] }.to_h
+        length = params.values.first.length
 
-        values = inputs.map { |q, v| [q.name, v.transpose[0]] }.to_h
-        puts values.inspect
-        begin
-          get_binding(values).eval(@paramed_formula).map { |x| [x, nil] }
-        rescue Exception => e
-          puts e.message
-          [[nil, nil]] * inputs.values.first.length
+        raise(InvalidFormula, 'Invalid formula') unless self.valid?
+        raise InvalidInputs unless params.values.all? { |v| v.length == length }
+
+        args = []
+        @parts.each do |p|
+          args << get_binding(params, length)
+            .eval(
+              p[:type] == :indexed ? "length.times.map { |_index| #{p[:content]} }" :
+                p[:content]
+            )
         end
+        args.last.map { |v| [v, nil] }
+      rescue Exception => e
+        puts e.message
+        [[nil, nil]] * length
       end
 
       private
 
-      def get_binding(params)
+      def get_binding(params, _length)
         binding
       end
     end
@@ -73,6 +82,8 @@ module BodyTracking
     end
 
 
+    # List of events with parameter count:
+    # https://github.com/racker/ruby-1.9.3-lucid/blob/master/ext/ripper/eventids1.c
     class FormulaBuilder < Ripper::SexpBuilder
       def initialize(*args)
         super(*args)
@@ -109,7 +120,7 @@ module BodyTracking
 
       def on_program(stmts)
         @parts << {type: :indexed, content: join_stmts(stmts)}
-        [@identifiers, @parts]
+        [@identifiers.to_a, @parts]
       end
 
       def on_string_content
