@@ -29,25 +29,9 @@ class Quantity < ActiveRecord::Base
     if new_record?
       self.domain ||= :diet
     end
-    @formula = Formula.new(self.project, self.formula)
   end
 
-  def formula=(value)
-    @formula = Formula.new(self.project, value)
-    super(value)
-  end
-
-  def formula_valid?
-    @formula.valid?
-  end
-
-  def formula_quantities
-    @formula.get_quantities
-  end
-
-  def calculate(inputs)
-    @formula.calculate(inputs)
-  end
+  delegate :valid?, :quantities, :calculate, to: :f_obj, prefix: :formula, allow_nil: true
 
   def movable?(direction)
     case direction
@@ -73,5 +57,11 @@ class Quantity < ActiveRecord::Base
     end
 
     quantities
+  end
+
+  private
+
+  def f_obj
+    Formula.new(self.project, self.formula) if self.formula?
   end
 end

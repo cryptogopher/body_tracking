@@ -8,7 +8,7 @@ module BodyTracking
 
     class Formula
       def initialize(project, formula)
-        @project_quantities = Quantity.where(project: project)
+        @project = project
         @formula = formula
         @parts = nil
         @quantities = nil
@@ -19,7 +19,7 @@ module BodyTracking
         identifiers, parts = parser.parse
         errors = parser.errors
 
-        quantities = @project_quantities.where(name: identifiers)
+        quantities = Quantity.where(project: @project, name: identifiers)
         quantities_names = quantities.pluck(:name)
         (identifiers - quantities_names).each do |q|
           errors << [:unknown_quantity, {quantity: q}]
@@ -33,27 +33,24 @@ module BodyTracking
         @quantities || self.validate.empty?
       end
 
-      def get_quantities
+      def quantities
         raise(InvalidFormula, 'Invalid formula') unless self.valid?
 
         @quantities.to_a
       end
 
       def calculate(inputs)
-        byebug
-        params = inputs.map { |q, v| [q.name, v.transpose[0]] }.to_h
-        length = params.values.first.length
+        quantities = inputs.map { |q, v| [q.name, v.transpose[0]] }.to_h
+        length = quantities.values.first.length
 
         raise(InvalidFormula, 'Invalid formula') unless self.valid?
-        raise InvalidInputs unless params.values.all? { |v| v.length == length }
+        raise InvalidInputs unless quantities.values.all? { |v| v.length == length }
 
         args = []
         @parts.each do |p|
-          args << get_binding(params, length)
-            .eval(
-              p[:type] == :indexed ? "length.times.map { |_index| #{p[:content]} }" :
-                p[:content]
-            )
+          code = p[:type] == :indexed ?
+            "length.times.map { |index| #{p[:content]} }" : p[:content]
+          args << get_binding(quantities, args, length).eval(code)
         end
         args.last.map { |v| [v, nil] }
       rescue Exception => e
@@ -63,7 +60,7 @@ module BodyTracking
 
       private
 
-      def get_binding(params, _length)
+      def get_binding(quantities, args, length)
         binding
       end
     end
@@ -206,7 +203,7 @@ module BodyTracking
                        content: "quantities['#{left[1]}']#{dot.to_s}#{method}"}
             [:bt_quantity_method_call, "parts[#{part_index}]", part_index]
           else
-            [:bt_numeric_method_call, "quantities['#{left[1]}'][_index]#{dot.to_s}#{method}"]
+            [:bt_numeric_method_call, "quantities['#{left[1]}'][index]#{dot.to_s}#{method}"]
           end
         when :bt_quantity_method_call
           if mtype == :quantity_method
@@ -258,7 +255,7 @@ module BodyTracking
         [
           :bt_expression,
           [left, right].map do |side|
-            side[0] == :bt_quantity ? "quantities['#{side[1]}'][_index]" : "#{side[1]}"
+            side[0] == :bt_quantity ? "quantities['#{side[1]}'][index]" : "#{side[1]}"
           end.join(op.to_s)
         ]
       end
@@ -310,7 +307,7 @@ module BodyTracking
           when :bt_expression, :bt_numeric_method_call
             token
           when :bt_quantity
-            "quantities['#{token}'][_index]"
+            "quantities['#{token}'][index]"
           else
             raise NotImplementedError, stmt.inspect
           end

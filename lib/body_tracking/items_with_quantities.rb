@@ -83,10 +83,9 @@ module BodyTracking
         # quantity with formula has all dependencies satisfied, requires calculation
         if deps.empty?
           output_ids = items.select { |i| subitems[q.name][i.id].nil? }.map(&:id)
-        byebug
           input_q = q.formula_quantities
           inputs = input_q.map { |i_q| [i_q, completed_q[i_q.name].values_at(*output_ids)] }
-          q.calculate(inputs.to_h).each_with_index do |result, index|
+          q.formula_calculate(inputs.to_h).each_with_index do |result, index|
             subitems[q.name][output_ids[index]] = result
           end
           unchecked_q.unshift([q, deps])
