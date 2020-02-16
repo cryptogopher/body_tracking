@@ -11,12 +11,18 @@ class CreateSchema < ActiveRecord::Migration
       t.references :project
       t.integer :domain
       t.string :name
-      t.string :formula
       t.string :description
       # fields for awesome_nested_set
       t.references :parent
       t.integer :lft, null: false, index: true
       t.integer :rgt, null: false, index: true
+      t.timestamps null: false
+    end
+
+    create_table :formulas do |t|
+      t.references :quantity
+      t.string :code
+      t.boolean :zero_nil
       t.timestamps null: false
     end
 

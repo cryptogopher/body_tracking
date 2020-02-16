@@ -1,6 +1,4 @@
 class Quantity < ActiveRecord::Base
-  include BodyTracking::Formula
-
   enum domain: {
     diet: 0,
     measurement: 1,
@@ -18,20 +16,22 @@ class Quantity < ActiveRecord::Base
   has_and_belongs_to_many :column_views
   has_many :readouts
 
+  has_one :formula, inverse_of: :quantity, dependent: :destroy, validate: true
+  accepts_nested_attributes_for :formula, allow_destroy: true, reject_if: proc { |attrs|
+    attrs['code'].blank?
+  }
+
   validates :name, presence: true, uniqueness: {scope: :project_id}
   validates :domain, inclusion: {in: domains.keys}
   validate if: -> { parent.present? } do
     errors.add(:parent, :parent_domain_mismatch) unless domain == parent.domain
   end
-  validates :formula, formula: {allow_nil: true}
 
   after_initialize do
     if new_record?
       self.domain ||= :diet
     end
   end
-
-  delegate :valid?, :quantities, :calculate, to: :f_obj, prefix: :formula, allow_nil: true
 
   def movable?(direction)
     case direction
@@ -57,11 +57,5 @@ class Quantity < ActiveRecord::Base
     end
 
     quantities
-  end
-
-  private
-
-  def f_obj
-    Formula.new(self.project, self.formula) if self.formula?
   end
 end

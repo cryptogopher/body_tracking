@@ -1,83 +1,10 @@
 module BodyTracking
-  module Formula
+  module FormulaBuilder
     require 'ripper'
     require 'set'
 
     class InvalidFormula < RuntimeError; end
     class InvalidInputs < RuntimeError; end
-
-    class Formula
-      def initialize(project, formula)
-        @project = project
-        @formula = formula
-        @parts = nil
-        @quantities = nil
-      end
-
-      def validate
-        parser = FormulaBuilder.new(@formula)
-        identifiers, parts = parser.parse
-        errors = parser.errors
-
-        quantities = Quantity.where(project: @project, name: identifiers)
-        quantities_names = quantities.pluck(:name)
-        (identifiers - quantities_names).each do |q|
-          errors << [:unknown_quantity, {quantity: q}]
-        end
-
-        @parts, @quantities = parts, quantities if errors.empty?
-        errors
-      end
-
-      def valid?
-        @quantities || self.validate.empty?
-      end
-
-      def quantities
-        raise(InvalidFormula, 'Invalid formula') unless self.valid?
-
-        @quantities.to_a
-      end
-
-      def calculate(inputs)
-        quantities = inputs.map { |q, v| [q.name, v.transpose[0]] }.to_h
-        length = quantities.values.first.length
-
-        raise(InvalidFormula, 'Invalid formula') unless self.valid?
-        raise InvalidInputs unless quantities.values.all? { |v| v.length == length }
-
-        args = []
-        @parts.each do |p|
-          code = p[:type] == :indexed ?
-            "length.times.map { |index| #{p[:content]} }" : p[:content]
-          args << get_binding(quantities, args, length).eval(code)
-        end
-        args.last.map { |v| [v, nil] }
-      rescue Exception => e
-        puts e.message
-        [[nil, nil]] * length
-      end
-
-      private
-
-      def get_binding(quantities, args, length)
-        binding
-      end
-    end
-
-
-    class FormulaValidator < ActiveModel::EachValidator
-      def initialize(options)
-        super(options)
-      end
-
-      def validate_each(record, attribute, value)
-        Formula.new(record.project, value).validate.each do |message, params|
-          record.errors.add(attribute, message, params)
-        end
-      end
-    end
-
 
     # List of events with parameter count:
     # https://github.com/racker/ruby-1.9.3-lucid/blob/master/ext/ripper/eventids1.c
