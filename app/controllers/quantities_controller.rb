@@ -79,18 +79,21 @@ class QuantitiesController < ApplicationController
   end
 
   def quantity_params
-    params[:quantity].delete(:formula) if params[:quantity][:formula].blank?
     params.require(:quantity).permit(
       :domain,
       :parent_id,
       :name,
       :description,
-      :formula
+      formula_attributes:
+      [
+        :code,
+        :zero_nil
+      ]
     )
   end
 
   def prepare_quantities
     @quantities = @project.quantities.filter(@project, session[:q_filters])
-      .includes(:column_views)
+      .includes(:column_views, :formula)
   end
 end

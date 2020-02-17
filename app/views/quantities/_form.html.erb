@@ -11,6 +11,8 @@
     {required: true, label: :field_parent_quantity, include_blank: t('.null_parent')} %></p>
   <p><%= f.text_field :name, size: 25, required: true %></p>
   <p><%= f.text_field :description, style: "width: 100%;" %></p>
-  <p><%= f.text_field :formula, placeholder: t('.formula_placeholder'),
-      style: "width: 100%;" %></p>
+  <%= f.fields_for :formula do |ff| %>
+    <p><%= ff.text_field :code, placeholder: t('.formula_placeholder'),
+        style: "width: 100%;" %></p>
+  <% end %>
 </div>

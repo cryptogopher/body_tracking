@@ -1,7 +1,7 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 class FormulaTest < ActiveSupport::TestCase
-  include BodyTracking::Formula
+  include BodyTracking::FormulaBuilder
 
   def setup
   end
