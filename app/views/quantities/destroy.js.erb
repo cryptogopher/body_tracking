@@ -1,0 +1,6 @@
+<%= render partial: 'body_trackers/flash' %>
+<% if @quantity.destroyed? %>
+  <% @quantity_tree.each do |q| %>
+    $('tr[id=quantity-<%= q.id %>]').nextUntil('tr.quantity').addBack().remove();
+  <% end %>
+<% end %>

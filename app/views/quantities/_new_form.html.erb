@@ -1,0 +1,18 @@
+<h2><%= t ".heading_new_quantity" %></h2>
+
+<%= labelled_form_for @quantity,
+  url: project_quantities_path(@project),
+  remote: true,
+  html: {id: 'new-quantity-form', name: 'new-quantity-form'} do |f| %>
+
+  <%= render partial: 'quantities/form', locals: {f: f} %>
+
+  <div class="tabular">
+    <p>
+      <%= submit_tag l(:button_create) %>
+      <%= link_to l(:button_cancel), "#",
+        onclick: '$("#new-quantity").empty(); return false;' %>
+    </p>
+  </div>
+<% end %>
+<hr>

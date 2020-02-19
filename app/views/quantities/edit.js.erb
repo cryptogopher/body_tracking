@@ -1,0 +1,8 @@
+<%= render partial: 'body_trackers/flash' %>
+$('tr[id=quantity-<%= @quantity.id %>]').nextUntil('tr.quantity').remove();
+var columns = $('table > thead > tr > th').length;
+$('tr[id=quantity-<%= @quantity.id %>]').nextAll('tr.quantity').first().before(
+  '<tr><td class="form" colspan="'+columns+'">' +
+  '<div id="edit-quantity"><%= j render partial: "quantities/edit_form" %></div>' +
+  '</td></tr>'
+);

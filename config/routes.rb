@@ -25,7 +25,7 @@ resources :projects, shallow: true do
         end
       end
       resources :sources, only: [:index, :create, :destroy]
-      resources :quantities, only: [:index, :create, :edit, :update, :destroy] do
+      resources :quantities, only: [:index, :new, :create, :edit, :update, :destroy] do
         member do
           post 'move/:direction', to: 'quantities#move', as: :move
         end

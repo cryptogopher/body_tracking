@@ -1,0 +1,15 @@
+<%= labelled_form_for @quantity,
+  url: quantity_path(@quantity),
+  method: :patch, remote: true,
+  html: {id: 'edit-quantity-form', name: 'edit-quantity-form'} do |f| %>
+
+  <%= render partial: 'quantities/form', locals: {f: f} %>
+
+  <div class="tabular">
+    <p>
+      <%= submit_tag l(:button_save) %>
+      <%= link_to l(:button_cancel), "#",
+        onclick: '$(this).closest("tr").remove(); return false;' %>
+    </p>
+  </div>
+<% end %>

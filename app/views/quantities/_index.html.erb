@@ -18,6 +18,7 @@
         <%
           next if q.new_record?
           quantity_class = "quantity"
+          quantity_class += " primary" unless q.column_views.empty?
           quantity_class += " project idnt idnt-#{level+1}"
         %>
         <tr id="quantity-<%= q.id %>" class="<%= quantity_class %>">
@@ -50,30 +51,6 @@
               class: "icon icon-edit"
             } %>
             <%= delete_link quantity_path(q), {remote: true, data: {}} %>
-          </td>
-        </tr>
-        <% next unless (q == @quantity) &&
-          ((action_name == "edit") ||
-           (action_name == "update" && @quantity.errors.present?)) %>
-        <tr>
-          <td class="form" colspan="6">
-            <div id="edit-quantity">
-              <%= labelled_form_for @quantity,
-                url: quantity_path(@quantity),
-                method: :patch, remote: true,
-                html: {id: 'quantity-edit-form', name: 'quantity-edit-form'} do |f| %>
-
-                <%= render partial: 'quantities/form', locals: {f: f} %>
-
-                <div class="tabular">
-                  <p>
-                    <%= submit_tag l(:button_save) %>
-                    <%= link_to l(:button_cancel), "#",
-                      onclick: '$(this).closest("tr").remove(); return false;' %>
-                  </p>
-                </div>
-              <% end %>
-            </div>
           </td>
         </tr>
       <% end %>

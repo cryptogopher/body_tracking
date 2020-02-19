@@ -2,29 +2,48 @@ class QuantitiesController < ApplicationController
   menu_item :body_trackers
 
   before_action :init_session_filters
-  before_action :find_project_by_project_id, only: [:index, :parents, :create, :filter]
+  before_action :find_project_by_project_id, only: [:index, :new, :create, :filter, :parents]
   before_action :find_quantity, only: [:edit, :update, :destroy, :move]
   before_action :authorize
 
   def index
-    @quantity = @project.quantities.new
-    @quantity.domain = Quantity.domains[session[:q_filters][:domain]] || @quantity.domain
     prepare_quantities
   end
 
-  def parents
-    @form = params[:form]
-    @domain = params[:quantity][:domain]
+  def new
+    @quantity = @project.quantities.new
+    @quantity.domain = Quantity.domains[session[:q_filters][:domain]] || @quantity.domain
+    @quantity.build_formula
   end
 
   def create
     @quantity = @project.quantities.new(quantity_params)
     if @quantity.save
       flash[:notice] = 'Created new quantity'
-      redirect_to project_quantities_url(@project)
+      prepare_quantities
     else
+      render :new
+    end
+  end
+
+  def edit
+    @quantity.build_formula unless @quantity.formula
+  end
+
+  def update
+    if @quantity.update(quantity_params)
+      flash[:notice] = 'Updated quantity'
       prepare_quantities
       render :index
+    else
+      render :edit
+    end
+  end
+
+  def destroy
+    @quantity_tree = @quantity.self_and_descendants.load
+    if @quantity.destroy
+      flash[:notice] = 'Deleted quantity'
     end
   end
 
@@ -34,25 +53,9 @@ class QuantitiesController < ApplicationController
     render :index
   end
 
-  def edit
-    prepare_quantities
-    render :index
-  end
-
-  def update
-    if @quantity.update(quantity_params)
-      flash[:notice] = 'Updated quantity'
-    end
-    prepare_quantities
-    render :index
-  end
-
-  def destroy
-    if @quantity.destroy
-      flash[:notice] = 'Deleted quantity'
-    end
-    prepare_quantities
-    render :index
+  def parents
+    @form = params[:form]
+    @domain = params[:quantity][:domain]
   end
 
   def move
