@@ -3,7 +3,8 @@ class QuantitiesController < ApplicationController
 
   before_action :init_session_filters
   before_action :find_project_by_project_id, only: [:index, :new, :create, :filter, :parents]
-  before_action :find_quantity, only: [:edit, :update, :destroy, :move]
+  before_action :find_quantity, only: [:edit, :update, :destroy, :move,
+                                       :new_child, :create_child]
   before_action :authorize
 
   def index
@@ -73,6 +74,24 @@ class QuantitiesController < ApplicationController
 
     prepare_quantities
     render :index
+  end
+
+  def new_child
+    @parent_quantity = @quantity
+    @quantity = @project.quantities.new
+    @quantity.domain = @parent_quantity.domain
+    @quantity.parent = @parent_quantity
+    @quantity.build_formula
+  end
+
+  def create_child
+    @quantity = @project.quantities.new(quantity_params)
+    if @quantity.save
+      flash[:notice] = 'Created new quantity'
+      prepare_quantities
+    else
+      render :new_child
+    end
   end
 
   private

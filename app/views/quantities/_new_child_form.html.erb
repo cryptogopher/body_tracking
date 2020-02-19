@@ -1,0 +1,15 @@
+<%= labelled_form_for @quantity,
+  url: create_child_quantity_path(@parent_quantity),
+  remote: true,
+  html: {id: 'new-child-form', name: 'new-child-form'} do |f| %>
+
+  <%= render partial: 'quantities/form', locals: {f: f} %>
+
+  <div class="tabular">
+    <p>
+      <%= submit_tag l(:button_create) %>
+      <%= link_to l(:button_cancel), "#",
+        onclick: '$(this).closest("tr").remove(); return false;' %>
+    </p>
+  </div>
+<% end %>

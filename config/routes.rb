@@ -27,6 +27,8 @@ resources :projects, shallow: true do
       resources :sources, only: [:index, :create, :destroy]
       resources :quantities, only: [:index, :new, :create, :edit, :update, :destroy] do
         member do
+          get 'new_child'
+          post 'create_child'
           post 'move/:direction', to: 'quantities#move', as: :move
         end
         collection do

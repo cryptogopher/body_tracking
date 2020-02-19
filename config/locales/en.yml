@@ -17,6 +17,7 @@ en:
   field_code: 'Formula'
   field_shortname: 'Short name'
   button_retake: 'Retake'
+  button_child: 'Child'
   activerecord:
     errors:
       models:

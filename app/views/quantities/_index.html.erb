@@ -46,6 +46,10 @@
           <td class="description"><%= q.description %></td>
           <td class="formula"><%= checked_image q.formula %></td>
           <td class="action unwrappable">
+            <%= link_to l(:button_child), new_child_quantity_path(q), {
+              remote: true,
+              class: "icon icon-add"
+            } %>
             <%= link_to l(:button_edit), edit_quantity_path(q), {
               remote: true,
               class: "icon icon-edit"

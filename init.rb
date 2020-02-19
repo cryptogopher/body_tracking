@@ -28,7 +28,7 @@ Redmine::Plugin.register :body_tracking do
       ingredients: [:new, :create, :edit, :update, :destroy, :toggle, :toggle_column,
                     :import],
       sources: [:create, :destroy],
-      quantities: [:new, :create, :edit, :update, :destroy, :move],
+      quantities: [:new, :create, :edit, :update, :destroy, :move, :new_child, :create_child],
       units: [:create, :destroy],
     }, require: :loggedin
   end
