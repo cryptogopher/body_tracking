@@ -126,13 +126,19 @@ class LoadDefaults < ActiveRecord::Migration
           name: "Body composition", description: ""
         b2 = Quantity.create project: nil, domain: :measurement, parent: b1,
           name: "Weight", description: "Total weight"
-        b3 = Quantity.create project: nil, domain: :measurement, parent: b1,
+        b3 = Quantity.create project: nil, domain: :measurement, parent: b2,
           name: "Fat", description: "Fat weight"
-        b4 = Quantity.create project: nil, domain: :measurement, parent: b1,
+        b4 = Quantity.create project: nil, domain: :measurement, parent: b2,
           name: "Muscle", description: "Muscle weight"
         b5 = Quantity.create project: nil, domain: :measurement, parent: b1,
+          name: "Composition", description: ""
+        b6 = Quantity.create project: nil, domain: :measurement, parent: b5,
+          name: "% fat", description: "Fat as a % of total body weight"
+        b7 = Quantity.create project: nil, domain: :measurement, parent: b5,
+          name: "% muscle", description: "Muscle as a % of total body weight"
+        b8 = Quantity.create project: nil, domain: :measurement, parent: b1,
           name: "RM", description: "Resting metabolism"
-        b6 = Quantity.create project: nil, domain: :measurement, parent: b1,
+        b9 = Quantity.create project: nil, domain: :measurement, parent: b1,
           name: "VF", description: "Visceral fat"
 
         # Calculated quantities go at the and to make sure dependencies exist
