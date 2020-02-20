@@ -13,6 +13,7 @@
   <p><%= f.text_field :description, style: "width: 100%;" %></p>
   <%= f.fields_for :formula do |ff| %>
     <p><%= ff.text_field :code, placeholder: t('.formula_placeholder'),
-        style: "width: 100%;" %></p>
+      style: "width: 100%;" %></p>
+    <p><%= ff.check_box :zero_nil, {label: ''} %><%= t('.zero_nil') %></p>
   <% end %>
 </div>

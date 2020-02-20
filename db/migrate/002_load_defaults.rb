@@ -13,6 +13,8 @@ class LoadDefaults < ActiveRecord::Migration
         # https://www.fsai.ie/legislation/food_legislation/food_information_fic/nutrition_labelling.html
         e1 = Quantity.create project: nil, domain: :diet, parent: nil, name: "Energy",
           description: "Total energy"
+        e2 = Quantity.create project: nil, domain: :diet, parent: e1, name: "Calculated",
+          description: "Total energy calculated from macronutrients"
 
         p1 = Quantity.create project: nil, domain: :diet, parent: nil, name: "Proteins",
           description: "Total amount of proteins"
@@ -141,10 +143,9 @@ class LoadDefaults < ActiveRecord::Migration
         b9 = Quantity.create project: nil, domain: :measurement, parent: b1,
           name: "VF", description: "Visceral fat"
 
-        # Calculated quantities go at the and to make sure dependencies exist
-        e2 = Quantity.create project: nil, domain: :diet, parent: e1, name: "Calculated",
-          description: "Total energy calculated from macronutrients",
-          formula_attributes: {code: "4*Proteins + 9*Fats + 4*Carbohydrates", zero_nil: true}
+        # Formulas go at the and to make sure dependencies exist
+        e2.create_formula code: "4*Proteins + 9*Fats + 4*Carbohydrates", zero_nil: true
+        b3.create_formula code: "'% fat' * 'Weight'", zero_nil: true
 
         Source.create project: nil, name: "nutrition label",
           description: "nutrition facts taken from package nutrition label"

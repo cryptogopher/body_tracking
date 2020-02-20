@@ -123,6 +123,7 @@ en:
       null_parent: '- none -'
       formula_placeholder: 'provide if value of quantity has to be computed in terms of
         other quantities'
+      zero_nil: 'substitute missing formula values with 0?'
   units:
     index:
       heading: 'Units'
