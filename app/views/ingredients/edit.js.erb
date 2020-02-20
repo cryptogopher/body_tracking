@@ -2,7 +2,7 @@
 $('tr[id=ingredient-<%= @ingredient.id %>]').nextUntil('tr.primary', ':not(.ingredient)')
   .remove();
 var columns = $('table > thead > tr > th').length;
-$('tr[id=ingredient-<%= @ingredient.id %>]').nextAll('tr.primary').first().before(
+$('tr[id=ingredient-<%= @ingredient.id %>]').nextUntil('tr.primary').addBack().after(
   '<tr><td class="form" colspan="'+columns+'">' +
   '<div id="edit-ingredient"><%= j render partial: "ingredients/edit_form" %></div>' +
   '</td></tr>'

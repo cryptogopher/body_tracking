@@ -1,7 +1,7 @@
 <%= render partial: 'body_trackers/flash' %>
 $('tr[id=quantity-<%= @parent_quantity.id %>]').nextUntil('tr.quantity').remove();
 var columns = $('table > thead > tr > th').length;
-$('tr[id=quantity-<%= @parent_quantity.id %>]').nextAll('tr.quantity').first().before(
+$('tr[id=quantity-<%= @parent_quantity.id %>]').nextUntil('tr.quantity').addBack().after(
   '<tr><td class="form" colspan="'+columns+'">' +
   '<div id="new-child-quantity"><%= j render partial: "quantities/new_child_form" %></div>' +
   '</td></tr>'
