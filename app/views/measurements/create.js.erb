@@ -1,4 +1,3 @@
-<%= render partial: 'body_trackers/flash' %>
 $('#new-measurement').empty();
 <% if defined? @quantities %>
   $('#readouts').html('<%= j render partial: 'measurements/readouts' %>');

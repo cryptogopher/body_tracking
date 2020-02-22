@@ -1,4 +1,3 @@
-<%= render partial: 'body_trackers/flash' %>
 <% if @ingredient.destroyed? %>
   $('tr[id=ingredient-<%= @ingredient.id %>]').nextUntil('tr.primary').addBack().remove();
 <% end %>

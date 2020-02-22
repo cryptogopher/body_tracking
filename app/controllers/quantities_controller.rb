@@ -55,6 +55,7 @@ class QuantitiesController < BodyTrackingPluginController
   def parents
     @form = params[:form]
     @domain = params[:quantity][:domain]
+    render layout: false
   end
 
   def move
