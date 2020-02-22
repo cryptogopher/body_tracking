@@ -45,6 +45,7 @@ en:
   body_trackers:
     index:
       heading: 'Summary'
+  layouts:
     sidebar:
       heading_body_trackers: 'Body trackers'
       heading_measurements: 'Measurements'

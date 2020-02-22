@@ -1,7 +1,5 @@
-class IngredientsController < ApplicationController
+class IngredientsController < BodyTrackingPluginController
   require 'csv'
-
-  menu_item :body_trackers
 
   helper :body_trackers
   helper_method :current_view

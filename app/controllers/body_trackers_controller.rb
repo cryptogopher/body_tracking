@@ -1,6 +1,4 @@
-class BodyTrackersController < ApplicationController
-  menu_item :body_trackers
-
+class BodyTrackersController < BodyTrackingPluginController
   before_action :find_project_by_project_id, only: [:index, :defaults]
   before_action :authorize
 

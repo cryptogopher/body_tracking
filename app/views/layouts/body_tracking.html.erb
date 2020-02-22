@@ -3,5 +3,7 @@
 <% end %>
 
 <% content_for :sidebar do %>
-  <%= render partial: 'body_trackers/sidebar' %>
+  <%= render partial: 'layouts/sidebar' %>
 <% end %>
+
+<%= render :file => "layouts/base" %>

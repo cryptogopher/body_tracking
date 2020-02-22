@@ -1,6 +1,4 @@
-class MeasurementsController < ApplicationController
-  menu_item :body_trackers
-
+class MeasurementsController < BodyTrackingPluginController
   helper :body_trackers
 
   before_action :init_session_filters
