@@ -13,10 +13,15 @@
             onblur: '$("#filters-form").submit(); return false;' %>
         </td>
         <td style="width:100%;">
-          <%= text_field_tag 'filters[formula]', session[:m_filters][:formula],
+          <%= text_field_tag 'filters[formula][code]', session[:m_filters][:formula][:code],
             placeholder: 'conditional expression including readouts', size: 40,
             style: 'box-sizing:border-box; width:100%;',
             onblur: '$("#filters-form").submit(); return false;' %>
+        </td>
+        <td>
+          <%= check_box_tag 'filters[formula][zero_nil]',
+            session[:m_filters][:formula][:zero_nil] %>
+          <%= t '.zero_nil' %>
         </td>
         <td>
           <%= link_to l(:button_apply), '#', class: "icon icon-checked",

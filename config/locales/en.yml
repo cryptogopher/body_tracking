@@ -62,6 +62,8 @@ en:
   measurements:
     contextual:
       link_new_measurement: 'New measurement'
+    filters:
+      zero_nil: 'missing -> 0?'
     form:
       button_new_readout: 'Add readout'
       button_delete_readout: 'Delete'

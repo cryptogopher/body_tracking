@@ -80,7 +80,7 @@ class MeasurementsController < ApplicationController
   private
 
   def init_session_filters
-    session[:m_filters] ||= {}
+    session[:m_filters] ||= {formula: {}}
   end
 
   def measurement_params
