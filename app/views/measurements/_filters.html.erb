@@ -19,11 +19,6 @@
             onblur: '$("#filters-form").submit(); return false;' %>
         </td>
         <td>
-          <%= check_box_tag 'filters[formula][zero_nil]',
-            session[:m_filters][:formula][:zero_nil] %>
-          <%= t '.zero_nil' %>
-        </td>
-        <td>
           <%= link_to l(:button_apply), '#', class: "icon icon-checked",
             onclick: '$("#filters-form").submit(); return false;' %>
         </td>
@@ -32,6 +27,18 @@
             onclick: '$("#filters-form input, #filters-form select").val("");
                       $("#filters-form").submit(); return false;' %>
         </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="padding-top:4px;">
+          <%= label_tag do %>
+            <%= check_box_tag 'filters[formula][zero_nil]',
+              session[:m_filters][:formula][:zero_nil] %>
+            <%= t 'quantities.form.zero_nil' %>
+          <% end %>
+        </td>
+        <td></td>
+        <td></td>
       </tr>
     </table>
     <% end %>
