@@ -67,7 +67,7 @@ module BodyTracking
         q, deps = unchecked_q.shift
 
         # quantity not computable (no formula) or not requiring calculation/computed
-        if !q.formula? || !q.formula_valid? || (subitems[q.name].length == items.count)
+        if !q.formula || !q.formula.valid? || (subitems[q.name].length == items.count)
           completed_q[q.name] = subitems.delete(q.name) { {} }
           completed_q[q.name].default = [nil, nil]
           next
@@ -75,7 +75,7 @@ module BodyTracking
 
         # quantity with formula requires refresh of dependencies availability
         if deps.nil? || !deps.empty?
-          deps ||= q.formula_quantities
+          deps ||= q.formula.quantities
           deps.reject! { |q| completed_q.has_key?(q.name) }
           deps.each { |q| unchecked_q << [q, nil] unless unchecked_q.index { |u| u[0] == q } }
         end
@@ -83,9 +83,9 @@ module BodyTracking
         # quantity with formula has all dependencies satisfied, requires calculation
         if deps.empty?
           output_ids = items.select { |i| subitems[q.name][i.id].nil? }.map(&:id)
-          input_q = q.formula_quantities
+          input_q = q.formula.quantities
           inputs = input_q.map { |i_q| [i_q, completed_q[i_q.name].values_at(*output_ids)] }
-          q.formula_calculate(inputs.to_h).each_with_index do |result, index|
+          q.formula.calculate(inputs.to_h).each_with_index do |result, index|
             subitems[q.name][output_ids[index]] = result
           end
           unchecked_q.unshift([q, deps])
