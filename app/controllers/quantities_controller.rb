@@ -115,6 +115,6 @@ class QuantitiesController < BodyTrackingPluginController
 
   def prepare_quantities
     @quantities = @project.quantities.filter(@project, session[:q_filters])
-      .includes(:column_views, :formula)
+      .includes(:column_views, :formula, :parent)
   end
 end
