@@ -16,23 +16,6 @@ class Formula < ActiveRecord::Base
     end
   end
 
-  private
-
-  def parse
-    parser = FormulaBuilder.new(self.code)
-    identifiers, parts = parser.parse
-    errors = parser.errors
-
-    quantities = Quantity.where(project: self.quantity.project, name: identifiers)
-    quantities_names = quantities.pluck(:name)
-    (identifiers - quantities_names).each do |q|
-      errors << [:unknown_quantity, {quantity: q}]
-    end
-
-    @parts, @quantities = parts, quantities.to_a if errors.empty?
-    errors
-  end
-
   def calculate(inputs)
     quantities = inputs.map { |q, v| [q.name, v.transpose[0]] }.to_h
     length = quantities.values.first.length
@@ -50,6 +33,23 @@ class Formula < ActiveRecord::Base
   rescue Exception => e
     puts e.message
     [[nil, nil]] * length
+  end
+
+  private
+
+  def parse
+    parser = FormulaBuilder.new(self.code)
+    identifiers, parts = parser.parse
+    errors = parser.errors
+
+    quantities = Quantity.where(project: self.quantity.project, name: identifiers)
+    quantities_names = quantities.pluck(:name)
+    (identifiers - quantities_names).each do |q|
+      errors << [:unknown_quantity, {quantity: q}]
+    end
+
+    @parts, @quantities = parts, quantities.to_a if errors.empty?
+    errors
   end
 
   def get_binding(quantities, args, length)
