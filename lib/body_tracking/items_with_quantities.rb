@@ -67,7 +67,8 @@ module BodyTracking
         q, deps = unchecked_q.shift
 
         # quantity not computable (no formula) or not requiring calculation/computed
-        if !q.formula || !q.formula.valid? || (subitems[q.name].length == items.count)
+        if !q.formula || q.formula.errors.any? || !q.formula.valid? ||
+            (subitems[q.name].length == items.count)
           completed_q[q.name] = subitems.delete(q.name) { {} }
           completed_q[q.name].default = [nil, nil]
           next
@@ -85,8 +86,14 @@ module BodyTracking
           output_ids = items.select { |i| subitems[q.name][i.id].nil? }.map(&:id)
           input_q = q.formula.quantities
           inputs = input_q.map { |i_q| [i_q, completed_q[i_q.name].values_at(*output_ids)] }
-          q.formula.calculate(inputs.to_h).each_with_index do |result, index|
-            subitems[q.name][output_ids[index]] = result
+          begin
+            calculated = q.formula.calculate(inputs.to_h)
+          rescue Exception => e
+            output_ids.each { |oid| subitems[q.name][oid] = BigDecimal::NAN }
+            q.formula.errors.add(:code, :computation_failed,
+              {quantity: q.name, description: e.message, count: output_ids.size})
+          else
+            output_ids.each_with_index { |oid, idx| subitems[q.name][oid] = calculated[idx] }
           end
           unchecked_q.unshift([q, deps])
           next

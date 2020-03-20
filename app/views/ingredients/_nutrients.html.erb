@@ -4,6 +4,8 @@
 <% if @ingredients.any? %>
   <%= render partial: 'ingredients/options' %>
 
+  <%= error_messages_for *@quantities.map { |q| q.formula } %>
+
   <table class="nutrients list odd-even">
     <thead>
       <tr>

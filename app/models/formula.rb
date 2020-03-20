@@ -30,9 +30,6 @@ class Formula < ActiveRecord::Base
       args << get_binding(quantities, args, length).eval(code)
     end
     args.last.map { |v| [v, nil] }
-  rescue Exception => e
-    puts e.message
-    [[nil, nil]] * length
   end
 
   private

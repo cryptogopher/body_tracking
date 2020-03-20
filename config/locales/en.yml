@@ -42,6 +42,8 @@ en:
               disallowed_keyword: 'includes disallowed keyword: "%{keyword}"'
               disallowed_method: 'includes disallowed method call: "%{method}"'
               unknown_quantity: 'contains undefined quantity: %{quantity}'
+              computation_failed: 'computation failed for "%{quantity}": %{description}
+                (%{count} values missing)'
   body_trackers:
     index:
       heading: 'Summary'
