@@ -4,6 +4,8 @@
 <% if @measurements.any? %>
   <%= render partial: 'measurements/options' %>
 
+  <%= error_messages_for @formula_q.formula, *@quantities.map { |q| q.formula } %>
+
   <table class="readouts list odd-even">
     <thead>
       <tr>

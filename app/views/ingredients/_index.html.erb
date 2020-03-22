@@ -2,6 +2,8 @@
   locals: {url: filter_project_ingredients_path(@project)} %>
 
 <% if @ingredients.any? { |i| i.persisted? } %>
+  <%= error_messages_for @formula_q.formula %>
+
   <table class="list">
     <thead>
       <tr>

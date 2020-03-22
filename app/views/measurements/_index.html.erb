@@ -2,6 +2,8 @@
   locals: {url: filter_project_measurements_path(@project)} %>
 
 <% if @measurements.any? { |m| m.persisted? } %>
+  <%= error_messages_for @formula_q.formula %>
+
   <table class="list">
     <thead>
       <tr>
