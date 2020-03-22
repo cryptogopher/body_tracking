@@ -23,8 +23,8 @@ module BodyTracking
       project = proxy_association.owner
       domain = QUANTITY_DOMAINS[proxy_association.klass]
       formula_q = if filters[:formula].present?
-                    project.quantities.new(name: '__internal_q',
-                                           formula: filters[:formula],
+                    project.quantities.new(name: 'Filter formula',
+                                           formula_attributes: filters[:formula],
                                            domain: domain)
                   end
       apply_formula = formula_q.present? && formula_q.valid?
@@ -89,7 +89,7 @@ module BodyTracking
           begin
             calculated = q.formula.calculate(inputs.to_h)
           rescue Exception => e
-            output_ids.each { |oid| subitems[q.name][oid] = BigDecimal::NAN }
+            output_ids.each { |oid| subitems[q.name][oid] = [BigDecimal::NAN, nil] }
             q.formula.errors.add(:code, :computation_failed,
               {quantity: q.name, description: e.message, count: output_ids.size})
           else

@@ -69,8 +69,7 @@ class MeasurementsController < BodyTrackingPluginController
   end
 
   def filter
-    session[:m_filters][:name] = params[:filters][:name]
-    session[:m_filters][:formula] = params[:filters][:formula]
+    session[:m_filters] = params.permit(:name, formula: [:code, :zero_nil])
     readouts_view? ? prepare_readouts : prepare_measurements
     render :index
   end

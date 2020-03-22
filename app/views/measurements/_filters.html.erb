@@ -9,14 +9,12 @@
     <table class="filter">
       <tr>
         <td>
-          <%= text_field_tag 'filters[name]', session[:m_filters][:name], placeholder: 'name',
-            onblur: '$("#filters-form").submit(); return false;' %>
+          <%= text_field_tag 'name', session[:m_filters][:name], placeholder: 'name' %>
         </td>
         <td style="width:100%;">
-          <%= text_field_tag 'filters[formula][code]', session[:m_filters][:formula][:code],
+          <%= text_field_tag 'formula[code]', session[:m_filters][:formula][:code],
             placeholder: 'conditional expression including readouts', size: 40,
-            style: 'box-sizing:border-box; width:100%;',
-            onblur: '$("#filters-form").submit(); return false;' %>
+            style: 'box-sizing:border-box; width:100%;' %>
         </td>
         <td>
           <%= link_to l(:button_apply), '#', class: "icon icon-checked",
@@ -32,8 +30,7 @@
         <td></td>
         <td style="padding-top:4px;">
           <%= label_tag do %>
-            <%= check_box_tag 'filters[formula][zero_nil]',
-              session[:m_filters][:formula][:zero_nil] %>
+            <%= check_box_tag 'formula[zero_nil]', session[:m_filters][:formula][:zero_nil] %>
             <%= t 'quantities.form.zero_nil' %>
           <% end %>
         </td>
@@ -41,6 +38,7 @@
         <td></td>
       </tr>
     </table>
+    <%= submit_tag '', style: 'display:none;' %>
     <% end %>
   </div>
 </fieldset>

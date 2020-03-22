@@ -69,7 +69,7 @@ class IngredientsController < BodyTrackingPluginController
   end
 
   def filter
-    session[:i_filters] = params[:filters]
+    session[:i_filters] = params.permit(:name, :visibility, formula: [:code, :zero_nil])
     prepare_items
     render :index
   end
@@ -178,7 +178,7 @@ class IngredientsController < BodyTrackingPluginController
   private
 
   def init_session_filters
-    session[:i_filters] ||= {}
+    session[:i_filters] ||= {formula: {}}
   end
 
   def ingredient_params

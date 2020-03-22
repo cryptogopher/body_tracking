@@ -9,20 +9,16 @@
     <table class="filter">
       <tr>
         <td>
-          <%= text_field_tag 'filters[name]', session[:i_filters][:name], placeholder: 'name',
-            onblur: '$("#filters-form").submit(); return false;' %>
+          <%= text_field_tag 'name', session[:i_filters][:name], placeholder: 'name' %>
         </td>
         <td>
-          <%= select_tag 'filters[visibility]',
-            visibility_options(session[:i_filters][:visibility]),
-            prompt: t('.visibility_prompt'),
-            onchange: '$("#filters-form").submit();' %>
+          <%= select_tag 'visibility', visibility_options(session[:i_filters][:visibility]),
+            prompt: t('.visibility_prompt'), onchange: '$("#filters-form").submit();' %>
         </td>
         <td style="width:100%;">
-          <%= text_field_tag 'filters[formula]', session[:i_filters][:formula],
+          <%= text_field_tag 'formula[code]', session[:i_filters][:formula][:code],
             placeholder: 'conditional expression including nutrients', size: 40,
-            style: 'box-sizing:border-box; width:100%;',
-            onblur: '$("#filters-form").submit(); return false;' %>
+            style: 'box-sizing:border-box; width:100%;' %>
         </td>
         <td>
           <%= link_to l(:button_apply), '#', class: "icon icon-checked",
@@ -34,7 +30,20 @@
                       $("#filters-form").submit(); return false;' %>
         </td>
       </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td style="padding-top:4px;">
+          <%= label_tag do %>
+            <%= check_box_tag 'formula[zero_nil]', session[:i_filters][:formula][:zero_nil] %>
+            <%= t 'quantities.form.zero_nil' %>
+          <% end %>
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
     </table>
+    <%= submit_tag '', style: 'display:none;' %>
     <% end %>
   </div>
 </fieldset>
