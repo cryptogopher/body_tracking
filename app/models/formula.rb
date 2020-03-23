@@ -17,11 +17,14 @@ class Formula < ActiveRecord::Base
   end
 
   def calculate(inputs)
+    raise(InvalidInputs, 'No inputs') if inputs.empty?
+
     quantities = inputs.map { |q, v| [q.name, v.transpose[0]] }.to_h
     length = quantities.values.first.length
 
     raise(InvalidFormula, 'Invalid formula') unless self.valid?
-    raise InvalidInputs unless quantities.values.all? { |v| v.length == length }
+    raise(InvalidInputs, 'Inputs lengths differ') unless
+      quantities.values.all? { |v| v.length == length }
 
     args = []
     @parts.each do |p|

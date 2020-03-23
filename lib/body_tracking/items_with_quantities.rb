@@ -66,7 +66,8 @@ module BodyTracking
       while !unchecked_q.empty?
         q, deps = unchecked_q.shift
 
-        # quantity not computable (no formula) or not requiring calculation/computed
+        # quantity not computable: no formula/invalid formula (syntax error/runtime error)
+        # or not requiring calculation/computed
         if !q.formula || q.formula.errors.any? || !q.formula.valid? ||
             (subitems[q.name].length == items.count)
           completed_q[q.name] = subitems.delete(q.name) { {} }
@@ -76,9 +77,9 @@ module BodyTracking
 
         # quantity with formula requires refresh of dependencies availability
         if deps.nil? || !deps.empty?
-          deps ||= q.formula.quantities
-          deps.reject! { |q| completed_q.has_key?(q.name) }
-          deps.each { |q| unchecked_q << [q, nil] unless unchecked_q.index { |u| u[0] == q } }
+          deps ||= q.formula.quantities.clone
+          deps.reject! { |d| completed_q.has_key?(d.name) }
+          deps.each { |d| unchecked_q << [d, nil] unless unchecked_q.index { |u| u[0] == d } }
         end
 
         # quantity with formula has all dependencies satisfied, requires calculation
@@ -90,8 +91,14 @@ module BodyTracking
             calculated = q.formula.calculate(inputs.to_h)
           rescue Exception => e
             output_ids.each { |oid| subitems[q.name][oid] = [BigDecimal::NAN, nil] }
-            q.formula.errors.add(:code, :computation_failed,
-              {quantity: q.name, description: e.message, count: output_ids.size})
+            q.formula.errors.add(
+              :code, :computation_failed,
+              {
+                quantity: q.name,
+                description: e.message,
+                count: output_ids.size == subitems[q.name].size ? 'all' : output_ids.size
+              }
+            )
           else
             output_ids.each_with_index { |oid, idx| subitems[q.name][oid] = calculated[idx] }
           end
