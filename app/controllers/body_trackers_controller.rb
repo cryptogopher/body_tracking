@@ -27,8 +27,8 @@ class BodyTrackersController < BodyTrackingPluginController
         attrs = q.attributes.except('id', 'project_id', 'parent_id', 'lft', 'rgt',
                                     'created_at', 'updated_at')
         attrs['parent'] = q.parent ? available[[q.parent.name, q.parent.domain]] : nil
-        attrs['formula_attributes'] = q.formula.attributes.except('id', 'quantity_id',
-                                                                  'created_at', 'updated_at')
+        attrs['formula_attributes'] = q.formula ? q.formula.attributes
+          .except('id', 'quantity_id', 'created_at', 'updated_at') : {}
         obj = @project.quantities.create(attrs)
         available[[q.name, q.domain]] = obj
       end

@@ -47,7 +47,7 @@ class CreateSchema < ActiveRecord::Migration
     create_table :ingredients do |t|
       t.references :project
       t.string :name
-      t.text :comment
+      t.text :notes
       t.decimal :ref_amount, precision: 12, scale: 6
       t.references :ref_unit
       t.integer :group

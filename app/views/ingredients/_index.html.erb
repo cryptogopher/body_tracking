@@ -8,7 +8,7 @@
     <thead>
       <tr>
         <th style="width:50%"><%= l(:field_name) %></th>
-        <th><%= l(:field_comment) %></th>
+        <th><%= l(:field_notes) %></th>
         <th><%= l(:field_reference) %></th>
         <th><%= l(:field_group) %></th>
         <th><%= l(:field_source) %></th>
@@ -28,7 +28,7 @@
                 } %>
             <%= i.name %>
           </td>
-          <td class="comment ellipsible"><%= i.comment %></td>
+          <td class="notes ellipsible"><%= i.notes %></td>
           <td class="reference value"><%= i.ref_amount %> [<%= i.ref_unit.shortname %>]</td>
           <td class="group"><%= i.group %></td>
           <td class="source">
