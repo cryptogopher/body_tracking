@@ -45,20 +45,21 @@ module BodyTracking
       unchecked_q = requested_q.map { |q| [q, nil] }
       unchecked_q << [filter_q, nil] if filter_q
 
-      subitems = Hash.new { |h,k| h[k] = {} }
       item_class = proxy_association.klass
       subitem_type = item_class.nested_attributes_options.keys.first.to_s
       subitem_reflection = item_class.reflections[subitem_type]
       subitem_class = subitem_reflection.klass
       subitems_scope = subitem_class.where(subitem_reflection.options[:inverse_of] => items)
       item_foreign_key = subitem_reflection.foreign_key
+      subitems = Hash.new { |h,k| h[k] = {} }
       subitems_scope.includes(:quantity, :unit)
         .order('quantities.lft')
-        .pluck(item_foreign_key, 'quantities.name', VALUE_COLUMNS[item_class],
+        .pluck('quantities.id', item_foreign_key, VALUE_COLUMNS[item_class],
                'units.shortname')
-        .each { |item_id, q_name, a, u_id| subitems[q_name][item_id] = [a, u_id] }
+        .each { |q_id, item_id, a, u_id| subitems[q_id][item_id] = [a, u_id] }
+      Quantity.find(subitems.keys).each { |q| subitems[q] = subitems.delete(q.id) }
 
-      extra_q = subitems.keys - requested_q.pluck(:name)
+      extra_q = subitems.keys - requested_q
 
       completed_q = {}
       # FIXME: loop should finish unless there is circular dependency in formulas
@@ -69,42 +70,42 @@ module BodyTracking
         # quantity not computable: no formula/invalid formula (syntax error/runtime error)
         # or not requiring calculation/computed
         if !q.formula || q.formula.errors.any? || !q.formula.valid? ||
-            (subitems[q.name].length == items.count)
-          completed_q[q.name] = subitems.delete(q.name) { {} }
-          completed_q[q.name].default = [nil, nil]
+            (subitems[q].length == items.count)
+          completed_q[q] = subitems.delete(q) { {} }
+          completed_q[q].default = [nil, nil]
           next
         end
 
         # quantity with formula requires refresh of dependencies availability
         if deps.nil? || !deps.empty?
           deps ||= q.formula.quantities.clone
-          deps.reject! { |d| completed_q.has_key?(d.name) }
+          deps.reject! { |d| completed_q.has_key?(d) }
           deps.each { |d| unchecked_q << [d, nil] unless unchecked_q.index { |u| u[0] == d } }
         end
 
         # quantity with formula has all dependencies satisfied, requires calculation
         if deps.empty?
-          output_ids = items.select { |i| subitems[q.name][i.id].nil? }.map(&:id)
+          output_ids = items.select { |i| subitems[q][i.id].nil? }.map(&:id)
           input_q = q.formula.quantities
           inputs = input_q.map do |i_q|
-            values = completed_q[i_q.name].values_at(*output_ids)
+            values = completed_q[i_q].values_at(*output_ids)
             values.map! { |v, u| [v || BigDecimal(0), u] } if q.formula.zero_nil
             [i_q, values]
           end
           begin
             calculated = q.formula.calculate(inputs.to_h)
           rescue Exception => e
-            output_ids.each { |oid| subitems[q.name][oid] = [BigDecimal::NAN, nil] }
+            output_ids.each { |oid| subitems[q][oid] = [BigDecimal::NAN, nil] }
             q.formula.errors.add(
               :code, :computation_failed,
               {
                 quantity: q.name,
                 description: e.message,
-                count: output_ids.size == subitems[q.name].size ? 'all' : output_ids.size
+                count: output_ids.size == subitems[q].size ? 'all' : output_ids.size
               }
             )
           else
-            output_ids.each_with_index { |oid, idx| subitems[q.name][oid] = calculated[idx] }
+            output_ids.each_with_index { |oid, idx| subitems[q][oid] = calculated[idx] }
           end
           unchecked_q.unshift([q, deps])
           next
@@ -116,11 +117,9 @@ module BodyTracking
 
       all_q = subitems.merge(completed_q)
       [
-        filter_q ? items.to_a.keep_if { |i| all_q[filter_q.name][i.id][0] } : items,
-        items.map { |i| requested_q.map { |q| [q.name, all_q[q.name][i.id]] } },
-        items.map do |i|
-          extra_q.map { |q_name| [q_name, all_q[q_name][i.id]] if all_q[q_name][i.id] }
-        end
+        filter_q ? items.to_a.keep_if { |i| all_q[filter_q][i.id][0] } : items,
+        items.map { |i| requested_q.map { |q| [q, all_q[q][i.id]] } },
+        items.map { |i| extra_q.map     { |q| [q, all_q[q][i.id]] } }
       ]
     end
   end

@@ -50,9 +50,9 @@
               onclick="$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', '.ingredient').toggle(); return false;">
             <span class="icon icon-bullet-open"><%= i.name %></span>
           </td>
-          <% @requested_n[index].each do |q_name, value| %>
+          <% @requested_n[index].each do |q, value| %>
             <td class="primary quantity ellipsible">
-              <%= q_name %>
+              <%= q.name %>
               <p class="value"><%= format_value(value) %></p>
             </td>
           <% end %>
@@ -62,9 +62,9 @@
         <% next unless @quantities.length > 0 %>
         <% @extra_n[index].each_slice(@quantities.length) do |values| %>
           <tr class="extra <%= row_class %>" style="display:none">
-            <% values.each do |q_name, value| %>
+            <% values.each do |q, value| %>
               <td class="extra quantity ellipsible">
-                <%= q_name %>
+                <%= q.name if value %>
                 <p class="value"><%= format_value(value) %></p>
               </td>
             <% end %>
