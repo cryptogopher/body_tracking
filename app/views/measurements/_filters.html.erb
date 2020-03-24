@@ -31,7 +31,8 @@
         <td style="padding-top:4px;">
           <%= label_tag do %>
             <%= hidden_field_tag 'formula[zero_nil]', 0 %>
-            <%= check_box_tag 'formula[zero_nil]', 1, @formula_q.formula.zero_nil %>
+            <%= check_box_tag 'formula[zero_nil]', 1,
+              @formula_q ? @formula_q.formula.zero_nil : Formula.new.zero_nil %>
             <%= t 'quantities.form.zero_nil' %>
           <% end %>
         </td>
