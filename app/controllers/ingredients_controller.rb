@@ -217,7 +217,7 @@ class IngredientsController < BodyTrackingPluginController
   end
 
   def prepare_nutrients
-    @quantities = @project.nutrients_column_view.quantities
+    @quantities = @project.nutrients_column_view.quantities.includes(:formula)
     @ingredients, @requested_n, @extra_n, @formula_q = @project.ingredients
       .filter(session[:i_filters], @quantities)
   end

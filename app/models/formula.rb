@@ -43,8 +43,7 @@ class Formula < ActiveRecord::Base
     errors = parser.errors
 
     quantities = Quantity.where(project: self.quantity.project, name: identifiers)
-    quantities_names = quantities.pluck(:name)
-    (identifiers - quantities_names).each do |q|
+    (identifiers - quantities.map(&:name)).each do |q|
       errors << [:unknown_quantity, {quantity: q}]
     end
 

@@ -112,7 +112,7 @@ class MeasurementsController < BodyTrackingPluginController
 
   def prepare_readouts
     @scoping_measurement = @project.measurements.where(session[:m_filters][:scope]).first!
-    @quantities = @scoping_measurement.column_view.quantities
+    @quantities = @scoping_measurement.column_view.quantities.includes(:formula)
     @measurements, @requested_r, @extra_r, @formula_q = @project.measurements
       .includes(:source)
       .filter(session[:m_filters], @quantities)
