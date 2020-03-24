@@ -86,7 +86,11 @@ module BodyTracking
         if deps.empty?
           output_ids = items.select { |i| subitems[q.name][i.id].nil? }.map(&:id)
           input_q = q.formula.quantities
-          inputs = input_q.map { |i_q| [i_q, completed_q[i_q.name].values_at(*output_ids)] }
+          inputs = input_q.map do |i_q|
+            values = completed_q[i_q.name].values_at(*output_ids)
+            values.map! { |v, u| [v || BigDecimal(0), u] } if q.formula.zero_nil
+            [i_q, values]
+          end
           begin
             calculated = q.formula.calculate(inputs.to_h)
           rescue Exception => e

@@ -35,7 +35,8 @@
         <td></td>
         <td style="padding-top:4px;">
           <%= label_tag do %>
-            <%= check_box_tag 'formula[zero_nil]', session[:i_filters][:formula][:zero_nil] %>
+            <%= hidden_field_tag 'formula[zero_nil]', 0 %>
+            <%= check_box_tag 'formula[zero_nil]', 1, @formula_q.formula.zero_nil %>
             <%= t 'quantities.form.zero_nil' %>
           <% end %>
         </td>
