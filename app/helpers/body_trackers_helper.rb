@@ -10,4 +10,10 @@ module BodyTrackersHelper
       "#{amount} [#{unitname || '-'}]"
     end
   end
+
+  def unit_options
+    @project.units.map do |u|
+      [u.shortname, u.id]
+    end
+  end
 end

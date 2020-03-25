@@ -12,8 +12,15 @@
   <p><%= f.text_field :name, size: 25, required: true %></p>
   <p><%= f.text_field :description, style: "width: 100%;" %></p>
   <%= f.fields_for :formula do |ff| %>
-    <p><%= ff.text_field :code, placeholder: t('.formula_placeholder'),
-      style: "width: 100%;" %></p>
+    <div>
+      <div style="float: right;">
+        <p style="padding-left: 0;"><%= ff.select :unit_id, unit_options, {label: ''} %></p>
+      </div>
+      <div style="overflow: hidden;width: auto;">
+        <p><%= ff.text_field :code, placeholder: t('.formula_placeholder'),
+          style: "width: 100%" %></p>
+      </div>
+    </div>
     <p><%= ff.check_box :zero_nil, {label: ''} %><%= t('.zero_nil') %></p>
   <% end %>
 </div>

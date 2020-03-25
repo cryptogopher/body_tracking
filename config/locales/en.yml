@@ -118,7 +118,6 @@ en:
       domain_prompt: 'all'
     index:
       heading: 'Quantities'
-      heading_new_quantity: 'New quantity'
       link_new_quantity: 'New quantity'
     form:
       domains:
@@ -129,6 +128,8 @@ en:
       formula_placeholder: 'provide if value of quantity has to be computed in terms of
         other quantities'
       zero_nil: 'substitute missing formula values with 0?'
+    new_form:
+      heading_new_quantity: 'New quantity'
   units:
     index:
       heading: 'Units'

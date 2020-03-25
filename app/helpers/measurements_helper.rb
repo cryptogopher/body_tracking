@@ -25,12 +25,6 @@ module MeasurementsHelper
     end
   end
 
-  def unit_options
-    @project.units.map do |u|
-      [u.shortname, u.id]
-    end
-  end
-
   def source_options
     @project.sources.map do |s|
       [s.name, s.id]

@@ -1,4 +1,6 @@
 class QuantitiesController < BodyTrackingPluginController
+  helper :body_trackers
+
   before_action :init_session_filters
   before_action :find_project_by_project_id, only: [:index, :new, :create, :filter, :parents]
   before_action :find_quantity, only: [:edit, :update, :destroy, :move,
@@ -108,7 +110,8 @@ class QuantitiesController < BodyTrackingPluginController
       formula_attributes:
       [
         :code,
-        :zero_nil
+        :zero_nil,
+        :unit_id
       ]
     )
   end
