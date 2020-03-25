@@ -23,6 +23,7 @@ class CreateSchema < ActiveRecord::Migration
       t.references :quantity
       t.string :code
       t.boolean :zero_nil
+      t.references :unit
       t.timestamps null: false
     end
 

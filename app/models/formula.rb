@@ -4,6 +4,7 @@ class Formula < ActiveRecord::Base
   attr_reader :parts, :quantities
 
   belongs_to :quantity, inverse_of: :formula, required: true
+  belongs_to :unit, required: true
 
   validates :code, presence: true
   validate do
