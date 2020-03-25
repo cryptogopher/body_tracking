@@ -1,13 +1,13 @@
 module BodyTrackersHelper
   def format_value(value)
-    amount, unitname = value
+    amount, unit = value
     case
     when amount.nil?
       '-'
     when amount.nan?
       '?'
     else
-      "#{amount} [#{unitname || '-'}]"
+      "#{amount} [#{unit.shortname || '-'}]"
     end
   end
 

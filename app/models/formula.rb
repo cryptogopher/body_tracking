@@ -33,7 +33,7 @@ class Formula < ActiveRecord::Base
         "length.times.map { |index| #{p[:content]} }" : p[:content]
       args << get_binding(quantities, args, length).eval(code)
     end
-    args.last.map { |v| [v, nil] }
+    args.last.map { |v| [v, self.unit] }
   end
 
   private

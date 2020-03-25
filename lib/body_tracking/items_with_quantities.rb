@@ -50,14 +50,12 @@ module BodyTracking
       subitem_reflection = item_class.reflections[subitem_type]
       subitem_class = subitem_reflection.klass
       subitems_scope = subitem_class.where(subitem_reflection.options[:inverse_of] => items)
-      item_foreign_key = subitem_reflection.foreign_key
       subitems = Hash.new { |h,k| h[k] = {} }
-      subitems_scope.includes(:quantity, :unit)
-        .order('quantities.lft')
-        .pluck('quantities.id', item_foreign_key, VALUE_COLUMNS[item_class],
-               'units.shortname')
-        .each { |q_id, item_id, a, u_id| subitems[q_id][item_id] = [a, u_id] }
-      Quantity.find(subitems.keys).each { |q| subitems[q] = subitems.delete(q.id) }
+      subitems_scope.includes(:quantity, :unit).order('quantities.lft').each do |s|
+        item_id = s.send(subitem_reflection.foreign_key)
+        subitem_value = s.send(VALUE_COLUMNS[item_class])
+        subitems[s.quantity][item_id] = [subitem_value, s.unit]
+      end
 
       extra_q = subitems.keys - requested_q
 
