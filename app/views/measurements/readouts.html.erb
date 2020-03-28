@@ -8,7 +8,7 @@
 <h2>
   <%= link_to t("measurements.index.heading"), project_measurements_path(@project) %>
   >
-  <%= @measurements.first.name %>
+  <%= @routine.name %>
 </h2>
 <div id='readouts'>
   <%= render partial: 'measurements/readouts' %>

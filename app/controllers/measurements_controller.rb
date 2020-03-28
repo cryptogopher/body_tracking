@@ -1,11 +1,15 @@
-class MeasurementsController < BodyTrackingPluginController
+class MeasurementsController < ApplicationController
+  layout 'body_tracking'
+  menu_item :body_trackers
   helper :body_trackers
+
+  include Concerns::Finders
 
   before_action :init_session_filters
   before_action :find_project_by_project_id, only: [:index, :new, :create, :filter]
   before_action :find_quantity_by_quantity_id, only: [:toggle_column]
-  before_action :find_measurement,
-    only: [:edit, :update, :destroy, :retake, :readouts, :toggle_column]
+  before_action :find_measurement, only: [:edit, :update, :destroy, :retake]
+  before_action :find_measurement_routine, only: [:readouts, :toggle_column]
   before_action :authorize
 
   def index
@@ -15,12 +19,18 @@ class MeasurementsController < BodyTrackingPluginController
 
   def new
     @measurement = @project.measurements.new
+    @measurement.build_routine
     @measurement.readouts.new
   end
 
   def create
     @measurement = @project.measurements.new(measurement_params)
+    @measurement.routine.project = @project
     if @measurement.save
+      if @measurement.routine.columns.empty?
+        @measurement.routine.quantities << @measurement.readouts.map(&:quantity).first(6)
+      end
+
       flash[:notice] = 'Created new measurement'
       readouts_view? ? prepare_readouts : prepare_measurements
     else
@@ -58,12 +68,12 @@ class MeasurementsController < BodyTrackingPluginController
   end
 
   def readouts
-    session[:m_filters][:scope] = {name: @measurement.name}
+    #session[:m_filters][:scope] = {routine: @routine}
     prepare_readouts
   end
 
   def toggle_column
-    @measurement.column_view.toggle_column!(@quantity)
+    @routine.columns.toggle!(@quantity)
     prepare_readouts
     render :index
   end
@@ -82,8 +92,13 @@ class MeasurementsController < BodyTrackingPluginController
 
   def measurement_params
     params.require(:measurement).permit(
-      :name,
+      :notes,
       :source_id,
+      routine_attributes:
+      [
+        :name,
+        :description
+      ],
       readouts_attributes:
       [
         :id,
@@ -95,30 +110,17 @@ class MeasurementsController < BodyTrackingPluginController
     )
   end
 
-  # :find_* methods are called before :authorize,
-  # @project is required for :authorize to succeed
-  def find_measurement
-    @measurement = Measurement.find(params[:id])
-    @project = @measurement.project
-  rescue ActiveRecord::RecordNotFound
-    render_404
-  end
-
   def prepare_measurements
     @measurements, @formula_q = @project.measurements
-      .includes(:source, :readouts)
+      .includes(:routine, :source, :readouts)
       .filter(session[:m_filters])
   end
 
   def prepare_readouts
-    @scoping_measurement = @project.measurements.where(session[:m_filters][:scope]).first!
-    @quantities = @scoping_measurement.column_view.quantities.includes(:formula)
-    @measurements, @requested_r, @extra_r, @formula_q = @project.measurements
-      .includes(:source)
+    @quantities = @routine.quantities.includes(:formula)
+    @measurements, @requested_r, @extra_r, @formula_q = @routine.measurements
+      .includes(:routine, :source)
       .filter(session[:m_filters], @quantities)
-  rescue ActiveRecord::RecordNotFound
-    session[:m_filters][:scope] = {}
-    render_404
   end
 
   def readouts_view?

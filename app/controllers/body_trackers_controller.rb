@@ -1,4 +1,7 @@
-class BodyTrackersController < BodyTrackingPluginController
+class BodyTrackersController < ApplicationController
+  layout 'body_tracking'
+  menu_item :body_trackers
+
   before_action :find_project_by_project_id, only: [:index, :defaults]
   before_action :authorize
 
@@ -43,10 +46,8 @@ class BodyTrackersController < BodyTrackingPluginController
     flash[:notice] += ", #{new_quantities_count > 0 ? new_quantities_count : "no" } new" \
       " #{'quantity'.pluralize(new_quantities_count)}"
 
-    ncv = @project.nutrients_column_view
-    if ncv.quantities.count == 0
-      ncv.quantities.append(@project.quantities.roots.first(6))
-      ncv.save!
+    if @project.nutrient_quantities.empty?
+      @project.nutrient_quantities << @project.quantities.diet.roots.first(6)
     end
 
     # Sources

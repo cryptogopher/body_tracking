@@ -1,17 +1,29 @@
 <%= error_messages_for @measurement %>
 
-<div class="box tabular">
-  <p><%= f.select :source_id, source_options,
-    {required: false, include_blank: t('.null_source')} %></p>
-  <p><%= f.text_field :name, size: 40, required: true %></p>
-  <p>
+<fieldset class="box">
+  <legend ><%= t('.label_routine') %></legend>
+  <div class="tabular">
+    <%= f.fields_for :routine do |ff| %>
+      <p><%= ff.text_field :name, required: true, style: "width: 95%;" %></p>
+      <p><%= ff.text_area :description, cols: 40, rows: 3, style: "width: 95%;" %></p>
+    <% end %>
+  </div>
+</fieldset>
+
+<fieldset class="box">
+  <legend ><%= t('.label_measurement') %></legend>
+  <div class="tabular">
+    <p><%= f.select :source_id, source_options,
+      {required: false, include_blank: t('.null_source')} %></p>
+    <p><%= f.text_area :notes, cols: 40, rows: 1, style: "width: 95%;" %></p>
+    <p>
     <%= f.date_field :taken_at_date, required: true %>
     <%= f.time_field :taken_at_time, value: format_time(@measurement), required: true,
       label: '' %>
-  </p>
-  <% @measurement.readouts.each_with_index do |r, index| %>
-    <%= f.fields_for 'readouts_attributes', r, index: '' do |ff| %>
-      <p class="readout">
+    </p>
+    <% @measurement.readouts.each_with_index do |r, index| %>
+      <%= f.fields_for 'readouts_attributes', r, index: '' do |ff| %>
+        <p class="readout">
         <%= ff.hidden_field :id %>
         <%= ff.select :quantity_id, quantity_options,
           {include_blank: true, required: true, label: (index > 0 ? '' : :field_readouts)} %>
@@ -22,14 +34,15 @@
           class: 'icon icon-del',
           style: (@measurement.readouts.length > 1 ? "" : "display:none"),
           onclick: "deleteReadout(); return false;" %>
-      </p>
+        </p>
+      <% end %>
     <% end %>
-  <% end %>
-  <p>
+    <p>
     <%= link_to t(".button_new_readout"), '#', class: 'icon icon-add',
       onclick: 'newReadout(); return false;' %>
-  </p>
-</div>
+    </p>
+  </div>
+</fieldset>
 
 <%= javascript_tag do %>
   function newReadout() {

@@ -1,4 +1,9 @@
-class UnitsController < BodyTrackingPluginController
+class UnitsController < ApplicationController
+  layout 'body_tracking'
+  menu_item :body_trackers
+
+  include Concerns::Finders
+
   before_action :find_project_by_project_id, only: [:index, :create]
   before_action :find_unit, only: [:destroy]
   before_action :authorize
@@ -33,14 +38,5 @@ class UnitsController < BodyTrackingPluginController
       :name,
       :shortname
     )
-  end
-
-  # :find_* methods are called before :authorize,
-  # @project is required for :authorize to succeed
-  def find_unit
-    @unit = Unit.find(params[:id])
-    @project = @unit.project
-  rescue ActiveRecord::RecordNotFound
-    render_404
   end
 end

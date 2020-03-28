@@ -1,8 +1,12 @@
-class IngredientsController < BodyTrackingPluginController
+class IngredientsController < ApplicationController
   require 'csv'
 
+  layout 'body_tracking'
+  menu_item :body_trackers
   helper :body_trackers
   helper_method :current_view
+
+  include Concerns::Finders
 
   before_action :init_session_filters
   before_action :find_project_by_project_id,
@@ -63,7 +67,7 @@ class IngredientsController < BodyTrackingPluginController
   end
 
   def toggle_column
-    @project.nutrients_column_view.toggle_column!(@quantity)
+    @project.nutrient_columns.toggle!(@quantity)
     prepare_items
     render :index
   end
@@ -201,15 +205,6 @@ class IngredientsController < BodyTrackingPluginController
     )
   end
 
-  # :find_* methods are called before :authorize,
-  # @project is required for :authorize to succeed
-  def find_ingredient
-    @ingredient = Ingredient.find(params[:id])
-    @project = @ingredient.project
-  rescue ActiveRecord::RecordNotFound
-    render_404
-  end
-
   def prepare_ingredients
     @ingredients, @formula_q = @project.ingredients
       .includes(:ref_unit, :source)
@@ -217,7 +212,7 @@ class IngredientsController < BodyTrackingPluginController
   end
 
   def prepare_nutrients
-    @quantities = @project.nutrients_column_view.quantities.includes(:formula)
+    @quantities = @project.nutrient_quantities.includes(:formula)
     @ingredients, @requested_n, @extra_n, @formula_q = @project.ingredients
       .filter(session[:i_filters], @quantities)
   end

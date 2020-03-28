@@ -20,7 +20,7 @@
           <td class="date unwrappable"><%= format_datetime(m) %></td>
           <td class="name">
             <div style="float:left;">
-              <%= link_to m.name, readouts_measurement_path(m) %>
+              <%= link_to m.routine.name, readouts_measurement_routine_path(m.routine) %>
             </div>
             <div style="float:right;">
               <small><%= " (#{pluralize(m.readouts.size, 'readout')})" %></small>

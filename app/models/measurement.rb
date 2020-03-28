@@ -1,5 +1,11 @@
 class Measurement < ActiveRecord::Base
-  belongs_to :project, required: true
+  belongs_to :routine, required: true, inverse_of: :measurements,
+    class_name: 'MeasurementRoutine'
+  accepts_nested_attributes_for :routine, allow_destroy: true, reject_if: proc { |attrs|
+    attrs['name'].blank?
+  }
+  after_destroy { self.routine.destroy if self.routine.measurements.empty? }
+
   belongs_to :source, required: false
 
   has_many :readouts, inverse_of: :measurement, dependent: :destroy, validate: true
@@ -17,28 +23,12 @@ class Measurement < ActiveRecord::Base
     end
   end
 
-  validates :name, presence: true
   validates :taken_at, presence: true
 
   after_initialize do
     if new_record?
       self.taken_at = Time.now
     end
-  end
-
-  after_create :seed_column_view, if: -> {self.column_view.quantities.count == 0}
-  after_save :cleanup_column_view, if: :name_changed?
-
-  # Destroy ColumnView after last Measurement destruction
-  after_destroy do
-    unless self.project.measurements.exists?(name: self.name)
-      self.column_view.destroy!
-    end
-  end
-
-  def column_view
-    self.project.column_views
-      .find_or_create_by(name: self.name, domain: ColumnView.domains[:measurement])
   end
 
   def taken_at_date
@@ -53,28 +43,5 @@ class Measurement < ActiveRecord::Base
   end
   def taken_at_time=(value)
     self.taken_at = Time.parse(value, self.taken_at)
-  end
-
-  private
-
-  def seed_column_view
-    quantities = self.project.quantities.joins(:readouts).includes(readouts: [:measurement])
-      .where(measurements: {name: self.name}).first(6)
-    self.column_view.quantities.append(quantities)
-    self.column_view.save!
-  end
-
-  # Copy/rename ColumnView on Measurement rename
-  def cleanup_column_view
-    old_column_view = self.project.column_views
-      .find_by(name: self.name_was, domain: ColumnView.domains[:measurement])
-    return unless old_column_view
-
-    if self.project.measurements.exists?(name: self.name_was)
-      self.column_view.quantities.append(old_column_view.quantities)
-      self.column_view.save!
-    else
-      old_column_view.update!(name: self.name)
-    end
   end
 end

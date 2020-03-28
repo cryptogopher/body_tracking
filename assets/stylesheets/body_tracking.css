@@ -37,7 +37,7 @@ input[type=number] {
   -moz-appearance:textfield;
   text-align: right;
 }
-input[type=date], input[type=time], input[type=number] {
-  border:1px solid #9EB1C2;
+input[type=date], input[type=time], input[type=number], textarea {
+  border:1px solid #d7d7d7;
   padding: 3px;
 }

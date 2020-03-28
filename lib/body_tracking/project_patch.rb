@@ -1,21 +1,18 @@
-module BodyTracking
-  module ProjectPatch
-    Project.class_eval do
-      has_many :measurements, -> { order "taken_at DESC" }, dependent: :destroy,
-        extend: ItemsWithQuantities
-      has_many :ingredients, -> { order "name" }, dependent: :destroy,
-        extend: ItemsWithQuantities
+module BodyTracking::ProjectPatch
+  Project.class_eval do
+    has_many :measurement_routines, dependent: :destroy
+    has_many :measurements, -> { order "taken_at DESC" }, dependent: :destroy,
+      extend: BodyTracking::ItemsWithQuantities, through: :measurement_routines
+    has_many :ingredients, -> { order "name" }, dependent: :destroy,
+      extend: BodyTracking::ItemsWithQuantities
 
-      has_many :sources, dependent: :destroy
-      has_many :column_views, dependent: :destroy
-      has_many :quantities, -> { order "lft" }, dependent: :destroy
-      has_many :units, dependent: :destroy
+    has_many :sources, dependent: :destroy
+    has_many :quantities, -> { order "lft" }, dependent: :destroy
+    has_many :units, dependent: :destroy
 
-      def nutrients_column_view
-        self.column_views
-          .find_or_create_by(name: 'Nutrients', domain: ColumnView.domains[:diet])
-      end
-    end
+    has_many :nutrient_columns, as: :column_view, dependent: :destroy, class_name: 'Column',
+      extend: BodyTracking::TogglableColumns
+    has_many :nutrient_quantities, -> { order "lft" }, through: :nutrient_columns,
+      source: 'quantity'
   end
 end
-

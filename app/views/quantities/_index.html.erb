@@ -18,12 +18,12 @@
         <%
           next if q.new_record?
           quantity_class = "quantity"
-          quantity_class += " primary" unless q.column_views.empty?
+          quantity_class += " primary" unless q.columns.empty?
           quantity_class += " project idnt idnt-#{level+1}"
         %>
         <tr id="quantity-<%= q.id %>" class="<%= quantity_class %>">
           <td class="name unwrappable">
-            <div class="icon <%= q.column_views.empty? ? 'icon-fav-off' : 'icon-fav' %>">
+            <div class="icon <%= q.columns.empty? ? 'icon-fav-off' : 'icon-fav' %>">
               <%= q.name %>
             </div>
           </td>

@@ -27,14 +27,8 @@ class CreateSchema < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    create_table :column_views do |t|
-      t.references :project
-      t.string :name
-      t.integer :domain
-    end
-
-    create_table :column_views_quantities do |t|
-      t.references :column_view
+    create_table :columns do |t|
+      t.references :column_view, polymorphic: true
       t.references :quantity
     end
 
@@ -66,10 +60,17 @@ class CreateSchema < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    create_table :measurements do |t|
+    create_table :measurement_routines do |t|
       t.references :project
       t.string :name
+      t.text :description
+      t.timestamps null: false
+    end
+
+    create_table :measurements do |t|
+      t.references :routine
       t.references :source
+      t.text :notes
       t.timestamp :taken_at
       t.timestamps null: false
     end

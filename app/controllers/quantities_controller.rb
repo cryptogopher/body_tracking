@@ -1,5 +1,9 @@
-class QuantitiesController < BodyTrackingPluginController
+class QuantitiesController < ApplicationController
+  layout 'body_tracking'
+  menu_item :body_trackers
   helper :body_trackers
+
+  include Concerns::Finders
 
   before_action :init_session_filters
   before_action :find_project_by_project_id, only: [:index, :new, :create, :filter, :parents]
@@ -118,6 +122,6 @@ class QuantitiesController < BodyTrackingPluginController
 
   def prepare_quantities
     @quantities = @project.quantities.filter(@project, session[:q_filters])
-      .includes(:column_views, :formula, :parent)
+      .includes(:columns, :formula, :parent)
   end
 end

@@ -1,12 +1,18 @@
 module BodyTracking
   module ItemsWithQuantities
-    QUANTITY_DOMAINS = {
-      Measurement => :measurement,
-      Ingredient => :diet
-    }
-    VALUE_COLUMNS = {
-      Measurement => :value,
-      Ingredient => :amount
+    RELATIONS = {
+      'Ingredient' => {
+        domain: :diet,
+        foreign_key: :ingredient_id,
+        subitem_class: Nutrient,
+        value_field: :amount
+      },
+      'Measurement' => {
+        domain: :measurement,
+        foreign_key: :measurement_id,
+        subitem_class: Readout,
+        value_field: :value
+      }
     }
 
     def filter(filters, requested_q = nil)
@@ -20,13 +26,18 @@ module BodyTracking
         items = items.where(hidden: filters[:visibility] == "1" ? false : true)
       end
 
-      project = proxy_association.owner
-      domain = QUANTITY_DOMAINS[proxy_association.klass]
-      formula_q = if filters[:formula].present?
-                    project.quantities.new(name: 'Filter formula',
-                                           formula_attributes: filters[:formula],
-                                           domain: domain)
-                  end
+      formula_q =
+        if filters[:formula].present?
+          owner = proxy_association.owner
+          project = owner.is_a?(Project) ? owner : owner.project
+          domain = RELATIONS[proxy_association.klass.name][:domain]
+          formula_q_attrs = {
+            name: 'Filter formula',
+            formula_attributes: filters[:formula],
+            domain: domain
+          }
+          project.quantities.new(formula_q_attrs)
+        end
       apply_formula = formula_q.present? && formula_q.valid?
 
       result =
@@ -45,15 +56,13 @@ module BodyTracking
       unchecked_q = requested_q.map { |q| [q, nil] }
       unchecked_q << [filter_q, nil] if filter_q
 
-      item_class = proxy_association.klass
-      subitem_type = item_class.nested_attributes_options.keys.first.to_s
-      subitem_reflection = item_class.reflections[subitem_type]
-      subitem_class = subitem_reflection.klass
-      subitems_scope = subitem_class.where(subitem_reflection.options[:inverse_of] => items)
+      relations = RELATIONS[proxy_association.klass.name]
       subitems = Hash.new { |h,k| h[k] = {} }
-      subitems_scope.includes(:quantity, :unit).order('quantities.lft').each do |s|
-        item_id = s.send(subitem_reflection.foreign_key)
-        subitem_value = s.send(VALUE_COLUMNS[item_class])
+      relations[:subitem_class].where(relations[:foreign_key] => items)
+        .includes(:quantity, :unit).order('quantities.lft').each do |s|
+
+        item_id = s.send(relations[:foreign_key])
+        subitem_value = s.send(relations[:value_field])
         subitems[s.quantity][item_id] = [subitem_value, s.unit]
       end
 

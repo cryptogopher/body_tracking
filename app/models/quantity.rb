@@ -5,16 +5,11 @@ class Quantity < ActiveRecord::Base
     exercise: 2
   }
 
-  # Has to go before any 'dependent:' association
-  before_destroy do
-    # FIXME: disallow destruction if any object depends on this quantity
-    nil
-  end
-
   acts_as_nested_set dependent: :destroy, scope: :project
   belongs_to :project, required: false
-  has_and_belongs_to_many :column_views
-  has_many :readouts
+  has_many :nutrients, dependent: :restrict_with_error
+  has_many :readouts, dependent: :restrict_with_error
+  has_many :columns, dependent: :destroy
 
   has_one :formula, inverse_of: :quantity, dependent: :destroy, validate: true
   accepts_nested_attributes_for :formula, allow_destroy: true, reject_if: proc { |attrs|

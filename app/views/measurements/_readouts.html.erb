@@ -17,7 +17,7 @@
           <th style="width:<%= 100/total_width %>%" class="closable ellipsible">
             <div style="float:right;position:relative;">
               <%= link_to '',
-                toggle_column_measurement_path(@scoping_measurement, quantity_id: q.id),
+                toggle_column_measurement_routine_path(@routine, quantity_id: q.id),
                 {class: "icon icon-close", method: :post, remote: true} %>
             </div>
             <%= q.name %>

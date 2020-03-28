@@ -11,9 +11,9 @@ module MeasurementsHelper
 
   def toggle_column_options
     disabled = []
-    enabled_columns = @scoping_measurement.column_view.quantities
+    enabled_quantities = @routine.quantities.to_a
     options = nested_set_options(@project.quantities.measurement) do |q|
-      disabled << q.id if enabled_columns.include?(q)
+      disabled << q.id if enabled_quantities.include?(q)
       raw("#{'&ensp;' * q.level}#{q.name}")
     end
     options_for_select(options, disabled: disabled)

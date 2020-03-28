@@ -68,6 +68,8 @@ en:
     filters:
       zero_nil: 'missing -> 0?'
     form:
+      label_routine: 'Measurement routine (shared among all measurements of this kind)'
+      label_measurement: 'Measurement'
       button_new_readout: 'Add readout'
       button_delete_readout: 'Delete'
       null_source: '- unspecified -'
