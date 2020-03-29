@@ -1,5 +1,5 @@
 <%= labelled_form_for @measurement,
-  url: measurement_path(@measurement),
+  url: measurement_path(@measurement, view: view),
   method: :patch, remote: true,
   html: {id: 'measurement-edit-form', name: 'measurement-edit-form'} do |f| %>
 

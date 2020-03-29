@@ -1,5 +1,5 @@
 <%= render partial: 'measurements/filters',
-  locals: {url: filter_project_measurements_path(@project)} %>
+  locals: {url: filter_project_measurements_path(@project, view: :readouts)} %>
 
 <% if @measurements.any? %>
   <%= render partial: 'measurements/options' %>

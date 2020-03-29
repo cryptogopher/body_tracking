@@ -1,5 +1,5 @@
 <%= render partial: 'measurements/filters',
-  locals: {url: filter_project_measurements_path(@project)} %>
+  locals: {url: filter_project_measurements_path(@project, view: :index)} %>
 
 <% if @measurements.any? { |m| m.persisted? } %>
   <%= error_messages_for @formula_q.formula if @formula_q %>

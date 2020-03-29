@@ -13,7 +13,6 @@ class MeasurementsController < ApplicationController
   before_action :authorize
 
   def index
-    session[:m_filters][:scope] = {}
     prepare_measurements
   end
 
@@ -32,7 +31,7 @@ class MeasurementsController < ApplicationController
       end
 
       flash[:notice] = 'Created new measurement'
-      readouts_view? ? prepare_readouts : prepare_measurements
+      prepare_items
     else
       @measurement.readouts.new if @measurement.readouts.empty?
       render :new
@@ -45,7 +44,7 @@ class MeasurementsController < ApplicationController
   def update
     if @measurement.update(measurement_params)
       flash[:notice] = 'Updated measurement'
-      readouts_view? ? prepare_readouts : prepare_measurements
+      prepare_items
       render :index
     else
       render :edit
@@ -68,19 +67,17 @@ class MeasurementsController < ApplicationController
   end
 
   def readouts
-    #session[:m_filters][:scope] = {routine: @routine}
     prepare_readouts
   end
 
   def toggle_column
     @routine.columns.toggle!(@quantity)
     prepare_readouts
-    render :index
   end
 
   def filter
     session[:m_filters] = params.permit(:name, formula: [:code, :zero_nil])
-    readouts_view? ? prepare_readouts : prepare_measurements
+    prepare_items
     render :index
   end
 
@@ -110,6 +107,10 @@ class MeasurementsController < ApplicationController
     )
   end
 
+  def prepare_items
+    params[:view] == 'index' ? prepare_measurements : prepare_readouts
+  end
+
   def prepare_measurements
     @measurements, @formula_q = @project.measurements
       .includes(:routine, :source, :readouts)
@@ -117,13 +118,9 @@ class MeasurementsController < ApplicationController
   end
 
   def prepare_readouts
-    @quantities = @routine.quantities.includes(:formula)
+    @quantities = @measurement.routine.quantities.includes(:formula)
     @measurements, @requested_r, @extra_r, @formula_q = @routine.measurements
       .includes(:routine, :source)
       .filter(session[:m_filters], @quantities)
-  end
-
-  def readouts_view?
-    session[:m_filters][:scope].present?
   end
 end
