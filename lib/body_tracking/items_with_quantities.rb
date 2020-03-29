@@ -3,20 +3,20 @@ module BodyTracking
     RELATIONS = {
       'Ingredient' => {
         domain: :diet,
-        foreign_key: :ingredient_id,
         subitem_class: Nutrient,
+        foreign_key: :ingredient_id,
         value_field: :amount
       },
       'Measurement' => {
         domain: :measurement,
-        foreign_key: :measurement_id,
         subitem_class: Readout,
+        foreign_key: :measurement_id,
         value_field: :value
       }
     }
 
     def filter(filters, requested_q = nil)
-      items = all.where(filters[:scope])
+      items = all
 
       if filters[:name].present?
         items = items.where("name LIKE ?", "%#{filters[:name]}%")
