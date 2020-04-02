@@ -23,6 +23,7 @@ class IngredientsController < ApplicationController
   def new
     @ingredient = @project.ingredients.new
     # passing attr for Nutrient after_initialize
+    # FIXME: is this necessary when creating through association?
     @ingredient.nutrients.new(ingredient: @ingredient)
   end
 

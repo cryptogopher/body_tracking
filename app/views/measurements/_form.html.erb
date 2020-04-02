@@ -1,17 +1,14 @@
 <%= error_messages_for @measurement %>
 
-<fieldset class="box">
-  <legend ><%= t('.label_routine') %></legend>
-  <div class="tabular">
-    <%= f.fields_for :routine do |ff| %>
-      <p><%= ff.text_field :name, required: true, style: "width: 95%;" %></p>
-      <p><%= ff.text_area :description, cols: 40, rows: 3, style: "width: 95%;" %></p>
+<div class="box">
+  <div id='measurement-routine-form' class="tabular">
+    <% if @routine.persisted? %>
+      <%= render partial: 'measurement_routines/show_form', locals: {f: f} %>
+    <% else %>
+      <%= render partial: 'measurement_routines/form', locals: {f: f} %>
     <% end %>
   </div>
-</fieldset>
-
-<fieldset class="box">
-  <legend ><%= t('.label_measurement') %></legend>
+  <hr style="width: 95%;">
   <div class="tabular">
     <p><%= f.select :source_id, source_options,
       {required: false, include_blank: t('.null_source')} %></p>
@@ -42,7 +39,7 @@
       onclick: 'newReadout(); return false;' %>
     </p>
   </div>
-</fieldset>
+</div>
 
 <%= javascript_tag do %>
   function newReadout() {

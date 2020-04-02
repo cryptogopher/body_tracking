@@ -5,6 +5,7 @@ class Measurement < ActiveRecord::Base
     attrs['name'].blank?
   }
   after_destroy { self.routine.destroy if self.routine.measurements.empty? }
+  has_one :project, through: :routine
 
   belongs_to :source, required: false
 

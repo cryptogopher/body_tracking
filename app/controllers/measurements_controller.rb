@@ -18,16 +18,25 @@ class MeasurementsController < ApplicationController
 
   def new
     @measurement = @project.measurements.new
-    @measurement.build_routine
+    @routine = @measurement.build_routine
     @measurement.readouts.new
   end
 
   def create
-    @measurement = @project.measurements.new(measurement_params)
+    # Nested attributes cannot create outer object (Measurement) and at the same time edit
+    # existing nested object (MeasurementRoutine) if it's not associated with outer object
+    # https://stackoverflow.com/questions/6346134/
+    # That's why routine needs to be found and associated before measurement initialization
+    @measurement = @project.measurements.new do |m|
+      routine_id = params[:measurement][:routine_attributes][:id]
+      m.routine = @project.measurement_routines.find_by(id: routine_id) if routine_id
+    end
+    @measurement.attributes = measurement_params
     @measurement.routine.project = @project
+    @routine = @measurement.routine
     if @measurement.save
-      if @measurement.routine.columns.empty?
-        @measurement.routine.quantities << @measurement.readouts.map(&:quantity).first(6)
+      if @routine.columns.empty?
+        @routine.quantities << @measurement.readouts.map(&:quantity).first(6)
       end
 
       flash[:notice] = 'Created new measurement'
@@ -93,6 +102,7 @@ class MeasurementsController < ApplicationController
       :source_id,
       routine_attributes:
       [
+        :id,
         :name,
         :description
       ],
@@ -118,7 +128,7 @@ class MeasurementsController < ApplicationController
   end
 
   def prepare_readouts
-    @quantities = @measurement.routine.quantities.includes(:formula)
+    @quantities = @routine.quantities.includes(:formula)
     @measurements, @requested_r, @extra_r, @formula_q = @routine.measurements
       .includes(:routine, :source)
       .filter(session[:m_filters], @quantities)

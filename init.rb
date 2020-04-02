@@ -13,6 +13,7 @@ Redmine::Plugin.register :body_tracking do
   project_module :body_tracking do
     permission :view_body_trackers, {
       body_trackers: [:index],
+      measurement_routines: [:show],
       measurements: [:index, :readouts, :filter],
       ingredients: [:index, :nutrients, :filter],
       sources: [:index],
@@ -21,6 +22,7 @@ Redmine::Plugin.register :body_tracking do
     }, read: true
     permission :manage_common, {
       body_trackers: [:defaults],
+      measurement_routines: [:edit],
       measurements: [:new, :create, :edit, :update, :destroy, :retake, :toggle_column],
       ingredients: [:new, :create, :edit, :update, :destroy, :toggle, :toggle_column,
                     :import],

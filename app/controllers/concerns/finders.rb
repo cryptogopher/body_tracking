@@ -10,7 +10,8 @@ module Concerns::Finders
 
   def find_measurement
     @measurement = Measurement.find(params[:id])
-    @project = @measurement.routine.project
+    @routine = @measurement.routine
+    @project = @routine.project
   rescue ActiveRecord::RecordNotFound
     render_404
   end
@@ -22,15 +23,22 @@ module Concerns::Finders
     render_404
   end
 
-  def find_quantity(id = :id)
-    @quantity = Quantity.find(params[id])
+  def find_measurement_routine(id = params[:id])
+    @routine = MeasurementRoutine.find(id)
+    @project = @routine.project
+  rescue ActiveRecord::RecordNotFound
+    render_404
+  end
+
+  def find_quantity(id = params[:id])
+    @quantity = Quantity.find(id)
     @project = @quantity.project
   rescue ActiveRecord::RecordNotFound
     render_404
   end
 
   def find_quantity_by_quantity_id
-    find_quantity(:quantity_id)
+    find_quantity(params[:quantity_id])
   end
 
   def find_unit

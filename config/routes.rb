@@ -7,7 +7,7 @@ resources :projects, shallow: true do
       post 'defaults'
     end
   end
-  resources :measurement_routines, only: [] do
+  resources :measurement_routines, only: [:show, :edit] do
     member do
       get 'readouts', to: 'measurements#readouts'
       post 'toggle_column', to: 'measurements#toggle_column'
