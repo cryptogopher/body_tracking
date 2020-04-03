@@ -1,7 +1,13 @@
 <div class="tabular">
   <%= fields_for 'measurement[routine_attributes]', @routine do |ff| %>
     <%= ff.hidden_field :id %>
-    <p><%= ff.text_field :name, required: true, style: "width: 95%;" %></p>
-    <p><%= ff.text_area :description, cols: 40, rows: 3, style: "width: 95%;" %></p>
+    <p>
+    <label><%= l(:field_name) %></label>
+    <%= ff.text_field :name, required: true, style: "width: 95%;" %>
+    </p>
+    <p>
+    <label><%= l(:field_description) %></label>
+    <%= ff.text_area :description, cols: 40, rows: 3, style: "width: 95%;" %>
+    </p>
   <% end %>
 </div>
