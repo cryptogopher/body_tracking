@@ -27,10 +27,8 @@ class MeasurementsController < ApplicationController
     # existing nested object (MeasurementRoutine) if it's not associated with outer object
     # https://stackoverflow.com/questions/6346134/
     # That's why routine needs to be found and associated before measurement initialization
-    @measurement = @project.measurements.new do |m|
-      routine_id = params[:measurement][:routine_attributes][:id]
-      m.routine = @project.measurement_routines.find_by(id: routine_id) if routine_id
-    end
+    @measurement = @project.measurements.new
+    update_routine_from_params
     @measurement.attributes = measurement_params
     @measurement.routine.project = @project
     @routine = @measurement.routine
@@ -51,6 +49,7 @@ class MeasurementsController < ApplicationController
   end
 
   def update
+    update_routine_from_params
     if @measurement.update(measurement_params)
       flash[:notice] = 'Updated measurement'
       prepare_items
@@ -115,6 +114,11 @@ class MeasurementsController < ApplicationController
         :_destroy
       ]
     )
+  end
+
+  def update_routine_from_params
+    routine_id = params[:measurement][:routine_attributes][:id]
+    @measurement.routine = @project.measurement_routines.find_by(id: routine_id) if routine_id
   end
 
   def prepare_items

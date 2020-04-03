@@ -27,7 +27,7 @@
             </div>
           </td>
           <td class="source"><%= m.source.name if m.source.present? %></td>
-          <td class="action unwrappable"><%= action_links(m) %></td>
+          <td class="action unwrappable"><%= action_links(m, :index) %></td>
         </tr>
       <% end %>
     </tbody>

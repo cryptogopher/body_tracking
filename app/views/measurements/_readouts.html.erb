@@ -38,7 +38,7 @@
           <% @requested_r[index].each do |*, value| %>
             <td class="primary value ellipsible"><%= format_value(value) %></td>
           <% end %>
-          <td class="action unwrappable"><%= action_links(m) %></td>
+          <td class="action unwrappable"><%= action_links(m, :readouts) %></td>
         </tr>
 
         <tr class="<%= row_class %>" style="display:none">
@@ -57,7 +57,9 @@
               <p class="value"><%= format_value(value) %></p>
             </td>
           <% end %>
-          <td rowspan="<%= rows %>" class="action unwrappable"><%= action_links(m) %></td>
+          <td rowspan="<%= rows %>" class="action unwrappable">
+            <%= action_links(m, :readouts) %>
+          </td>
         </tr>
 
         <% next unless @quantities.length > 0 %>

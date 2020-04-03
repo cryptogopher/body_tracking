@@ -1,18 +1,19 @@
 <div>
-<%= f.fields_for :routine do |ff| %>
+<%= fields_for 'measurement[routine_attributes]', @routine do |ff| %>
   <p>
   <%= ff.select :id,
     options_from_collection_for_select(@project.measurement_routines,
                                        :id, :name, @routine.id),
     {label: :field_measurement_routine, required: true},
-    onchange: "var mr_id = $('#measurement_routine_attributes_id option:selected').val();
+    autocomplete: 'off',
+    onchange: "var mr_id = $('#measurement_routine_attributes_id').val();
                $.ajax({
                  url: '#{measurement_routine_path(id: :mr_id)}'.replace('mr_id', mr_id),
                  dataType: 'script'
                });
                return false;" %>
   <%= link_to l(:button_edit), '#',
-    onclick: "var mr_id = $('#measurement_routine_attributes_id option:selected').val();
+    onclick: "var mr_id = $('#measurement_routine_attributes_id').val();
               $.ajax({
                 url: '#{edit_measurement_routine_path(id: :mr_id)}'.replace('mr_id', mr_id),
                 dataType: 'script'
@@ -21,7 +22,7 @@
     class: 'icon icon-edit' %>
   </p>
 <% end %>
-  <div id='measurement-routine'>
-    <%= render partial: 'measurement_routines/show' %>
-  </div>
+<% unless @routine.description.empty? %>
+  <p><%= @routine.description %></p>
+<% end %>
 </div>
