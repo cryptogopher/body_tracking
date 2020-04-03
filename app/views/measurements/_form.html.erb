@@ -10,14 +10,20 @@
   </div>
   <hr style="width: 95%;">
   <div class="tabular">
-    <p><%= f.select :source_id, source_options,
-      {required: false, include_blank: t('.null_source')} %></p>
     <p><%= f.text_area :notes, cols: 40, rows: 1, style: "width: 95%;" %></p>
-    <p>
-    <%= f.date_field :taken_at_date, required: true %>
-    <%= f.time_field :taken_at_time, value: format_time(@measurement), required: true,
-      label: '' %>
-    </p>
+    <div class="splitcontent">
+      <div class="splitcontentleft">
+        <p>
+        <%= f.date_field :taken_at_date, required: true %>
+        <%= f.time_field :taken_at_time, value: format_time(@measurement), required: true,
+          label: '' %>
+        </p>
+      </div>
+      <div class="splitcontentright">
+        <p><%= f.select :source_id, source_options,
+          {required: false, include_blank: t('.null_source')} %></p>
+      </div>
+    </div>
     <% @measurement.readouts.each_with_index do |r, index| %>
       <%= f.fields_for 'readouts_attributes', r, index: '' do |ff| %>
         <p class="readout">
