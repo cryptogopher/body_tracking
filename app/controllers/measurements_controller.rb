@@ -52,8 +52,12 @@ class MeasurementsController < ApplicationController
     update_routine_from_params
     if @measurement.update(measurement_params)
       flash[:notice] = 'Updated measurement'
-      prepare_items
-      render :index
+      if @measurement.routine.previous_changes.has_key?(:name) && params[:view] == 'readouts'
+        render js: "window.location.pathname='#{readouts_measurement_routine_path(@routine)}'"
+      else
+        prepare_items
+        render :index
+      end
     else
       render :edit
     end
