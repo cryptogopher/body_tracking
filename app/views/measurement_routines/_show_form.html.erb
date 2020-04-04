@@ -1,7 +1,7 @@
 <div>
 <%= fields_for 'measurement[routine_attributes]', @routine do |ff| %>
   <p>
-    <label><%= l(:field_measurement_routine) %></label>
+  <label><%= l(:field_measurement_routine) %><span class="required"> *</span></label>
   <%= ff.select :id,
     options_from_collection_for_select(@project.measurement_routines,
                                        :id, :name, @routine.id),

@@ -2,7 +2,7 @@
   <%= fields_for 'measurement[routine_attributes]', @routine do |ff| %>
     <%= ff.hidden_field :id %>
     <p>
-    <label><%= l(:field_name) %></label>
+    <label><%= l(:field_name) %><span class="required"> *</span></label>
     <%= ff.text_field :name, required: true, style: "width: 95%;" %>
     </p>
     <p>

@@ -10,7 +10,6 @@
   </div>
   <hr style="width: 95%;">
   <div class="tabular">
-    <p><%= f.text_area :notes, cols: 40, rows: 1, style: "width: 95%;" %></p>
     <div class="splitcontent">
       <div class="splitcontentleft">
         <p>
@@ -24,6 +23,7 @@
           {required: false, include_blank: t('.null_source')} %></p>
       </div>
     </div>
+    <p><%= f.text_area :notes, cols: 40, rows: 1, style: "width: 95%;" %></p>
     <% @measurement.readouts.each_with_index do |r, index| %>
       <%= f.fields_for 'readouts_attributes', r, index: '' do |ff| %>
         <p class="readout">
