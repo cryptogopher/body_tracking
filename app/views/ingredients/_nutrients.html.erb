@@ -1,5 +1,5 @@
 <%= render partial: 'ingredients/filters',
-  locals: {url: filter_project_ingredients_path(@project, view_mode: current_view)} %>
+  locals: {url: filter_project_ingredients_path(@project, view: :nutrients)} %>
 
 <% if @ingredients.any? %>
   <%= render partial: 'ingredients/options' %>
@@ -17,8 +17,7 @@
           <th style="width:<%= 100/total_width %>%" class="closable ellipsible">
             <div style="float:right;position:relative;">
               <%= link_to '',
-                toggle_column_project_ingredients_path(@project, quantity_id: q.id,
-                                                       view_mode: current_view),
+                toggle_column_project_ingredients_path(@project, quantity_id: q.id),
                 {class: "icon icon-close", method: :post, remote: true} %>
             </div>
             <%= q.name %>
@@ -39,7 +38,7 @@
           <% @requested_n[index].each do |*, value| %>
             <td class="primary value ellipsible"><%= format_value(value) %></td>
           <% end %>
-          <td class="action unwrappable"><%= action_links(i) %></td>
+          <td class="action unwrappable"><%= action_links(i, :nutrients) %></td>
         </tr>
 
         <tr class="<%= row_class %>" style="display:none">
@@ -58,7 +57,9 @@
               <p class="value"><%= format_value(value) %></p>
             </td>
           <% end %>
-          <td rowspan="<%= rows %>" class="action unwrappable"><%= action_links(i) %></td>
+          <td rowspan="<%= rows %>" class="action unwrappable">
+            <%= action_links(i, :nutrients) %>
+          </td>
         </tr>
 
         <% next unless @quantities.length > 0 %>

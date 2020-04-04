@@ -1,7 +1,7 @@
 <div class="contextual">
   <%= link_to t(".heading_ingredient_list"), project_ingredients_path(@project),
     class: 'icon icon-list' %>
-  <%= render partial: 'ingredients/contextual' %>
+  <%= render partial: 'ingredients/contextual', locals: {view: :nutrients} %>
 </div>
 
 <%= render partial: 'ingredients/import' %>

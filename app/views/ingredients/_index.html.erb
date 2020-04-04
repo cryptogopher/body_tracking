@@ -1,5 +1,5 @@
 <%= render partial: 'ingredients/filters',
-  locals: {url: filter_project_ingredients_path(@project)} %>
+  locals: {url: filter_project_ingredients_path(@project, view: :index)} %>
 
 <% if @ingredients.any? { |i| i.persisted? } %>
   <%= error_messages_for @formula_q.formula if @formula_q %>
@@ -35,7 +35,7 @@
             <%= i.source.name if i.source.present? %>
             <%= ", #{i.source_ident}" if i.source_ident.present? %>
           </td>
-          <td class="action unwrappable"><%= action_links(i) %></td>
+          <td class="action unwrappable"><%= action_links(i, :index) %></td>
         </tr>
       <% end %>
     </tbody>

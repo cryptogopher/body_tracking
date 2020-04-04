@@ -1,5 +1,5 @@
 <%= labelled_form_for @ingredient,
-  url: ingredient_path(@ingredient, view_mode: current_view),
+  url: ingredient_path(@ingredient, view: view),
   method: :patch, remote: true,
   html: {id: 'ingredient-edit-form', name: 'ingredient-edit-form'} do |f| %>
 

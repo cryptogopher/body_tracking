@@ -4,7 +4,6 @@ class IngredientsController < ApplicationController
   layout 'body_tracking'
   menu_item :body_trackers
   helper :body_trackers
-  helper_method :current_view
 
   include Concerns::Finders
 
@@ -16,15 +15,12 @@ class IngredientsController < ApplicationController
   before_action :authorize
 
   def index
-    self.current_view = :ingredients
-    prepare_items
+    prepare_ingredients
   end
 
   def new
     @ingredient = @project.ingredients.new
-    # passing attr for Nutrient after_initialize
-    # FIXME: is this necessary when creating through association?
-    @ingredient.nutrients.new(ingredient: @ingredient)
+    @ingredient.nutrients.new(unit: @ingredient.ref_unit)
   end
 
   def create
@@ -33,7 +29,7 @@ class IngredientsController < ApplicationController
       flash[:notice] = 'Created new ingredient'
       prepare_items
     else
-      @ingredient.nutrients.new(ingredient: @ingredient) if @ingredient.nutrients.empty?
+      @ingredient.nutrients.new(unit: @ingredient.ref_unit) if @ingredient.nutrients.empty?
       render :new
     end
   end
@@ -63,14 +59,12 @@ class IngredientsController < ApplicationController
   end
 
   def nutrients
-    self.current_view = :nutrients
-    prepare_items
+    prepare_nutrients
   end
 
   def toggle_column
     @project.nutrient_columns.toggle!(@quantity)
-    prepare_items
-    render :index
+    prepare_nutrients
   end
 
   def filter
@@ -206,6 +200,10 @@ class IngredientsController < ApplicationController
     )
   end
 
+  def prepare_items
+    params[:view] == 'index' ? prepare_ingredients : prepare_nutrients
+  end
+
   def prepare_ingredients
     @ingredients, @formula_q = @project.ingredients
       .includes(:ref_unit, :source)
@@ -216,16 +214,5 @@ class IngredientsController < ApplicationController
     @quantities = @project.nutrient_quantities.includes(:formula)
     @ingredients, @requested_n, @extra_n, @formula_q = @project.ingredients
       .filter(session[:i_filters], @quantities)
-  end
-
-  def prepare_items
-    (current_view == :nutrients) ? prepare_nutrients : prepare_ingredients
-  end
-
-  def current_view
-    @current_view || (params[:view_mode] == "nutrients" ? :nutrients : :ingredients)
-  end
-  def current_view=(cv)
-    @current_view = cv
   end
 end

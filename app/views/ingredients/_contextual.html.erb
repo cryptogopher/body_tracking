@@ -1,7 +1,6 @@
 <% if User.current.allowed_to?(:manage_common, @project) %>
   <%= link_to t(".link_import_ingredients"), '#', class: 'icon icon-multiple',
     onclick: '$("#import-ingredients").show(); $("#filename").focus(); return false;' %>
-  <%= link_to t(".link_new_ingredient"),
-    new_project_ingredient_path(@project, view_mode: current_view),
+  <%= link_to t(".link_new_ingredient"), new_project_ingredient_path(@project, view: view),
     {remote: true, class: 'icon icon-add'} %>
 <% end %>

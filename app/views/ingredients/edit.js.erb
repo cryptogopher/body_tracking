@@ -2,7 +2,7 @@ $('tr[id=ingredient-<%= @ingredient.id %>]').nextUntil('tr.primary', ':not(.ingr
   .remove();
 var columns = $('table > thead > tr > th').length;
 $('tr[id=ingredient-<%= @ingredient.id %>]').nextUntil('tr.primary').addBack().last().after(
-  '<tr><td class="form" colspan="'+columns+'">' +
-  '<div id="edit-ingredient"><%= j render partial: "ingredients/edit_form" %></div>' +
-  '</td></tr>'
+  '<tr><td class="form" colspan="'+columns+'"><div id="edit-ingredient">' +
+  '<%= j render partial: 'ingredients/edit_form', locals: {view: params[:view]} %>' +
+  '</div></td></tr>'
 );
