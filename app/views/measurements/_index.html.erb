@@ -9,6 +9,7 @@
       <tr>
         <th style="width:5%"><%= l(:field_taken_at_date) %></th>
         <th><%= l(:field_name) %></th>
+        <th><%= l(:field_notes) %></th>
         <th><%= l(:field_source) %></th>
         <th style="width:5%"><%= l(:field_action) %></th>
       </tr>
@@ -26,6 +27,7 @@
               <small><%= " (#{pluralize(m.readouts.size, 'readout')})" %></small>
             </div>
           </td>
+          <td class="notes ellipsible"><%= m.notes %></td>
           <td class="source"><%= m.source.name if m.source.present? %></td>
           <td class="action unwrappable"><%= action_links(m, :index) %></td>
         </tr>
