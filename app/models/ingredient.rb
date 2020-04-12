@@ -1,7 +1,9 @@
 class Ingredient < ActiveRecord::Base
   enum group: {
     other: 0,
-    meat: 1
+    dish: 1,
+    recipe: 2,
+    meat: 3
   }
 
   # Has to go before any 'dependent:' association

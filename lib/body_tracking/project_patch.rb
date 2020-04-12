@@ -10,8 +10,8 @@ module BodyTracking::ProjectPatch
     has_many :quantities, -> { order "lft" }, dependent: :destroy
     has_many :units, dependent: :destroy
 
-    has_many :nutrient_columns, as: :column_view, dependent: :destroy, class_name: 'Column',
-      extend: BodyTracking::TogglableColumns
+    has_many :nutrient_columns, as: :column_view, dependent: :destroy,
+      class_name: 'QuantityColumn', extend: BodyTracking::TogglableColumns
     has_many :nutrient_quantities, -> { order "lft" }, through: :nutrient_columns,
       source: 'quantity'
   end

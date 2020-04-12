@@ -1,4 +1,4 @@
-class Column < ActiveRecord::Base
+class QuantityColumn < ActiveRecord::Base
   belongs_to :column_view, polymorphic: true
   belongs_to :quantity
 end
