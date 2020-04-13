@@ -55,6 +55,7 @@ en:
       heading_diet: 'Diet'
       heading_common: 'Common'
       link_summary: 'Summary'
+      link_meals: 'Meals'
       link_measurements: 'Measurements'
       link_ingredients: 'Ingredients'
       link_nutrients: 'Nutrients'

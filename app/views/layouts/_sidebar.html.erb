@@ -10,6 +10,7 @@
 
 <h3><%= t ".heading_diet" %></h3>
 <ul>
+  <li><%= link_to t(".link_meals"), project_meals_path(@project) %></li>
   <li>
     <%= link_to t(".link_ingredients"), project_ingredients_path(@project) %>
     /

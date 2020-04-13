@@ -4,7 +4,7 @@ class MeasurementRoutine < ActiveRecord::Base
     foreign_key: 'routine_id', dependent: :restrict_with_error,
     extend: BodyTracking::ItemsWithQuantities
   has_many :readout_columns, as: :column_view, dependent: :destroy,
-    class: 'QuantityColumn', extend: BodyTracking::TogglableColumns
+    class_name: 'QuantityColumn', extend: BodyTracking::TogglableColumns
   has_many :quantities, -> { order "lft" }, through: :readout_columns
 
   validates :name, presence: true, uniqueness: {scope: :project_id}

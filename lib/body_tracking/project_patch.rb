@@ -1,5 +1,7 @@
 module BodyTracking::ProjectPatch
   Project.class_eval do
+    has_many :meals, -> { order "eaten_at DESC" }, dependent: :destroy
+
     has_many :measurement_routines, dependent: :destroy
     has_many :measurements, -> { order "taken_at DESC" }, dependent: :destroy,
       extend: BodyTracking::ItemsWithQuantities, through: :measurement_routines
