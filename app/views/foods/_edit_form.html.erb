@@ -1,9 +1,9 @@
-<%= labelled_form_for @ingredient,
-  url: ingredient_path(@ingredient, view: view),
+<%= labelled_form_for @food,
+  url: food_path(@food, view: view),
   method: :patch, remote: true,
-  html: {id: 'ingredient-edit-form', name: 'ingredient-edit-form'} do |f| %>
+  html: {id: 'food-edit-form', name: 'food-edit-form'} do |f| %>
 
-  <%= render partial: 'ingredients/form', locals: {f: f} %>
+  <%= render partial: 'foods/form', locals: {f: f} %>
 
   <div class="tabular">
     <p>

@@ -1,10 +1,10 @@
 module BodyTracking
   module ItemsWithQuantities
     RELATIONS = {
-      'Ingredient' => {
+      'Food' => {
         domain: :diet,
         subitem_class: Nutrient,
-        foreign_key: :ingredient_id,
+        foreign_key: :food_id,
         value_field: :amount
       },
       'Measurement' => {

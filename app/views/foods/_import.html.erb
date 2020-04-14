@@ -1,7 +1,7 @@
-<div id="import-ingredients" style="display:none;">
-  <h2><%= t ".heading_import_ingredients" %></h2>
+<div id="import-foods" style="display:none;">
+  <h2><%= t ".heading_import_foods" %></h2>
 
-  <%= form_tag import_project_ingredients_path(@project),
+  <%= form_tag import_project_foods_path(@project),
     id: 'import-form', name: 'import-form', multipart: true do %>
 
     <div class="box tabular">
@@ -14,8 +14,7 @@
       </p>
     </div>
     <%= submit_tag l(:button_import) %>
-    <%= link_to l(:button_cancel), "#",
-      onclick: '$("#import-ingredients").hide(); return false;' %>
+    <%= link_to l(:button_cancel), "#", onclick: '$("#import-foods").hide(); return false;' %>
   <% end %>
   <hr>
 </div>

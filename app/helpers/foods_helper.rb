@@ -1,4 +1,4 @@
-module IngredientsHelper
+module FoodsHelper
   def quantity_options
     nested_set_options(@project.quantities.diet) do |q|
       raw("#{'&ensp;' * q.level}#{q.name}")
@@ -28,14 +28,14 @@ module IngredientsHelper
 
   def group_options
     translations = t('.groups')
-    Ingredient.groups.map do |k,v|
+    Food.groups.map do |k,v|
       [translations[k.to_sym], k]
     end
   end
 
-  def action_links(i, view)
-    link_to(l(:button_edit), edit_ingredient_path(i, view: view),
+  def action_links(f, view)
+    link_to(l(:button_edit), edit_food_path(f, view: view),
             {remote: true, class: "icon icon-edit"}) +
-    delete_link(ingredient_path(i), {remote: true, data: {}})
+    delete_link(food_path(f), {remote: true, data: {}})
   end
 end

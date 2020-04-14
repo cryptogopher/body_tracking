@@ -1,6 +1,6 @@
 require File.expand_path('../../test_helper', __FILE__)
 
-class IngredientTest < ActiveSupport::TestCase
+class FoodTest < ActiveSupport::TestCase
 
   # Replace this with your real tests.
   def test_truth

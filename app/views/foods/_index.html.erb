@@ -1,0 +1,45 @@
+<%= render partial: 'foods/filters',
+  locals: {url: filter_project_foods_path(@project, view: :index)} %>
+
+<% if @foods.any? { |f| f.persisted? } %>
+  <%= error_messages_for @formula_q.formula if @formula_q %>
+
+  <table class="list">
+    <thead>
+      <tr>
+        <th style="width:50%"><%= l(:field_name) %></th>
+        <th><%= l(:field_notes) %></th>
+        <th><%= l(:field_reference) %></th>
+        <th><%= l(:field_group) %></th>
+        <th><%= l(:field_source) %></th>
+        <th style="width:5%"><%= l(:field_action) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @foods.each do |f| %>
+        <% next if f.new_record? %>
+        <tr id="food-<%= f.id %>"
+            class="food primary<%= ' hidden' if f.hidden %>">
+          <td class="name ellipsible">
+            <%= link_to '', toggle_food_path(f), {
+                  remote: true,
+                  method: :post,
+                  class: "icon icon-eye"
+                } %>
+            <%= f.name %>
+          </td>
+          <td class="notes ellipsible"><%= f.notes %></td>
+          <td class="reference value"><%= f.ref_amount %> [<%= f.ref_unit.shortname %>]</td>
+          <td class="group"><%= f.group %></td>
+          <td class="source">
+            <%= f.source.name if f.source.present? %>
+            <%= ", #{f.source_ident}" if f.source_ident.present? %>
+          </td>
+          <td class="action unwrappable"><%= action_links(f, :index) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>

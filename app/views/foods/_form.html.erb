@@ -1,4 +1,4 @@
-<%= error_messages_for @ingredient %>
+<%= error_messages_for @food %>
 
 <div class="box tabular">
   <p><%= f.text_field :name, size: 40, required: true %></p>
@@ -21,7 +21,7 @@
       <p><%= f.text_field :source_ident, size: 25, required: false %></p>
     </div>
   </div>
-  <% @ingredient.nutrients.each_with_index do |n, index| %>
+  <% @food.nutrients.each_with_index do |n, index| %>
     <%= f.fields_for 'nutrients_attributes', n, index: '' do |ff| %>
       <p class="nutrient">
         <%= ff.hidden_field :id %>
@@ -32,7 +32,7 @@
         <%= ff.hidden_field :_destroy %>
         <%= link_to t(".button_delete_nutrient"), '#',
           class: 'icon icon-del',
-          style: (@ingredient.nutrients.length > 1 ? "" : "display:none"),
+          style: (@food.nutrients.length > 1 ? "" : "display:none"),
           onclick: "deleteNutrient(); return false;" %>
       </p>
     <% end %>

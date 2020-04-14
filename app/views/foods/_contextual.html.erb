@@ -1,0 +1,6 @@
+<% if User.current.allowed_to?(:manage_common, @project) %>
+  <%= link_to t(".link_import_foods"), '#', class: 'icon icon-multiple',
+    onclick: '$("#import-foods").show(); $("#filename").focus(); return false;' %>
+  <%= link_to t(".link_new_food"), new_project_food_path(@project, view: view),
+    {remote: true, class: 'icon icon-add'} %>
+<% end %>

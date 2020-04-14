@@ -1,6 +1,6 @@
 table.list tr.quantity.primary td.name {font-weight: bold;}
 
-table.list tr.ingredient.hidden {opacity: 0.4}
+table.list tr.food.hidden {opacity: 0.4}
 
 table.list .date,
 table.list .name,

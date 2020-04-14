@@ -16,6 +16,6 @@ class MealsController < ApplicationController
   private
 
   def prepare_meals
-    @meals = @project.meals.includes(:ingredients)
+    @meals = @project.meals.includes(:foods)
   end
 end

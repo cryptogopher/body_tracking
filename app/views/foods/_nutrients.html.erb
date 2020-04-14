@@ -1,8 +1,8 @@
-<%= render partial: 'ingredients/filters',
-  locals: {url: filter_project_ingredients_path(@project, view: :nutrients)} %>
+<%= render partial: 'foods/filters',
+  locals: {url: filter_project_foods_path(@project, view: :nutrients)} %>
 
-<% if @ingredients.any? %>
-  <%= render partial: 'ingredients/options' %>
+<% if @foods.any? %>
+  <%= render partial: 'foods/options' %>
 
   <% formulas = @quantities.map { |q| q.formula } %>
   <% formulas.unshift(@formula_q.formula) if @formula_q %>
@@ -17,7 +17,7 @@
           <th style="width:<%= 100/total_width %>%" class="closable ellipsible">
             <div style="float:right;position:relative;">
               <%= link_to '',
-                toggle_column_project_ingredients_path(@project, quantity_id: q.id),
+                toggle_column_project_foods_path(@project, quantity_id: q.id),
                 {class: "icon icon-close", method: :post, remote: true} %>
             </div>
             <%= q.name %>
@@ -28,17 +28,17 @@
     </thead>
 
     <tbody>
-      <% @ingredients.each_with_index do |i, index| %>
-        <% row_class = "ingredient#{' hidden' if i.hidden} #{cycle('odd', 'even')}" %>
-        <tr id="ingredient-<%= i.id %>" class="primary <%= row_class %>">
+      <% @foods.each_with_index do |f, index| %>
+        <% row_class = "food#{' hidden' if f.hidden} #{cycle('odd', 'even')}" %>
+        <tr id="food-<%= f.id %>" class="primary <%= row_class %>">
           <td class="name ellipsible" style="cursor: pointer;"
-              onclick="$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', '.ingredient').toggle(); return false;">
-            <span class="icon icon-bullet-closed"><%= i.name %></span>
+              onclick="$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', '.food').toggle(); return false;">
+            <span class="icon icon-bullet-closed"><%= f.name %></span>
           </td>
           <% @requested_n[index].each do |*, value| %>
             <td class="primary value ellipsible"><%= format_value(value) %></td>
           <% end %>
-          <td class="action unwrappable"><%= action_links(i, :nutrients) %></td>
+          <td class="action unwrappable"><%= action_links(f, :nutrients) %></td>
         </tr>
 
         <tr class="<%= row_class %>" style="display:none">
@@ -48,8 +48,8 @@
                rows = 1
              end %>
           <td rowspan="<%= rows %>" class="name ellipsible" style="cursor: pointer;"
-              onclick="$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', '.ingredient').toggle(); return false;">
-            <span class="icon icon-bullet-open"><%= i.name %></span>
+              onclick="$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', '.food').toggle(); return false;">
+            <span class="icon icon-bullet-open"><%= f.name %></span>
           </td>
           <% @requested_n[index].each do |q, value| %>
             <td class="primary quantity ellipsible">
@@ -58,7 +58,7 @@
             </td>
           <% end %>
           <td rowspan="<%= rows %>" class="action unwrappable">
-            <%= action_links(i, :nutrients) %>
+            <%= action_links(f, :nutrients) %>
           </td>
         </tr>
 

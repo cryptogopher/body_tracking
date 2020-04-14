@@ -1,4 +1,4 @@
-class IngredientsController < ApplicationController
+class FoodsController < ApplicationController
   require 'csv'
 
   layout 'body_tracking'
@@ -11,25 +11,25 @@ class IngredientsController < ApplicationController
   before_action :find_project_by_project_id,
     only: [:index, :new, :create, :nutrients, :filter, :import]
   before_action :find_quantity_by_quantity_id, only: [:toggle_column]
-  before_action :find_ingredient, only: [:edit, :update, :destroy, :toggle]
+  before_action :find_food, only: [:edit, :update, :destroy, :toggle]
   before_action :authorize
 
   def index
-    prepare_ingredients
+    prepare_foods
   end
 
   def new
-    @ingredient = @project.ingredients.new
-    @ingredient.nutrients.new(unit: @ingredient.ref_unit)
+    @food = @project.foods.new
+    @food.nutrients.new(unit: @food.ref_unit)
   end
 
   def create
-    @ingredient = @project.ingredients.new(ingredient_params)
-    if @ingredient.save
-      flash[:notice] = 'Created new ingredient'
+    @food = @project.foods.new(food_params)
+    if @food.save
+      flash[:notice] = 'Created new food'
       prepare_items
     else
-      @ingredient.nutrients.new(unit: @ingredient.ref_unit) if @ingredient.nutrients.empty?
+      @food.nutrients.new(unit: @food.ref_unit) if @food.nutrients.empty?
       render :new
     end
   end
@@ -38,8 +38,8 @@ class IngredientsController < ApplicationController
   end
 
   def update
-    if @ingredient.update(ingredient_params)
-      flash[:notice] = 'Updated ingredient'
+    if @food.update(food_params)
+      flash[:notice] = 'Updated food'
       prepare_items
       render :index
     else
@@ -48,13 +48,13 @@ class IngredientsController < ApplicationController
   end
 
   def destroy
-    if @ingredient.destroy
-      flash[:notice] = 'Deleted ingredient'
+    if @food.destroy
+      flash[:notice] = 'Deleted food'
     end
   end
 
   def toggle
-    @ingredient.toggle_hidden!
+    @food.toggle_hidden!
     prepare_items
   end
 
@@ -68,7 +68,7 @@ class IngredientsController < ApplicationController
   end
 
   def filter
-    session[:i_filters] = params.permit(:name, :visibility, formula: [:code, :zero_nil])
+    session[:f_filters] = params.permit(:name, :visibility, formula: [:code, :zero_nil])
     prepare_items
     render :index
   end
@@ -80,7 +80,7 @@ class IngredientsController < ApplicationController
       quantities = @project.quantities.diet.map { |q| [q.name, q] }.to_h
       units = @project.units.map { |u| [u.shortname, u] }.to_h
       sources = @project.sources.map { |s| [s.name, s] }.to_h
-      ingredients_params = []
+      foods_params = []
       column_units = {}
 
       CSV.foreach(params[:file].path, headers: true).with_index(2) do |row, line|
@@ -92,7 +92,7 @@ class IngredientsController < ApplicationController
           warnings << "Line #{line}: unknown source name #{r['Source']}"
         end
 
-        i_params = {
+        f_params = {
           name: r.delete('Name'),
           notes: r.delete('Notes'),
           ref_amount: 100.0,
@@ -138,12 +138,12 @@ class IngredientsController < ApplicationController
 
           next if quantities[quantity].blank?
           if quantity == 'Reference'
-            i_params.update({
+            f_params.update({
               ref_amount: amount.to_d,
               ref_unit: unit
             })
           else
-            i_params[:nutrients_attributes] << {
+            f_params[:nutrients_attributes] << {
               quantity: quantities[quantity],
               amount: amount.to_d,
               unit: unit
@@ -151,20 +151,20 @@ class IngredientsController < ApplicationController
           end
         end
 
-        ingredients_params << i_params
+        foods_params << f_params
       end
     else
       warnings << 'No file selected'
     end
 
     if warnings.empty?
-      ingredients = @project.ingredients.create(ingredients_params)
-      flash[:notice] = "Imported #{ingredients.map(&:persisted?).count(true)} out of" \
-        " #{ingredients_params.length} ingredients"
-      skipped = ingredients.select { |i| !i.persisted? }
+      foods = @project.foods.create(foods_params)
+      flash[:notice] = "Imported #{foods.map(&:persisted?).count(true)} out of" \
+        " #{foods_params.length} foods"
+      skipped = foods.select { |f| !f.persisted? }
       if skipped.length > 0
-        skipped_desc = skipped.map { |i| "#{i.name} - #{i.errors.full_messages.join(', ')}" }
-        flash[:warning] = "Ingredients skipped due to errors:<br>" \
+        skipped_desc = skipped.map { |f| "#{f.name} - #{f.errors.full_messages.join(', ')}" }
+        flash[:warning] = "Foods skipped due to errors:<br>" \
           " #{skipped_desc.join('<br>').truncate(1024)}"
       end
     else
@@ -177,11 +177,11 @@ class IngredientsController < ApplicationController
   private
 
   def init_session_filters
-    session[:i_filters] ||= {formula: {}}
+    session[:f_filters] ||= {formula: {}}
   end
 
-  def ingredient_params
-    params.require(:ingredient).permit(
+  def food_params
+    params.require(:food).permit(
       :name,
       :notes,
       :ref_amount,
@@ -201,18 +201,18 @@ class IngredientsController < ApplicationController
   end
 
   def prepare_items
-    params[:view] == 'index' ? prepare_ingredients : prepare_nutrients
+    params[:view] == 'index' ? prepare_foods : prepare_nutrients
   end
 
-  def prepare_ingredients
-    @ingredients, @formula_q = @project.ingredients
+  def prepare_foods
+    @foods, @formula_q = @project.foods
       .includes(:ref_unit, :source)
-      .filter(session[:i_filters])
+      .filter(session[:f_filters])
   end
 
   def prepare_nutrients
     @quantities = @project.nutrient_quantities.includes(:formula)
-    @ingredients, @requested_n, @extra_n, @formula_q = @project.ingredients
-      .filter(session[:i_filters], @quantities)
+    @foods, @requested_n, @extra_n, @formula_q = @project.foods
+      .filter(session[:f_filters], @quantities)
   end
 end

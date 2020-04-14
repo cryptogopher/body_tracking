@@ -1,4 +1,4 @@
-class Ingredient < ActiveRecord::Base
+class Food < ActiveRecord::Base
   enum group: {
     other: 0,
     dish: 1,
@@ -16,7 +16,7 @@ class Ingredient < ActiveRecord::Base
   belongs_to :ref_unit, class_name: 'Unit', required: true
   belongs_to :source, required: false
 
-  has_many :nutrients, inverse_of: :ingredient, dependent: :destroy, validate: true
+  has_many :nutrients, inverse_of: :food, dependent: :destroy, validate: true
   validates :nutrients, presence: true
   accepts_nested_attributes_for :nutrients, allow_destroy: true, reject_if: proc { |attrs|
     attrs['quantity_id'].blank? && attrs['amount'].blank?

@@ -1,3 +1,0 @@
-<% if @ingredient.destroyed? %>
-  $('tr[id=ingredient-<%= @ingredient.id %>]').nextUntil('tr.primary').addBack().remove();
-<% end %>

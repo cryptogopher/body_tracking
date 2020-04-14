@@ -5,7 +5,7 @@ module BodyTracking::ProjectPatch
     has_many :measurement_routines, dependent: :destroy
     has_many :measurements, -> { order "taken_at DESC" }, dependent: :destroy,
       extend: BodyTracking::ItemsWithQuantities, through: :measurement_routines
-    has_many :ingredients, -> { order "name" }, dependent: :destroy,
+    has_many :foods, -> { order "name" }, dependent: :destroy,
       extend: BodyTracking::ItemsWithQuantities
 
     has_many :sources, dependent: :destroy

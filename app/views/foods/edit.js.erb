@@ -1,0 +1,8 @@
+$('tr[id=food-<%= @food.id %>]').nextUntil('tr.primary', ':not(.food)')
+  .remove();
+var columns = $('table > thead > tr > th').length;
+$('tr[id=food-<%= @food.id %>]').nextUntil('tr.primary').addBack().last().after(
+  '<tr><td class="form" colspan="'+columns+'"><div id="edit-food">' +
+  '<%= j render partial: 'foods/edit_form', locals: {view: params[:view]} %>' +
+  '</div></td></tr>'
+);

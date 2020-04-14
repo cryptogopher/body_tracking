@@ -9,14 +9,14 @@
     <table class="filter">
       <tr>
         <td>
-          <%= text_field_tag 'name', session[:i_filters][:name], placeholder: 'name' %>
+          <%= text_field_tag 'name', session[:f_filters][:name], placeholder: 'name' %>
         </td>
         <td>
-          <%= select_tag 'visibility', visibility_options(session[:i_filters][:visibility]),
+          <%= select_tag 'visibility', visibility_options(session[:f_filters][:visibility]),
             prompt: t('.visibility_prompt'), onchange: '$("#filters-form").submit();' %>
         </td>
         <td style="width:100%;">
-          <%= text_field_tag 'formula[code]', session[:i_filters][:formula][:code],
+          <%= text_field_tag 'formula[code]', session[:f_filters][:formula][:code],
             placeholder: 'conditional expression including nutrients', size: 40,
             style: 'box-sizing:border-box; width:100%;' %>
         </td>

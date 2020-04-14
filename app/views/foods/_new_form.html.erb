@@ -1,0 +1,18 @@
+<h2><%= t ".heading_new_food" %></h2>
+
+<%= labelled_form_for @food,
+  url: project_foods_path(@project, view: view),
+  remote: true,
+  html: {id: 'new-food-form', name: 'new-food-form'} do |f| %>
+
+  <%= render partial: 'foods/form', locals: {f: f} %>
+
+  <div class="tabular">
+    <p>
+      <%= submit_tag l(:button_create) %>
+      <%= link_to l(:button_cancel), "#",
+        onclick: '$("#new-food").empty(); return false;' %>
+    </p>
+  </div>
+<% end %>
+<hr>

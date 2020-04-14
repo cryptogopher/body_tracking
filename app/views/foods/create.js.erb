@@ -1,0 +1,6 @@
+$('#new-food').empty();
+<% if params[:view] == 'index' %>
+  $('#foods').html('<%= j render partial: 'foods/index' %>');
+<% else %>
+  $('#nutrients').html('<%= j render partial: 'foods/nutrients' %>');
+<% end %>

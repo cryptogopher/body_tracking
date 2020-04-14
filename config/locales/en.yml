@@ -27,10 +27,10 @@ en:
             readouts:
               duplicated_quantity_unit_pair: 'you can define each quantity/unit pair only
                 once per measurement'
-        ingredient:
+        food:
           attributes:
             nutrients:
-              duplicated_quantity: 'you can define each quantity only once per ingredient'
+              duplicated_quantity: 'you can define each nutrient quantity only once per food'
         quantity:
           attributes:
             parent:
@@ -57,7 +57,7 @@ en:
       link_summary: 'Summary'
       link_meals: 'Meals'
       link_measurements: 'Measurements'
-      link_ingredients: 'Ingredients'
+      link_foods: 'Foods'
       link_nutrients: 'Nutrients'
       link_sources: 'Data sources'
       link_quantities: 'Quantities'
@@ -79,18 +79,18 @@ en:
       heading_new_measurement: 'New measurement'
     index:
       heading: 'Measurements'
-  ingredients:
+  foods:
     contextual:
-      link_import_ingredients: 'Import'
-      link_new_ingredient: 'New ingredient'
+      link_import_foods: 'Import'
+      link_new_food: 'New food'
     filters:
       visibility_prompt: 'all'
     import:
-      heading_import_ingredients: 'Import'
+      heading_import_foods: 'Import'
       label_import_select_csv_file: 'Select CSV file'
       import_hints: 'CSV file has to include header with column names. Recognized column
         names are:
-        (1) ingredient attributes, case sensitive:
+        (1) food attributes, case sensitive:
         "Name" - required, "Notes" - optional, "Reference" - defaults to 100[g],
         "Group" - defaults to "other", "Source" - optional, "SourceIdent" - optional,
         (2) quantities'' names with unit short name in square brackets.
@@ -105,13 +105,13 @@ en:
         other: 'other'
         meat: 'meat'
     new_form:
-      heading_new_ingredient: 'New ingredient'
+      heading_new_food: 'New food'
     index:
-      heading: 'Ingredients'
+      heading: 'Foods'
       heading_nutrient_view: 'Nutrient view'
     nutrients:
       heading: 'Nutrients'
-      heading_ingredient_list: 'Ingredient list'
+      heading_food_list: 'Food list'
   sources:
     index:
       heading: 'Data sources'

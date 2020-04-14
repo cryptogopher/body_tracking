@@ -39,7 +39,7 @@ class CreateSchema < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    create_table :ingredients do |t|
+    create_table :foods do |t|
       t.references :project
       t.string :name
       t.text :notes
@@ -54,7 +54,7 @@ class CreateSchema < ActiveRecord::Migration
     end
 
     create_table :nutrients do |t|
-      t.references :ingredient
+      t.references :food
       t.references :quantity
       t.decimal :amount, precision: 12, scale: 6
       t.references :unit
@@ -91,9 +91,9 @@ class CreateSchema < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    create_table :compositions_ingredients do |t|
+    create_table :ingredients do |t|
       t.references :composition, polymorphic: true
-      t.references :ingredient
+      t.references :food
       t.references :part_of
       t.decimal :ready_ratio, precision: 12, scale: 6
       t.decimal :amount, precision: 12, scale: 6

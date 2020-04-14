@@ -1,9 +1,9 @@
 module Concerns::Finders
   private
 
-  def find_ingredient
-    @ingredient = Ingredient.find(params[:id])
-    @project = @ingredient.project
+  def find_food
+    @food = Food.find(params[:id])
+    @project = @food.project
   rescue ActiveRecord::RecordNotFound
     render_404
   end
