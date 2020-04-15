@@ -1,6 +1,7 @@
 # English strings go here for Rails i18n
 en:
   body_trackers_menu_caption: 'Body trackers'
+  field_ingredients: 'Ingredients'
   field_measurement_routine: 'Routine'
   field_readouts: 'Readouts'
   field_taken_at_date: 'Taken at'
@@ -22,10 +23,14 @@ en:
   activerecord:
     errors:
       models:
+        meal:
+          attributes:
+            ingredients:
+              duplicated_ingredient: 'each ingredient can only be specified once per meal'
         measurement:
           attributes:
             readouts:
-              duplicated_quantity_unit_pair: 'you can define each quantity/unit pair only
+              duplicated_quantity_unit_pair: 'each quantity+unit pair can only be specified
                 once per measurement'
         food:
           attributes:
@@ -55,15 +60,27 @@ en:
       heading_diet: 'Diet'
       heading_common: 'Common'
       link_summary: 'Summary'
-      link_meals: 'Meals'
       link_measurements: 'Measurements'
+      link_meals: 'Meals'
       link_foods: 'Foods'
       link_nutrients: 'Nutrients'
       link_sources: 'Data sources'
       link_quantities: 'Quantities'
       link_units: 'Units'
       link_defaults: 'Load defaults'
-      confirm_defaults: 'This will load default quantities and units. Continue?'
+      confirm_defaults: 'This will load default data sources, quantities and units. Continue?'
+  meals:
+    contextual:
+      link_new_meal: 'New meal'
+    form:
+      button_new_ingredient: 'Add ingredient'
+      button_delete_ingredient: 'Delete'
+    new_form:
+      heading_new_meal: 'New meal'
+    index:
+      heading: 'Meals'
+    show:
+      label_meal: 'Meal'
   measurements:
     contextual:
       link_new_measurement: 'New measurement'

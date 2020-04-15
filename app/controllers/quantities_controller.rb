@@ -122,6 +122,6 @@ class QuantitiesController < ApplicationController
 
   def prepare_quantities
     @quantities = @project.quantities.filter(@project, session[:q_filters])
-      .includes(:columns, :formula, :parent)
+      .includes(:exposures, :formula, :parent)
   end
 end

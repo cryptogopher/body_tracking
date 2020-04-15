@@ -1,0 +1,79 @@
+<%= error_messages_for @meal %>
+
+<div class="box">
+  <div class="tabular">
+    <% @meal.ingredients.each_with_index do |i, index| %>
+      <table style="width:95%;">
+        <%= f.fields_for 'ingredients_attributes', i, index: '' do |ff| %>
+          <tr class="ingredient">
+            <td style="width:90%;">
+              <p>
+              <%= ff.hidden_field :id %>
+              <%= ff.text_field :food_id, {class: "autocomplete food-autocomplete",
+                                           style: "width: 80%;",
+                                           required: true,
+                                           label: (index > 0 ? '' : :field_ingredients)} %>
+              <%= ff.number_field :amount, {style: "width: 8%", step: :any, label: ''} %>
+              <%= i.food.ref_unit.shortname if i.food %>
+              <%= ff.hidden_field :_destroy %>
+              </p>
+            </td>
+            <td style="width:10%;">
+              <%= link_to t(".button_delete_ingredient"), '#',
+                class: 'icon icon-del',
+                style: (@meal.ingredients.length > 1 ? "" : "display:none"),
+                onclick: "deleteIngredient(); return false;" %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
+    <p>
+    <%= link_to t(".button_new_ingredient"), '#', class: 'icon icon-add',
+      onclick: 'newIngredient(); return false;' %>
+    </p>
+  </div>
+</div>
+
+<%= javascript_tag do %>
+  function autocompleteFood($row) {
+    $row.find('.food-autocomplete').autocomplete({
+      source: '<%= j autocomplete_project_foods_path(@project) %>',
+      minLength: 2,
+      position: {collision: 'flipfit'},
+      search: function(event){
+        $(event.target).closest('.food-autocomplete').addClass('ajax-loading');
+      },
+      response: function(event){
+        $(event.target).closest('.food-autocomplete').removeClass('ajax-loading');
+      }
+    });
+  }
+  autocompleteFood($('tr.ingredient:visible'));
+
+  function newIngredient() {
+    var form = $(event.target).closest('form');
+    var row = form.find('tr.ingredient:visible:last');
+    var new_row = row.clone().insertAfter(row);
+    new_row.find('input[id$=__id], input[id$=__amount], input[id$=__food_id]').val('');
+    new_row.find('input[id$=__destroy]').val('');
+    new_row.find('label:first').hide();
+    form.find('tr.ingredient:visible a.icon-del').show();
+    autocompleteFood(new_row);
+  }
+
+  function deleteIngredient() {
+    var form = $(event.target).closest('form');
+    var row = $(event.target).closest('tr.ingredient');
+    if (row.find('input[id$=__id]').val()) {
+      row.hide();
+      row.find('input[id$=__destroy]').val('1');
+    } else {
+      row.remove();
+    }
+    form.find('tr.ingredient:visible:first label:first').show();
+    if (form.find('tr.ingredient:visible').length <= 1) {
+      form.find('tr.ingredient:visible a.icon-del').hide();
+    }
+  }
+<% end %>

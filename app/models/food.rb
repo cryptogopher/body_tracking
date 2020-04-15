@@ -34,6 +34,9 @@ class Food < ActiveRecord::Base
   validates :ref_amount, numericality: {greater_than: 0}
   validates :group, inclusion: {in: groups.keys}
 
+  scope :visible, -> { where(hidden: false) }
+  scope :hidden, -> { where(hidden: true) }
+
   after_initialize do
     if new_record?
       self.ref_amount ||= 100

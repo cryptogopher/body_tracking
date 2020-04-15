@@ -27,8 +27,8 @@ class CreateSchema < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    create_table :quantity_columns do |t|
-      t.references :column_view, polymorphic: true
+    create_table :exposures do |t|
+      t.references :view, polymorphic: true
       t.references :quantity
     end
 
@@ -94,9 +94,9 @@ class CreateSchema < ActiveRecord::Migration
     create_table :ingredients do |t|
       t.references :composition, polymorphic: true
       t.references :food
+      t.decimal :amount, precision: 12, scale: 6
       t.references :part_of
       t.decimal :ready_ratio, precision: 12, scale: 6
-      t.decimal :amount, precision: 12, scale: 6
       t.timestamps null: false
     end
   end

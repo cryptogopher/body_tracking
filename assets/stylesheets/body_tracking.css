@@ -32,10 +32,13 @@ fieldset#filters table.filter td {padding-left: 8px;}
 .icon-bullet-open { background-image: url(../../../images/bullet_toggle_minus.png); }
 .icon-bullet-closed { background-image: url(../../../images/bullet_toggle_plus.png); }
 
+.ui-state-focus, .ui-widget-content .ui-state-focus { font-weight: normal; }
+
 
 input[type=number] {
   -moz-appearance:textfield;
   text-align: right;
+  height: 1.5em;
 }
 input[type=date], input[type=time], input[type=number], textarea {
   border:1px solid #d7d7d7;

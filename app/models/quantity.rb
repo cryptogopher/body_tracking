@@ -9,7 +9,7 @@ class Quantity < ActiveRecord::Base
   belongs_to :project, required: false
   has_many :nutrients, dependent: :restrict_with_error
   has_many :readouts, dependent: :restrict_with_error
-  has_many :columns, dependent: :destroy
+  has_many :exposures, dependent: :destroy
 
   has_one :formula, inverse_of: :quantity, dependent: :destroy, validate: true
   accepts_nested_attributes_for :formula, allow_destroy: true, reject_if: proc { |attrs|

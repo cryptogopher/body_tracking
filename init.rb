@@ -16,7 +16,7 @@ Redmine::Plugin.register :body_tracking do
       meals: [:index],
       measurement_routines: [:show],
       measurements: [:index, :readouts, :filter],
-      foods: [:index, :nutrients, :filter],
+      foods: [:index, :nutrients, :filter, :autocomplete],
       sources: [:index],
       quantities: [:index, :parents, :filter],
       units: [:index],

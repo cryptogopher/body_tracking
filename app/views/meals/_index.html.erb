@@ -1,0 +1,21 @@
+<% if @meals.any? { |m| m.persisted? } %>
+  <table id="meals" class="odd-even">
+    <tbody>
+      <% @meals.group_by { |m| m.eaten_at.date if m.eaten_at }.each do |d, meals| %>
+        <% meals.each_with_index do |m, index| %>
+          <tr id="meal-<%= m.new_record? ? 'new' : m.id %>" class="primary meal">
+            <td class="name">
+              <h4>
+                <%= "#{t '.label_meal'}" %><%= index ? " ##{index+1}" : " (new)" %>
+                <%= ", #{m.eaten_at.time}" if m.eaten_at %>
+              </h4>
+            </td>
+            <td class="action unwrappable" style="width:5%"><%= action_links(m) %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>

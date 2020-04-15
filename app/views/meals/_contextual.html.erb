@@ -1,0 +1,4 @@
+<% if User.current.allowed_to?(:manage_common, @project) %>
+  <%= link_to t(".link_new_meal"), new_project_meal_path(@project),
+    {remote: true, class: 'icon icon-add'} %>
+<% end %>

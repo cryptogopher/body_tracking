@@ -28,6 +28,7 @@ resources :projects, shallow: true do
       get 'nutrients'
       post 'toggle_column'
       get 'filter'
+      get 'autocomplete'
       post 'import'
     end
   end

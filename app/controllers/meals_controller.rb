@@ -13,6 +13,17 @@ class MealsController < ApplicationController
     prepare_meals
   end
 
+  def new
+    @meal = @project.meals.new
+    @meal.ingredients.new
+  end
+
+  def create
+  end
+
+  def destroy
+  end
+
   private
 
   def prepare_meals

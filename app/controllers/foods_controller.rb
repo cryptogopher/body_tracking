@@ -9,7 +9,7 @@ class FoodsController < ApplicationController
 
   before_action :init_session_filters
   before_action :find_project_by_project_id,
-    only: [:index, :new, :create, :nutrients, :filter, :import]
+    only: [:index, :new, :create, :nutrients, :filter, :autocomplete, :import]
   before_action :find_quantity_by_quantity_id, only: [:toggle_column]
   before_action :find_food, only: [:edit, :update, :destroy, :toggle]
   before_action :authorize
@@ -63,7 +63,7 @@ class FoodsController < ApplicationController
   end
 
   def toggle_column
-    @project.nutrient_columns.toggle!(@quantity)
+    @project.nutrient_exposures.toggle!(@quantity)
     prepare_nutrients
   end
 
@@ -71,6 +71,10 @@ class FoodsController < ApplicationController
     session[:f_filters] = params.permit(:name, :visibility, formula: [:code, :zero_nil])
     prepare_items
     render :index
+  end
+
+  def autocomplete
+    @foods = @project.foods.where("name LIKE ?", "%#{params[:term]}%")
   end
 
   def import
