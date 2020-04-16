@@ -10,10 +10,11 @@
               <p>
               <%= ff.hidden_field :id %>
               <%= ff.hidden_field :food_id, {class: "autocomplete-value"} %>
-              <%= label_tag :food_name, index > 0 ? '' : t(:field_ingredients) %>
+              <%= label_tag :food_name do %>
+                <%= index > 0 ? '' : t(:field_ingredients) %><span class="required"> *</span>
+              <% end %>
               <%= text_field_tag :food_name, nil, {class: "autocomplete autocomplete-label",
-                                                   style: "width: 80%;",
-                                                   required: true} %>
+                                                   style: "width: 80%;"} %>
               <%= ff.number_field :amount, {style: "width: 8%", step: :any, label: ''} %>
               <%= i.food.ref_unit.shortname if i.food %>
               <%= ff.hidden_field :_destroy %>
@@ -69,6 +70,7 @@
     new_row.find('label:first').hide();
     form.find('tr.ingredient:visible a.icon-del').show();
     autocompleteFood(new_row);
+    new_row.find('input:visible:first').focus();
   }
 
   function deleteIngredient() {

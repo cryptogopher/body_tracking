@@ -1,7 +1,8 @@
 class Meal < ActiveRecord::Base
   belongs_to :project, required: true
 
-  has_many :ingredients, as: :composition, dependent: :destroy, validate: true
+  has_many :ingredients, as: :composition, inverse_of: :composition, dependent: :destroy,
+    validate: true
   has_many :foods, through: :ingredients
   validates :ingredients, presence: true
   accepts_nested_attributes_for :ingredients, allow_destroy: true, reject_if: proc { |attrs|
