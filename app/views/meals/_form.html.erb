@@ -9,10 +9,11 @@
             <td style="width:90%;">
               <p>
               <%= ff.hidden_field :id %>
-              <%= ff.text_field :food_id, {class: "autocomplete food-autocomplete",
-                                           style: "width: 80%;",
-                                           required: true,
-                                           label: (index > 0 ? '' : :field_ingredients)} %>
+              <%= ff.hidden_field :food_id, {class: "autocomplete-value"} %>
+              <%= label_tag :food_name, index > 0 ? '' : t(:field_ingredients) %>
+              <%= text_field_tag :food_name, nil, {class: "autocomplete autocomplete-label",
+                                                   style: "width: 80%;",
+                                                   required: true} %>
               <%= ff.number_field :amount, {style: "width: 8%", step: :any, label: ''} %>
               <%= i.food.ref_unit.shortname if i.food %>
               <%= ff.hidden_field :_destroy %>
@@ -37,15 +38,24 @@
 
 <%= javascript_tag do %>
   function autocompleteFood($row) {
-    $row.find('.food-autocomplete').autocomplete({
+    $row.find('.autocomplete-label').autocomplete({
       source: '<%= j autocomplete_project_foods_path(@project) %>',
       minLength: 2,
       position: {collision: 'flipfit'},
       search: function(event){
-        $(event.target).closest('.food-autocomplete').addClass('ajax-loading');
+        $(event.target).addClass('ajax-loading');
       },
       response: function(event){
-        $(event.target).closest('.food-autocomplete').removeClass('ajax-loading');
+        $(event.target).removeClass('ajax-loading');
+      },
+      select: function(event, ui) {
+        $(event.target).val(ui.item.label);
+        $(event.target).siblings('.autocomplete-value').val(ui.item.value)
+        return false;
+      },
+      focus: function(event, ui) {
+        $(event.target).val(ui.item.label);
+        return false;
       }
     });
   }
@@ -55,8 +65,7 @@
     var form = $(event.target).closest('form');
     var row = form.find('tr.ingredient:visible:last');
     var new_row = row.clone().insertAfter(row);
-    new_row.find('input[id$=__id], input[id$=__amount], input[id$=__food_id]').val('');
-    new_row.find('input[id$=__destroy]').val('');
+    new_row.find('input:not([id$=__destroy])').val('');
     new_row.find('label:first').hide();
     form.find('tr.ingredient:visible a.icon-del').show();
     autocompleteFood(new_row);

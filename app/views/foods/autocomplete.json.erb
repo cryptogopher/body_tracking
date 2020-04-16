@@ -1,1 +1,1 @@
-<%= raw @foods.map { |f| {id: f.id, label: f.name, value: f.name} }.to_json %>
+<%= raw @foods.map { |f| {label: f.name, value: f.id} }.to_json %>
