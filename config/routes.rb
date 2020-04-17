@@ -7,6 +7,9 @@ resources :projects, shallow: true do
       post 'defaults'
     end
   end
+  resources :ingredients, only: [] do
+    post 'adjust/:adjustment', to: 'ingredients#adjust', as: :adjust, on: :member
+  end
   resources :meals, only: [:index, :new, :create, :edit, :update, :destroy]
   resources :measurement_routines, only: [:show, :edit] do
     member do

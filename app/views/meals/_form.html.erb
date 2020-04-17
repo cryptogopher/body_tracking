@@ -13,8 +13,8 @@
               <%= label_tag :food_name do %>
                 <%= index > 0 ? '' : t(:field_ingredients) %><span class="required"> *</span>
               <% end %>
-              <%= text_field_tag :food_name, nil, {class: "autocomplete autocomplete-label",
-                                                   style: "width: 80%;"} %>
+              <%= text_field_tag :food_name, (i.food.name if i.food),
+                {class: "autocomplete autocomplete-label", style: "width: 80%;"} %>
               <%= ff.number_field :amount, {style: "width: 8%", step: :any, label: ''} %>
               <%= i.food.ref_unit.shortname if i.food %>
               <%= ff.hidden_field :_destroy %>
