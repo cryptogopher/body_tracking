@@ -17,6 +17,7 @@ table.list .ellipsible {
   white-space: nowrap;
   max-width: 1px;
 }
+table.list .buttonable {line-height: 1.8em;}
 
 table.list td.form {
   padding-right: 2px;
@@ -28,18 +29,19 @@ fieldset#filters table.filter td {padding-left: 8px;}
 a.icon:not(.icon-move) {margin-left: 0.3em;}
 a.button {
   margin: 0 0.2em;
-  border: 0.1em solid;
-  border-radius: 0.2em;
+  border: 0.1em solid silver;
+  border-radius: 0.3em;
   text-align: center;
   text-decoration: none;
   font-size: 0.8em;
+  font-weight: bold;
   display: inline-block;
   width: 2.6em;
 }
-a.button.green {border-color: green; color: green;}
-a.button.green:hover {background-color: green; color: white;}
-a.button.red {border-color: firebrick; color: firebrick;}
-a.button.red:hover {background-color: firebrick; color: white;}
+a.button.green {color: #458a45;}
+a.button.green:hover {border-color: #458a45; background-color: #458a45; color: white;}
+a.button.red {color: #c43c35;}
+a.button.red:hover {border-color: #c43c35; background-color: #c43c35; color: white;}
 
 
 .icon-move-left { background-image: url(../images/1leftarrow.png); }

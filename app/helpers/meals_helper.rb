@@ -6,10 +6,10 @@ module MealsHelper
   end
 
   def adjust_ingredient_links(i)
-    [-10, -1, 0, 1, 10].map do |v|
-      if v != 0
-        link_to "%+d" % v, adjust_ingredient_path(i, adjustment: v),
-          {remote: true, method: :post, class: "button #{v>0 ? 'green' : 'red'}"}
+    {'- -' => -10, '-' => -1, nil => 0, '+' => 1, '++' => 10}.map do |text, value|
+      if text
+        link_to text, adjust_ingredient_path(i, adjustment: value),
+          {remote: true, method: :post, class: "button #{value>0 ? 'green' : 'red'}"}
       else
         yield.to_s
       end
