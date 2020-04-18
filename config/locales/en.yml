@@ -81,6 +81,7 @@ en:
       heading_new_meal: 'New meal'
     index:
       heading: 'Meals'
+    show:
       label_meal: 'Meal'
   measurements:
     contextual:

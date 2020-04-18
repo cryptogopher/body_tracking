@@ -17,4 +17,8 @@ class Meal < ActiveRecord::Base
       errors.add(:ingredients, :duplicated_ingredient)
     end
   end
+
+  def toggle_eaten!
+    update(eaten_at: self.eaten_at ? nil : DateTime.current)
+  end
 end

@@ -24,6 +24,8 @@ table.list td.form {
   text-align: left;
 }
 
+table#meals, table#meals tr:not(.meal) td {border: none;}
+
 fieldset#filters table.filter td {padding-left: 8px;}
 
 a.icon:not(.icon-move) {margin-left: 0.3em;}

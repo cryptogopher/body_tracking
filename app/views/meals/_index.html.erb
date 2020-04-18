@@ -1,38 +1,16 @@
 <% if @meals.any? { |m| m.persisted? } %>
   <table id="meals" class="odd-even list">
     <tbody>
-      <% @meals.group_by { |m| m.eaten_at.date if m.eaten_at }.each do |d, meals| %>
+      <% @meals.group_by { |m| m.eaten_at ? m.eaten_at.date : Date.current }
+        .each do |date, meals| %>
+        <tr id="day-<%= date.strftime('%Y%m%d') %>" class="day">
+          <td class="date" colspan="2">
+            <h3><%= date == Date.current ? 'Today' : date.strftime('%F') %></h3>
+          </td>
+        </tr>
         <% meals.each_with_index do |m, index| %>
           <% next if m.new_record? %>
-          <tr id="meal-<%= m.id %>" class="primary meal">
-            <td class="name" colspan="2">
-              <b><%= "#{t '.label_meal'} ##{index+1}" %></b>
-              <% if m.eaten_at %>
-                <%= " - #{m.eaten_at.time}" %>
-                <%= link_to '', toggle_eaten_meal_path(m),
-                  {remote: true, class: "icon icon-close"} %>
-              <% else %>
-                <%= link_to l(:button_eat), toggle_eaten_meal_path(m),
-                  {remote: true, class: "icon icon-ok"} %>
-              <% end %>
-              <%= link_to l(:button_note), note_meal_path(m),
-                {remote: true, class: "icon icon-wiki-page"} %>
-              <div style="float: right; position: relative;">
-                <%= meal_links(m) %>
-              </div>
-            </td>
-          </tr>
-          <% m.ingredients.each do |i| %>
-            <tr id="ingredient-<%= i.id %>" class="ingredient project idnt idnt-1 buttonable">
-              <td class="name unwrappable" style="width: 5%;">
-                <%= i.food.name %>
-              </td>
-              <td style="text-align: left;" class="unwrappable">
-                <%= adjust_ingredient_links(i) { raw "&emsp;#{i.amount}&emsp;" } %>
-              </td>
-            </tr>
-          <% end %>
-          </tr>
+          <%= render partial: 'meals/show', locals: {m: m, index: index} %>
         <% end %>
       <% end %>
     </tbody>

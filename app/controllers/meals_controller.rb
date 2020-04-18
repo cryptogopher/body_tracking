@@ -39,6 +39,7 @@ class MealsController < ApplicationController
   end
 
   def toggle_eaten
+    @meal.toggle_eaten!
   end
 
   private
