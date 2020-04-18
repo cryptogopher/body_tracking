@@ -33,7 +33,7 @@ class MeasurementsController < ApplicationController
     @measurement.routine.project = @project
     @routine = @measurement.routine
     if @measurement.save
-      if @routine.exposures.empty?
+      if @routine.readout_exposures.empty?
         @routine.quantities << @measurement.readouts.map(&:quantity).first(6)
       end
 
@@ -83,7 +83,7 @@ class MeasurementsController < ApplicationController
   end
 
   def toggle_column
-    @routine.exposures.toggle!(@quantity)
+    @routine.readout_exposures.toggle!(@quantity)
     prepare_readouts
   end
 

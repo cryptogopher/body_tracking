@@ -10,7 +10,12 @@ resources :projects, shallow: true do
   resources :ingredients, only: [] do
     post 'adjust/:adjustment', to: 'ingredients#adjust', as: :adjust, on: :member
   end
-  resources :meals, only: [:index, :new, :create, :edit, :update, :destroy]
+  resources :meals, only: [:index, :new, :create, :edit, :update, :destroy] do
+    member do
+      post 'note'
+      post 'toggle_eaten'
+    end
+  end
   resources :measurement_routines, only: [:show, :edit] do
     member do
       get 'readouts', to: 'measurements#readouts'

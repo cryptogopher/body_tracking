@@ -24,7 +24,7 @@ Redmine::Plugin.register :body_tracking do
     permission :manage_common, {
       body_trackers: [:defaults],
       ingredients: [:adjust],
-      meals: [:new, :create, :edit, :update, :destroy],
+      meals: [:new, :create, :edit, :update, :destroy, :note, :toggle_eaten],
       measurement_routines: [:edit],
       measurements: [:new, :create, :edit, :update, :destroy, :retake, :toggle_column],
       foods: [:new, :create, :edit, :update, :destroy, :toggle, :toggle_column,

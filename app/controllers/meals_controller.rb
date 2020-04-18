@@ -6,7 +6,7 @@ class MealsController < ApplicationController
   include Concerns::Finders
 
   before_action :find_project_by_project_id, only: [:index, :new, :create]
-  before_action :find_meal, only: [:edit, :update, :destroy]
+  before_action :find_meal, only: [:edit, :update, :destroy, :note, :toggle_eaten]
   before_action :authorize
 
   def index
@@ -29,7 +29,16 @@ class MealsController < ApplicationController
     end
   end
 
+  def edit
+  end
+
   def destroy
+  end
+
+  def note
+  end
+
+  def toggle_eaten
   end
 
   private

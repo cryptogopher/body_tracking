@@ -25,6 +25,22 @@ table.list td.form {
 
 fieldset#filters table.filter td {padding-left: 8px;}
 
+a.icon:not(.icon-move) {margin-left: 0.3em;}
+a.button {
+  margin: 0 0.2em;
+  border: 0.1em solid;
+  border-radius: 0.2em;
+  text-align: center;
+  text-decoration: none;
+  font-size: 0.8em;
+  display: inline-block;
+  width: 2.6em;
+}
+a.button.green {border-color: green; color: green;}
+a.button.green:hover {background-color: green; color: white;}
+a.button.red {border-color: firebrick; color: firebrick;}
+a.button.red:hover {background-color: firebrick; color: white;}
+
 
 .icon-move-left { background-image: url(../images/1leftarrow.png); }
 .icon-move-right { background-image: url(../images/1rightarrow.png); }
