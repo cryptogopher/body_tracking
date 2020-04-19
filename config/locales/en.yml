@@ -19,7 +19,7 @@ en:
   field_code: 'Formula'
   field_shortname: 'Short name'
   button_eat: 'Eat'
-  button_note: 'Note'
+  button_notes: 'Notes'
   button_retake: 'Retake'
   button_child: 'Child'
   activerecord:

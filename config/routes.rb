@@ -12,7 +12,8 @@ resources :projects, shallow: true do
   end
   resources :meals, only: [:index, :new, :create, :edit, :update, :destroy] do
     member do
-      post 'note'
+      get 'edit_notes'
+      patch 'update_notes'
       post 'toggle_eaten'
     end
   end

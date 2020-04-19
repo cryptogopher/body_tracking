@@ -4,16 +4,16 @@
     <% if m.eaten_at %>
       <%= " at #{m.eaten_at.strftime('%R')}" %>
       <%= link_to '', toggle_eaten_meal_path(m),
-        {remote: true, method: :post, class: "icon icon-close"} %>
+        {remote: true, method: :post, class: "icon icon-close",
+         style: "margin-left: -0.2em;"} %>
     <% else %>
       <%= link_to l(:button_eat), toggle_eaten_meal_path(m),
         {remote: true, method: :post, class: "icon icon-ok"} %>
     <% end %>
-    <%= link_to l(:button_note), note_meal_path(m),
-      {remote: true, class: "icon icon-wiki-page"} %>
-    <div style="float: right; position: relative;">
-      <%= meal_links(m) %>
+    <div id="notes-<%= m.id %>" style="display: inline-flex;">&emsp;
+      <%= display_notes(m) %>
     </div>
+    <div style="float: right; position: relative;"><%= meal_links(m) %></div>
   </td>
 </tr>
 

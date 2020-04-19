@@ -6,7 +6,8 @@ class MealsController < ApplicationController
   include Concerns::Finders
 
   before_action :find_project_by_project_id, only: [:index, :new, :create]
-  before_action :find_meal, only: [:edit, :update, :destroy, :note, :toggle_eaten]
+  before_action :find_meal, only: [:edit, :update, :destroy, :edit_notes, :update_notes,
+                                   :toggle_eaten]
   before_action :authorize
 
   def index
@@ -35,11 +36,18 @@ class MealsController < ApplicationController
   def destroy
   end
 
-  def note
+  def edit_notes
+  end
+
+  def update_notes
+    if @meal.update(params.require(:meal).permit(:notes))
+      flash[:notice] = 'Updated meal notes'
+    end
   end
 
   def toggle_eaten
     @meal.toggle_eaten!
+    flash[:notice] = 'Updated meal status'
     prepare_meals
   end
 

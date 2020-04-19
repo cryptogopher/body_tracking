@@ -1,0 +1,13 @@
+<%= labelled_form_for @meal,
+  url: update_notes_meal_path(@meal),
+  remote: true,
+  html: {id: 'edit-meal-notes-form', name: 'edit-meal-notes-form'} do |f| %>
+
+  <%= link_to l(:button_save), '', class: 'icon icon-save',
+    onclick: "$(event.target).closest('form').submit(); return false;" %>
+  <%= f.text_field :notes, rows: 1, required: false, label: '' %>
+  <%= link_to l(:button_cancel), '',
+    onclick: "$(event.target).closest('form').remove();
+              $('div[id=notes-#{@meal.id}]').contents().show();
+              return false;" %>
+<% end %>

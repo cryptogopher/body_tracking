@@ -1,0 +1,2 @@
+var box = $('div[id=notes-<%= @meal.id %>]');
+box.html('<%= j display_notes(@meal) %>');
