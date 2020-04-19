@@ -2,7 +2,7 @@
   <td class="name" colspan="2">
     <b><%= "#{t '.label_meal'} ##{index+1}" %></b>
     <% if m.eaten_at %>
-      <%= " - #{m.eaten_at.time}" %>
+      <%= " at #{m.eaten_at.strftime('%R')}" %>
       <%= link_to '', toggle_eaten_meal_path(m),
         {remote: true, method: :post, class: "icon icon-close"} %>
     <% else %>
