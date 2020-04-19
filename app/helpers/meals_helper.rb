@@ -17,8 +17,8 @@ module MealsHelper
   end
 
   def display_notes(m)
-    content_tag :div, link_to(l(:button_notes), edit_notes_meal_path(m),
-                               {remote: true, class: "icon icon-wiki-page"}) +
-                               (m.notes.blank? ? "" : ": #{m.notes}")
+    link_to(l(:button_notes), edit_notes_meal_path(m),
+            {remote: true, class: "icon icon-wiki-page"}) +
+    content_tag(:span, m.notes.blank? ? "" : ": #{m.notes}")
   end
 end

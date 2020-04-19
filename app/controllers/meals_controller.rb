@@ -41,7 +41,7 @@ class MealsController < ApplicationController
 
   def update_notes
     if @meal.update(params.require(:meal).permit(:notes))
-      flash[:notice] = 'Updated meal notes'
+      flash[:notice] = 'Updated meal notes' unless @meal.previous_changes.empty?
     end
   end
 
