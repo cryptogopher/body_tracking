@@ -5,6 +5,8 @@ class IngredientsController < ApplicationController
   before_action :authorize
 
   def adjust
-    params.require(:ingredient).permit(:adjustment)
+    amount = params[:adjustment].to_i
+    @ingredient.amount += amount if @ingredient.amount > -amount
+    @ingredient.save
   end
 end

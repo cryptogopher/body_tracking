@@ -40,14 +40,11 @@ class MealsController < ApplicationController
   end
 
   def update_notes
-    if @meal.update(params.require(:meal).permit(:notes))
-      flash[:notice] = 'Updated meal notes' unless @meal.previous_changes.empty?
-    end
+    @meal.update(params.require(:meal).permit(:notes))
   end
 
   def toggle_eaten
     @meal.toggle_eaten!
-    flash[:notice] = 'Updated meal status'
     prepare_meals
   end
 

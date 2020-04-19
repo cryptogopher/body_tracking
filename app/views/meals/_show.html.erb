@@ -21,8 +21,8 @@
     <td class="name unwrappable" style="width: 5%;">
       <%= i.food.name %>
     </td>
-    <td style="text-align: left;" class="unwrappable" colspan="2">
-      <%= adjust_ingredient_links(i) { raw "&emsp;#{i.amount}&emsp;" } %>
+    <td class="amount unwrappable" style="text-align: left;" colspan="2">
+      <%= adjust_ingredient_links(i) { raw "&emsp;<span>#{i.amount}</span>&emsp;" } %>
     </td>
   </tr>
 <% end %>

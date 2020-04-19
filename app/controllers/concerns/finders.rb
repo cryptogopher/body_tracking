@@ -8,6 +8,13 @@ module Concerns::Finders
     render_404
   end
 
+  def find_ingredient
+    @ingredient = Ingredient.find(params[:id])
+    @project = @ingredient.composition.project
+  rescue ActiveRecord::RecordNotFound
+    render_404
+  end
+
   def find_food
     @food = Food.find(params[:id])
     @project = @food.project
