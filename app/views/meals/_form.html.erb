@@ -2,6 +2,8 @@
 
 <div class="box">
   <div class="tabular">
+    <p><%= f.text_field :notes, required: false, style: "width: 95%;" %></p>
+
     <% @meal.ingredients.each_with_index do |i, index| %>
       <table style="width:95%;">
         <%= f.fields_for 'ingredients_attributes', i, index: '' do |ff| %>

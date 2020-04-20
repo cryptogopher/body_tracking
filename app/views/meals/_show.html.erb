@@ -1,5 +1,5 @@
-<tr id="meal-<%= m.id %>" class="primary meal project idnt idnt-1">
-  <td class="name unwrappable" style="width: 5%;">
+<tr id="meal-<%= m.id %>" class="primary meal project idnt idnt-1 odd">
+  <td class="name unwrappable" style="width: 5%; border-right: none;">
     <b><%= "#{t '.label_meal'} ##{index+1}" %></b>
     <% if m.eaten_at %>
       <%= " at #{m.eaten_at.strftime('%R')}" %>
@@ -7,13 +7,13 @@
         {remote: true, method: :post, class: "icon icon-close"} %>
     <% else %>
       <%= link_to l(:button_eat), toggle_eaten_meal_path(m),
-        {remote: true, method: :post, class: "icon icon-ok"} %>
+        {remote: true, method: :post, class: "icon icon-time"} %>
     <% end %>
-    <td id="notes-<%= m.id %>" class="notes" style="text-align: left;">
-      <%= display_notes(m) %>
-    </td>
-    <td class="action" style="width: 5%;"><%= meal_links(m) %></td>
   </td>
+  <td id="notes-<%= m.id %>" class="notes" style="text-align: left; border-left: none;">
+    <%= display_notes(m) %>
+  </td>
+  <td class="action" style="width: 5%;"><%= meal_links(m) %></td>
 </tr>
 
 <% m.ingredients.each do |i| %>
