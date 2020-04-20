@@ -10,20 +10,29 @@
         {remote: true, method: :post, class: "icon icon-time"} %>
     <% end %>
   </td>
-  <td id="notes-<%= m.id %>" class="notes" style="text-align: left; border-left: none;">
-    <%= display_notes(m) %>
-  </td>
+  <td id="notes-<%= m.id %>" class="notes" style="text-align: left; border-left: none;"
+    colspan="4"><%= display_notes(m) %></td>
   <td class="action" style="width: 5%;"><%= meal_links(m) %></td>
 </tr>
 
 <% m.ingredients.each do |i| %>
   <tr id="ingredient-<%= i.id %>" class="ingredient project idnt idnt-2 buttonable">
-    <td class="name unwrappable" style="width: 5%;">
-      <%= i.food.name %>
+    <td class="name unwrappable" style="width: 5%;"><%= i.food.name %></td>
+    <td class="unwrappable" style="width: 1%;">
+      <% {'- -' => -10, '-' => -1, nil => 0, '+' => 1, '++' => 10}.map do |text, value| %>
+        <% if text %>
+          <%= link_to text, adjust_ingredient_path(i, adjustment: value),
+            {remote: true, method: :post, class: "button #{value>0 ? 'green' : 'red'}"} %>
+        <% else %>
+        </td>
+        <td class="amount unwrappable" style="width: 1%; text-align: right;">
+          <span><%= i.amount %></span>[<%= i.food.ref_unit.shortname %>]
+        </td>
+        <td class="unwrappable" style="width: 1%;">
+      <% end %>
+    <% end %>
     </td>
-    <td class="amount unwrappable" style="text-align: left;" colspan="2">
-      <%= adjust_ingredient_links(i) { raw "&emsp;<span>#{i.amount}</span>&emsp;" } %>
-    </td>
+    <td></td>
   </tr>
 <% end %>
 </tr>
