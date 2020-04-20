@@ -8,6 +8,7 @@
             <h3><%= date == Date.current ? 'Today' : date.strftime('%F') %></h3>
           </td>
         </tr>
+
         <% eaten, not_eaten = meals.partition { |m| m.eaten_at }
           eaten.sort_by! { |m| m.eaten_at }
           not_eaten.sort_by! { |m| m.created_at }

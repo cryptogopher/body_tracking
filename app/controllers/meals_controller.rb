@@ -33,6 +33,16 @@ class MealsController < ApplicationController
   def edit
   end
 
+  def update
+    if @meal.update(meal_params)
+      flash[:notice] = 'Updated meal'
+      prepare_meals
+      render :index
+    else
+      render :edit
+    end
+  end
+
   def destroy
   end
 

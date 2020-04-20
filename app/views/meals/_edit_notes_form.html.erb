@@ -3,7 +3,7 @@
   remote: true,
   html: {id: 'edit-meal-notes-form', name: 'edit-meal-notes-form'} do |f| %>
 
-  <%= f.text_field :notes, size: 50, required: false, label: '' %>
+  <%= f.text_field :notes, size: 40, required: false, label: '' %>
   <%= link_to l(:button_save), '', class: 'icon icon-save',
     onclick: "$(event.target).closest('form').submit(); return false;" %>
   <%= link_to l(:button_cancel), '', class: 'icon icon-cancel',
