@@ -1,0 +1,4 @@
+<% if @meal.destroyed? %>
+  $('tr[id=meal-<%= @meal.id %>]').nextUntil(':not(.ingredient)').addBack().remove();
+  $('#meals').find('tr.date + tr.date').prev().remove();
+<% end %>

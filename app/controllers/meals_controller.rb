@@ -44,6 +44,7 @@ class MealsController < ApplicationController
   end
 
   def destroy
+    flash[:notice] = 'Deleted meal' if @meal.destroy
   end
 
   def edit_notes
