@@ -22,6 +22,20 @@ class Meal < ActiveRecord::Base
     self[:eaten_at].getlocal if self[:eaten_at]
   end
 
+  def eaten_at_date
+    self.eaten_at
+  end
+  def eaten_at_date=(value)
+    self.eaten_at = Time.parse(value, self.eaten_at)
+  end
+
+  def eaten_at_time
+    self.eaten_at
+  end
+  def eaten_at_time=(value)
+    self.eaten_at = Time.parse(value, self.eaten_at)
+  end
+
   def toggle_eaten!
     update(eaten_at: self.eaten_at ? nil : DateTime.current)
   end

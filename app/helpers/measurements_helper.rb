@@ -1,12 +1,8 @@
 module MeasurementsHelper
   def format_datetime(m)
-    m.taken_at.getlocal
+    m.taken_at
       .strftime("%F <small>%R&emsp;(~#{time_ago_in_words(m.taken_at)} ago)</small>")
       .html_safe
-  end
-
-  def format_time(m)
-    m.taken_at.getlocal.strftime("%R")
   end
 
   def toggle_column_options

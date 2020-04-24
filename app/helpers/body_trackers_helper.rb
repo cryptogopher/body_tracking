@@ -11,6 +11,10 @@ module BodyTrackersHelper
     end
   end
 
+  def format_time(t)
+    t.strftime("%R") if t
+  end
+
   def unit_options
     @project.units.map do |u|
       [u.shortname, u.id]

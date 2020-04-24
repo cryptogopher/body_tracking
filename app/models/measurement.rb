@@ -32,15 +32,19 @@ class Measurement < ActiveRecord::Base
     end
   end
 
+  def taken_at
+    self[:taken_at].getlocal if self[:taken_at]
+  end
+
   def taken_at_date
-    self.taken_at.getlocal
+    self.taken_at
   end
   def taken_at_date=(value)
     self.taken_at = Time.parse(value, self.taken_at)
   end
 
   def taken_at_time
-    self.taken_at.getlocal
+    self.taken_at
   end
   def taken_at_time=(value)
     self.taken_at = Time.parse(value, self.taken_at)

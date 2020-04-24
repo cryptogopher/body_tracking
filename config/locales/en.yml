@@ -1,6 +1,7 @@
 # English strings go here for Rails i18n
 en:
   body_trackers_menu_caption: 'Body trackers'
+  field_eaten_at_date: 'Eaten at'
   field_ingredients: 'Ingredients'
   field_measurement_routine: 'Routine'
   field_readouts: 'Readouts'
