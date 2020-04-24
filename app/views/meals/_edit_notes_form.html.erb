@@ -3,11 +3,5 @@
   remote: true,
   html: {id: 'edit-meal-notes-form', name: 'edit-meal-notes-form'} do |f| %>
 
-  <%= f.text_field :notes, size: 40, required: false, label: '' %>
-  <%= link_to l(:button_save), '', class: 'icon icon-save',
-    onclick: "$(event.target).closest('form').submit(); return false;" %>
-  <%= link_to l(:button_cancel), '', class: 'icon icon-cancel',
-    onclick: "$(event.target).closest('form').remove();
-              $('td[id=notes-#{@meal.id}]').contents().show();
-              return false;" %>
+  <%= f.text_field :notes, required: false, label: '', style: "width: 100%;" %>
 <% end %>

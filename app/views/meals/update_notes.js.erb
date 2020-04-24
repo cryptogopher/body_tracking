@@ -1,2 +1,2 @@
-var box = $('td[id=notes-<%= @meal.id %>]');
-box.html('<%= j display_notes(@meal) %>');
+$('td[id=notes-<%= @meal.id %>]').html('<%= j notes(@meal) %>');
+$('td[id=notes-links-<%= @meal.id %>] a').toggle();

@@ -1,4 +1,5 @@
-var box = $('td[id=notes-<%= @meal.id %>]');
-box.contents().hide();
-box.append('<%= j render partial: 'meals/edit_notes_form' %>');
-box.find('input[type=text]').focus();
+var notes = $('td[id=notes-<%= @meal.id %>]');
+notes.contents().hide();
+notes.append('<%= j render partial: 'meals/edit_notes_form' %>');
+notes.find('input[type=text]').focus();
+$('td[id=notes-links-<%= @meal.id %>] a').toggle();

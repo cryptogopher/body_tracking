@@ -4,7 +4,7 @@
       <% @meals.group_by { |m| m.eaten_at ? m.eaten_at.to_date : Date.current }
         .sort_by {|k,v| k }.reverse.each do |date, meals| %>
         <tr id="day-<%= date.strftime('%Y%m%d') %>" class="date">
-          <td class="date" colspan="6">
+          <td class="date" colspan="4">
             <h3><%= date == Date.current ? 'Today' : date.strftime('%F') %></h3>
           </td>
         </tr>
