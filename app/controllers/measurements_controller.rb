@@ -130,14 +130,14 @@ class MeasurementsController < ApplicationController
   end
 
   def prepare_measurements
-    @measurements, @formula_q = @project.measurements
+    @measurements, @filter_q = @project.measurements
       .includes(:routine, :source, :readouts)
       .filter(session[:m_filters])
   end
 
   def prepare_readouts
     @quantities = @routine.quantities.includes(:formula)
-    @measurements, @requested_r, @extra_r, @formula_q = @routine.measurements
+    @measurements, @requested_r, @extra_r, @filter_q = @routine.measurements
       .includes(:routine, :source)
       .filter(session[:m_filters], @quantities)
   end

@@ -5,7 +5,7 @@
   <%= render partial: 'measurements/options' %>
 
   <% formulas = @quantities.map { |q| q.formula } %>
-  <% formulas.unshift(@formula_q.formula) if @formula_q %>
+  <% formulas.unshift(@filter_q.formula) if @filter_q %>
   <%= error_messages_for *formulas %>
 
   <table class="readouts list odd-even">

@@ -26,28 +26,28 @@ module BodyTracking
         items = items.where(hidden: filters[:visibility] == "1" ? false : true)
       end
 
-      formula_q =
+      filter_q =
         if filters[:formula].present?
           owner = proxy_association.owner
           project = owner.is_a?(Project) ? owner : owner.project
           domain = RELATIONS[proxy_association.klass.name][:domain]
-          formula_q_attrs = {
+          filter_q_attrs = {
             name: 'Filter formula',
             formula_attributes: filters[:formula],
             domain: domain
           }
-          project.quantities.new(formula_q_attrs)
+          project.quantities.new(filter_q_attrs)
         end
-      apply_formula = formula_q.present? && formula_q.valid?
+      apply_formula = filter_q.present? && filter_q.valid?
 
       result =
         if requested_q || apply_formula
-          computed = items.compute_quantities(requested_q, apply_formula && formula_q)
+          computed = items.compute_quantities(requested_q, apply_formula && filter_q)
           requested_q ? computed : [computed[0]]
         else
           [items]
         end
-      result.push(formula_q)
+      result.push(filter_q)
     end
 
     def compute_quantities(requested_q, filter_q = nil)
