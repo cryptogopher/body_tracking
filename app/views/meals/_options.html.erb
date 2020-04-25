@@ -9,7 +9,7 @@
         <tr>
           <td style="width:100%"></td>
           <td><%= select_tag 'quantity_id',
-            toggle_exposure_options(@project.meal_exposures, :diet) %></td>
+            toggle_exposure_options(@project.meal_quantities, :diet) %></td>
           <td><%= submit_tag l(:button_add) %></td>
         </tr>
       </table>
