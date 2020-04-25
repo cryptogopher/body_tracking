@@ -4,13 +4,13 @@ module BodyTracking
       'Food' => {
         domain: :diet,
         subitem_class: Nutrient,
-        foreign_key: :food_id,
+        association: :food,
         value_field: :amount
       },
       'Measurement' => {
         domain: :measurement,
         subitem_class: Readout,
-        foreign_key: :measurement_id,
+        association: :measurement,
         value_field: :value
       }
     }
@@ -58,12 +58,11 @@ module BodyTracking
 
       relations = RELATIONS[proxy_association.klass.name]
       subitems = Hash.new { |h,k| h[k] = {} }
-      relations[:subitem_class].where(relations[:foreign_key] => items)
+      relations[:subitem_class].where(relations[:association] => items)
         .includes(:quantity, :unit).order('quantities.lft').each do |s|
 
-        item_id = s.send(relations[:foreign_key])
         subitem_value = s.send(relations[:value_field])
-        subitems[s.quantity][item_id] = [subitem_value, s.unit]
+        subitems[s.quantity][s.send(relations[:association])] = [subitem_value, s.unit]
       end
 
       extra_q = subitems.keys - requested_q
@@ -92,27 +91,27 @@ module BodyTracking
 
         # quantity with formula has all dependencies satisfied, requires calculation
         if deps.empty?
-          output_ids = items.select { |i| subitems[q][i.id].nil? }.map(&:id)
+          output_items = items.select { |i| subitems[q][i].nil? }
           input_q = q.formula.quantities
           inputs = input_q.map do |i_q|
-            values = completed_q[i_q].values_at(*output_ids)
+            values = completed_q[i_q].values_at(*output_items)
             values.map! { |v, u| [v || BigDecimal(0), u] } if q.formula.zero_nil
             [i_q, values]
           end
           begin
             calculated = q.formula.calculate(inputs.to_h)
           rescue Exception => e
-            output_ids.each { |oid| subitems[q][oid] = [BigDecimal::NAN, nil] }
+            output_items.each { |o_i| subitems[q][o_i] = [BigDecimal::NAN, nil] }
             q.formula.errors.add(
               :code, :computation_failed,
               {
                 quantity: q.name,
                 description: e.message,
-                count: output_ids.size == subitems[q].size ? 'all' : output_ids.size
+                count: output_items.size == subitems[q].size ? 'all' : output_items.size
               }
             )
           else
-            output_ids.each_with_index { |oid, idx| subitems[q][oid] = calculated[idx] }
+            output_items.each_with_index { |o_i, idx| subitems[q][o_i] = calculated[idx] }
           end
           unchecked_q.unshift([q, deps])
           next
@@ -124,9 +123,9 @@ module BodyTracking
 
       all_q = subitems.merge(completed_q)
       [
-        filter_q ? items.to_a.keep_if { |i| all_q[filter_q][i.id][0] } : items,
-        items.map { |i| requested_q.map { |q| [q, all_q[q][i.id]] } },
-        items.map { |i| extra_q.map     { |q| [q, all_q[q][i.id]] } }
+        filter_q ? items.to_a.keep_if { |i| all_q[filter_q][i][0] } : items,
+        items.map { |i| requested_q.map { |q| [q, all_q[q][i]] } },
+        items.map { |i| extra_q.map     { |q| [q, all_q[q][i]] } }
       ]
     end
   end
