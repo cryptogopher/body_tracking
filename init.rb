@@ -25,7 +25,7 @@ Redmine::Plugin.register :body_tracking do
       body_trackers: [:defaults],
       ingredients: [:adjust],
       meals: [:new, :create, :edit, :update, :destroy, :edit_notes, :update_notes,
-              :toggle_eaten],
+              :toggle_eaten, :toggle_exposure],
       measurement_routines: [:edit],
       measurements: [:new, :create, :edit, :update, :destroy, :retake, :toggle_exposure],
       foods: [:new, :create, :edit, :update, :destroy, :toggle, :toggle_exposure,

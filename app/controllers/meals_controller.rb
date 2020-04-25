@@ -6,6 +6,7 @@ class MealsController < ApplicationController
   include Concerns::Finders
 
   before_action :find_project_by_project_id, only: [:index, :new, :create]
+  before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
   before_action :find_meal, only: [:edit, :update, :destroy, :edit_notes, :update_notes,
                                    :toggle_eaten]
   before_action :authorize
@@ -56,6 +57,11 @@ class MealsController < ApplicationController
 
   def toggle_eaten
     @meal.toggle_eaten!
+    prepare_meals
+  end
+
+  def toggle_exposure
+    @project.meal_exposures.toggle!(@quantity)
     prepare_meals
   end
 

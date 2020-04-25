@@ -16,6 +16,9 @@ resources :projects, shallow: true do
       patch 'update_notes'
       post 'toggle_eaten'
     end
+    collection do
+      post 'toggle_exposure'
+    end
   end
   resources :measurement_routines, only: [:show, :edit] do
     member do
