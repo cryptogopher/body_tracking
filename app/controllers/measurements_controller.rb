@@ -7,9 +7,9 @@ class MeasurementsController < ApplicationController
 
   before_action :init_session_filters
   before_action :find_project_by_project_id, only: [:index, :new, :create, :filter]
-  before_action :find_quantity_by_quantity_id, only: [:toggle_column]
+  before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
   before_action :find_measurement, only: [:edit, :update, :destroy, :retake]
-  before_action :find_measurement_routine, only: [:readouts, :toggle_column]
+  before_action :find_measurement_routine, only: [:readouts, :toggle_exposure]
   before_action :authorize
 
   def index
@@ -82,7 +82,7 @@ class MeasurementsController < ApplicationController
     prepare_readouts
   end
 
-  def toggle_column
+  def toggle_exposure
     @routine.readout_exposures.toggle!(@quantity)
     prepare_readouts
   end

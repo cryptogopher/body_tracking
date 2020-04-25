@@ -5,16 +5,6 @@ module FoodsHelper
     end
   end
 
-  def toggle_column_options
-    disabled = []
-    enabled_quantities = @project.nutrient_quantities.to_a
-    options = nested_set_options(@project.quantities.diet) do |q|
-      disabled << q.id if enabled_quantities.include?(q)
-      raw("#{'&ensp;' * q.level}#{q.name}")
-    end
-    options_for_select(options, disabled: disabled)
-  end
-
   def visibility_options(selected)
     options = [["visible", 1], ["hidden", 0]]
     options_for_select(options, selected)

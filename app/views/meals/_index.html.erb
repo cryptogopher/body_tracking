@@ -1,4 +1,6 @@
 <% if @meals.any? { |m| m.persisted? } %>
+  <%= render partial: 'meals/options' %>
+
   <table id="meals" class="odd-even list">
     <tbody>
       <% @meals.group_by { |m| m.eaten_at ? m.eaten_at.to_date : Date.current }

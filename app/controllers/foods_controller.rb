@@ -10,7 +10,7 @@ class FoodsController < ApplicationController
   before_action :init_session_filters
   before_action :find_project_by_project_id,
     only: [:index, :new, :create, :nutrients, :filter, :autocomplete, :import]
-  before_action :find_quantity_by_quantity_id, only: [:toggle_column]
+  before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
   before_action :find_food, only: [:edit, :update, :destroy, :toggle]
   before_action :authorize
 
@@ -62,7 +62,7 @@ class FoodsController < ApplicationController
     prepare_nutrients
   end
 
-  def toggle_column
+  def toggle_exposure
     @project.nutrient_exposures.toggle!(@quantity)
     prepare_nutrients
   end

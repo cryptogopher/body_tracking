@@ -1,15 +1,14 @@
 <fieldset id="options" class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
   <div>
-    <%= form_tag toggle_exposure_measurement_routine_path(@routine),
+    <%= form_tag toggle_exposure_project_meals_path(@project),
       id: 'toggle-exposure-form', name: 'toggle-exposure-form',
       method: :post, remote: true do %>
 
       <table>
         <tr>
           <td style="width:100%"></td>
-          <td><%= select_tag 'quantity_id',
-            toggle_exposure_options(@routine.quantities, :measurement) %></td>
+          <td><%= select_tag 'quantity_id', toggle_column_options %></td>
           <td><%= submit_tag l(:button_add) %></td>
         </tr>
       </table>

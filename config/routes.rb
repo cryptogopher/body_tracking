@@ -20,7 +20,7 @@ resources :projects, shallow: true do
   resources :measurement_routines, only: [:show, :edit] do
     member do
       get 'readouts', to: 'measurements#readouts'
-      post 'toggle_column', to: 'measurements#toggle_column'
+      post 'toggle_exposure', to: 'measurements#toggle_exposure'
     end
   end
   resources :measurements, only: [:index, :new, :create, :edit, :update, :destroy] do
@@ -35,7 +35,7 @@ resources :projects, shallow: true do
     post 'toggle', on: :member
     collection do
       get 'nutrients'
-      post 'toggle_column'
+      post 'toggle_exposure'
       get 'filter'
       get 'autocomplete'
       post 'import'

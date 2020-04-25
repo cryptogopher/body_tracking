@@ -4,7 +4,7 @@ class MeasurementRoutine < ActiveRecord::Base
     foreign_key: 'routine_id', dependent: :restrict_with_error,
     extend: BodyTracking::ItemsWithQuantities
   has_many :readout_exposures, as: :view, dependent: :destroy,
-    class_name: 'Exposure', extend: BodyTracking::TogglableColumns
+    class_name: 'Exposure', extend: BodyTracking::TogglableExposures
   has_many :quantities, -> { order "lft" }, through: :readout_exposures
 
   validates :name, presence: true, uniqueness: {scope: :project_id}

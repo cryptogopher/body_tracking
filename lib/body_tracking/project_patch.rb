@@ -13,7 +13,7 @@ module BodyTracking::ProjectPatch
     has_many :units, dependent: :destroy
 
     has_many :nutrient_exposures, as: :view, dependent: :destroy,
-      class_name: 'Exposure', extend: BodyTracking::TogglableColumns
+      class_name: 'Exposure', extend: BodyTracking::TogglableExposures
     has_many :nutrient_quantities, -> { order "lft" }, through: :nutrient_exposures,
       source: 'quantity'
   end
