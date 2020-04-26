@@ -24,15 +24,9 @@ module Concerns::Finders
 
   def find_measurement
     @measurement = Measurement.find(params[:id])
-    @routine = @measurement.routine
-    @project = @routine.project
-  rescue ActiveRecord::RecordNotFound
-    render_404
-  end
-
-  def find_measurement_routine
-    @routine = MeasurementRoutine.find(params[:id])
-    @project = @routine.project
+    # DON'T set @routine here: @routine is a context for :readouts view (set
+    # elsewhere), not a # @measurement.routine
+    @project = @measurement.routine.project
   rescue ActiveRecord::RecordNotFound
     render_404
   end
@@ -42,6 +36,10 @@ module Concerns::Finders
     @project = @routine.project
   rescue ActiveRecord::RecordNotFound
     render_404
+  end
+
+  def find_measurement_routine_by_measurement_routine_id
+    find_measurement_routine(params[:measurement_routine_id])
   end
 
   def find_quantity(id = params[:id])

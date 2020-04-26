@@ -1,10 +1,9 @@
 <div>
-<%= fields_for 'measurement[routine_attributes]', @routine do |ff| %>
+<%= fields_for 'measurement[routine_attributes]', routine do |ff| %>
   <p>
   <label><%= l(:field_measurement_routine) %><span class="required"> *</span></label>
   <%= ff.select :id,
-    options_from_collection_for_select(@project.measurement_routines,
-                                       :id, :name, @routine.id),
+    options_from_collection_for_select(@project.measurement_routines, :id, :name, routine.id),
     {required: true}, autocomplete: 'off',
     onchange: "var mr_id = $('#measurement_routine_attributes_id').val();
                $.ajax({
@@ -22,7 +21,7 @@
     class: 'icon icon-edit' %>
   </p>
 <% end %>
-<% unless @routine.description.empty? %>
-  <p style='white-space: pre-wrap;' ><%= @routine.description %></p>
+<% unless routine.description.empty? %>
+  <p style='white-space: pre-wrap;' ><%= routine.description %></p>
 <% end %>
 </div>

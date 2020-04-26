@@ -1,4 +1,4 @@
-<% if params[:view] == 'index' %>
+<% if @view_params[:view] == :index %>
   $('#measurements').html('<%= j render partial: 'measurements/index' %>');
 <% else %>
   $('#readouts').html('<%= j render partial: 'measurements/readouts' %>');

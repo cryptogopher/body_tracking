@@ -27,7 +27,7 @@ module BodyTracking
       end
 
       filter_q =
-        if filters[:formula].present?
+        if filters[:formula][:code].present?
           owner = proxy_association.owner
           project = owner.is_a?(Project) ? owner : owner.project
           domain = RELATIONS[proxy_association.klass.name][:domain]
@@ -43,11 +43,11 @@ module BodyTracking
       result =
         if requested_q || apply_formula
           computed = items.compute_quantities(requested_q, apply_formula && filter_q)
-          requested_q ? computed : [computed[0]]
+          requested_q ? computed : computed.keys
         else
-          [items]
+          items
         end
-      result.push(filter_q)
+      [result, filter_q]
     end
 
     def compute_quantities(requested_q, filter_q = nil)
@@ -61,11 +61,10 @@ module BodyTracking
       relations[:subitem_class].where(relations[:association] => items)
         .includes(:quantity, :unit).order('quantities.lft').each do |s|
 
+        item = s.send(relations[:association])
         subitem_value = s.send(relations[:value_field])
-        subitems[s.quantity][s.send(relations[:association])] = [subitem_value, s.unit]
+        subitems[s.quantity][item] = [subitem_value, s.unit]
       end
-
-      extra_q = subitems.keys - requested_q
 
       completed_q = {}
       # FIXME: loop should finish unless there is circular dependency in formulas
@@ -78,7 +77,6 @@ module BodyTracking
         if !q.formula || q.formula.errors.any? || !q.formula.valid? ||
             (subitems[q].length == items.count)
           completed_q[q] = subitems.delete(q) { {} }
-          completed_q[q].default = [nil, nil]
           next
         end
 
@@ -94,7 +92,7 @@ module BodyTracking
           output_items = items.select { |i| subitems[q][i].nil? }
           input_q = q.formula.quantities
           inputs = input_q.map do |i_q|
-            values = completed_q[i_q].values_at(*output_items)
+            values = completed_q[i_q].values_at(*output_items).map { |v| v || [nil, nil] }
             values.map! { |v, u| [v || BigDecimal(0), u] } if q.formula.zero_nil
             [i_q, values]
           end
@@ -121,12 +119,11 @@ module BodyTracking
         unchecked_q << [q, deps]
       end
 
-      all_q = subitems.merge(completed_q)
-      [
-        filter_q ? items.to_a.keep_if { |i| all_q[filter_q][i][0] } : items,
-        items.map { |i| requested_q.map { |q| [q, all_q[q][i]] } },
-        items.map { |i| extra_q.map     { |q| [q, all_q[q][i]] } }
-      ]
+      filter_values = completed_q.delete(filter_q)
+      items.to_a.keep_if { |i| filter_values[i][0] } if filter_values
+      subitems.merge!(completed_q)
+      subitem_keys = subitems.keys.sort_by { |q| q.lft }
+      items.map { |i| [i, subitem_keys.map { |q| [q, subitems[q][i]] }.to_h] }.to_h
     end
   end
 end

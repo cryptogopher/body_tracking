@@ -1,5 +1,5 @@
 <%= render partial: 'measurements/filters',
-  locals: {url: filter_project_measurements_path(@project, view: :index)} %>
+  locals: {url: filter_project_measurements_path(@project, @view_params)} %>
 
 <% if @measurements.any? { |m| m.persisted? } %>
   <%= error_messages_for @filter_q.formula if @filter_q %>
@@ -29,7 +29,7 @@
           </td>
           <td class="notes ellipsible"><%= m.notes %></td>
           <td class="source"><%= m.source.name if m.source.present? %></td>
-          <td class="action unwrappable"><%= action_links(m, :index) %></td>
+          <td class="action unwrappable"><%= action_links(m) %></td>
         </tr>
       <% end %>
     </tbody>

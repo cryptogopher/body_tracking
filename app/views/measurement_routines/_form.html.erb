@@ -1,5 +1,5 @@
 <div class="tabular">
-  <%= fields_for 'measurement[routine_attributes]', @routine do |ff| %>
+  <%= fields_for 'measurement[routine_attributes]', routine do |ff| %>
     <%= ff.hidden_field :id %>
     <p>
     <label><%= l(:field_name) %><span class="required"> *</span></label>

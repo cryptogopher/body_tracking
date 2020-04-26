@@ -209,14 +209,12 @@ class FoodsController < ApplicationController
   end
 
   def prepare_foods
-    @foods, @filter_q = @project.foods
-      .includes(:ref_unit, :source)
+    @foods, @filter_q = @project.foods.includes(:ref_unit, :source)
       .filter(session[:f_filters])
   end
 
   def prepare_nutrients
     @quantities = @project.nutrient_quantities.includes(:formula)
-    @foods, @requested_n, @extra_n, @filter_q = @project.foods
-      .filter(session[:f_filters], @quantities)
+    @foods, @filter_q = @project.foods.filter(session[:f_filters], @quantities)
   end
 end

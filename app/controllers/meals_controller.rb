@@ -82,6 +82,6 @@ class MealsController < ApplicationController
 
   def prepare_meals
     @quantities = @project.meal_quantities.includes(:formula)
-    @foods, @requested_n, * = @project.meal_foods.compute_quantities(@quantities)
+    @foods = @project.meal_foods.compute_quantities(@quantities)
   end
 end

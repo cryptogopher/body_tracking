@@ -1,8 +1,8 @@
 <fieldset id="filters" class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:label_filter_plural) %></legend>
   <div>
-    <%= form_tag url, id: 'filters-form', name: 'filters-form',
-      method: :get, remote: true do %>
+    <%= form_tag url, id: 'filters-form', name: 'filters-form', method: :get,
+      remote: true do %>
 
     <table class="filter">
       <tr>

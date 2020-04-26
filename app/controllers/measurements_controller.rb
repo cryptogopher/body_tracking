@@ -9,8 +9,13 @@ class MeasurementsController < ApplicationController
   before_action :find_project_by_project_id, only: [:index, :new, :create, :filter]
   before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
   before_action :find_measurement, only: [:edit, :update, :destroy, :retake]
+  # @routine is set for :readouts view ONLY
   before_action :find_measurement_routine, only: [:readouts, :toggle_exposure]
+  before_action :find_measurement_routine_by_measurement_routine_id,
+    only: [:new, :create, :edit, :update, :retake, :filter],
+    if: -> { params[:view] == 'readouts' }
   before_action :authorize
+  before_action :set_view_params
 
   def index
     prepare_measurements
@@ -18,7 +23,7 @@ class MeasurementsController < ApplicationController
 
   def new
     @measurement = @project.measurements.new
-    @routine = @measurement.build_routine
+    @measurement.build_routine
     @measurement.readouts.new
   end
 
@@ -31,10 +36,10 @@ class MeasurementsController < ApplicationController
     update_routine_from_params
     @measurement.attributes = measurement_params
     @measurement.routine.project = @project
-    @routine = @measurement.routine
     if @measurement.save
-      if @routine.readout_exposures.empty?
-        @routine.quantities << @measurement.readouts.map(&:quantity).first(6)
+      routine = @measurement.routine
+      if routine.readout_exposures.empty?
+        routine.quantities << @measurement.readouts.map(&:quantity).first(6)
       end
 
       flash[:notice] = 'Created new measurement'
@@ -52,7 +57,7 @@ class MeasurementsController < ApplicationController
     update_routine_from_params
     if @measurement.update(measurement_params)
       flash[:notice] = 'Updated measurement'
-      if @measurement.routine.previous_changes.has_key?(:name) && params[:view] == 'readouts'
+      if @measurement.routine.previous_changes.has_key?(:name) && @routine
         render js: "window.location.pathname='#{readouts_measurement_routine_path(@routine)}'"
       else
         prepare_items
@@ -126,19 +131,26 @@ class MeasurementsController < ApplicationController
   end
 
   def prepare_items
-    params[:view] == 'index' ? prepare_measurements : prepare_readouts
+    @routine ? prepare_readouts : prepare_measurements
   end
 
   def prepare_measurements
-    @measurements, @filter_q = @project.measurements
-      .includes(:routine, :source, :readouts)
+    @measurements, @filter_q = @project.measurements.includes(:routine, :source, :readouts)
       .filter(session[:m_filters])
   end
 
   def prepare_readouts
     @quantities = @routine.quantities.includes(:formula)
-    @measurements, @requested_r, @extra_r, @filter_q = @routine.measurements
-      .includes(:routine, :source)
+    @measurements, @filter_q = @routine.measurements.includes(:routine, :source)
       .filter(session[:m_filters], @quantities)
+  end
+
+  def set_view_params
+    @view_params =
+      if @routine
+        {view: :readouts, measurement_routine_id: @routine.id}
+      else
+        {view: :index}
+      end
   end
 end
