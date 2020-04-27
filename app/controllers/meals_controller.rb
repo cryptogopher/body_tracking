@@ -82,6 +82,18 @@ class MealsController < ApplicationController
 
   def prepare_meals
     @quantities = @project.meal_quantities.includes(:formula)
-    @foods = @project.meal_foods.compute_quantities(@quantities)
+    foods = @project.meal_foods.compute_quantities(@quantities)
+    ingredients = @project.meal_ingredients
+
+    @nutrients = {}
+    ingredients.each do |i|
+      @nutrients[i] = foods[i.food].map do |q, v|
+        [q, v && [v[0]*i.amount/i.food.ref_amount, v[1]]]
+      end.to_h
+    end
+
+    @meals_by_date = ingredients.group_by { |i| i.composition }.reject { |m,*| m.new_record? }
+      .sort_by { |m,*| m.eaten_at || m.created_at }
+      .group_by { |m,*| m.eaten_at ? m.eaten_at.to_date : Date.current }
   end
 end

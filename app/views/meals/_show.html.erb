@@ -10,6 +10,7 @@
         {remote: true, method: :post, class: "icon icon-time"} %>
     <% end %>
   </td>
+
   <td id="notes-links-<%= m.id %>" class="unwrappable"
       style="text-align: left; border-right: none; width: 1%;">
     <%= link_to l(:button_cancel), '', class: 'icon icon-cancel', style: 'display: none;',
@@ -24,6 +25,7 @@
     <%= link_to l(:button_notes), edit_notes_meal_path(m), remote: true,
       class: "icon icon-wiki-page" %>
   </td>
+
   <td id="notes-<%= m.id %>" class="notes unwrappable"
       style="text-align: left; border-left: none;">
     <%= notes(m) %>

@@ -1,21 +1,16 @@
-<% if @meals.any? { |m| m.persisted? } %>
+<% if @meals_by_date.any? %>
   <%= render partial: 'meals/options' %>
 
   <table id="meals" class="odd-even list">
     <tbody>
-      <% @meals.group_by { |m| m.eaten_at ? m.eaten_at.to_date : Date.current }
-        .sort_by {|k,v| k }.reverse.each do |date, meals| %>
-        <tr id="day-<%= date.strftime('%Y%m%d') %>" class="date">
+      <% @meals_by_date.reverse_each do |date, meals| %>
+        <tr id="date-<%= date.strftime('%Y%m%d') %>" class="date">
           <td class="date" colspan="4">
             <h3><%= date == Date.current ? 'Today' : date.strftime('%F') %></h3>
           </td>
         </tr>
 
-        <% eaten, not_eaten = meals.partition { |m| m.eaten_at }
-          eaten.sort_by! { |m| m.eaten_at }
-          not_eaten.sort_by! { |m| m.created_at }
-          (eaten + not_eaten).each_with_index do |m, index| %>
-          <% next if m.new_record? %>
+        <% meals.each_with_index do |m, index| %>
           <%= render partial: 'meals/show', locals: {m: m, index: index} %>
         <% end %>
       <% end %>
