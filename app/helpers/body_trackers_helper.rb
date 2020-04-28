@@ -7,8 +7,10 @@ module BodyTrackersHelper
     when amount.nan?
       '?'
     else
-      unit_desc = unit != mfu_unit ? unit && " [#{unit.shortname}]" || ' [-]' : ''
-      "%.#{precision}f%s" % [amount, unit_desc]
+      a = amount.round(precision)
+      a_desc = a.nonzero? ? "%.#{precision}f" % a : '-'
+      u_desc = unit && " [#{unit.shortname}]" || ' [-]' if unit != mfu_unit && a.nonzero?
+      "#{a_desc}#{u_desc}"
     end
   end
 
