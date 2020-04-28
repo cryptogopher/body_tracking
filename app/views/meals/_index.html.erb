@@ -1,13 +1,32 @@
 <% if @meals_by_date.any? %>
   <%= render partial: 'meals/options' %>
 
-  <table id="meals" class="odd-even list">
+  <% formulas = @quantities.map { |q| q.formula } %>
+  <% formulas.unshift(@filter_q.formula) if @filter_q %>
+  <%= error_messages_for *formulas %>
+
+  <table id="meals" class="list odd-even">
     <tbody>
+      <% total_width = 4 + @quantities.length %>
       <% @meals_by_date.reverse_each do |date, meals| %>
         <tr id="date-<%= date.strftime('%Y%m%d') %>" class="date">
-          <td class="date" colspan="4">
+          <td class="date" colspan="2" style="width:<%= 3 * 100/total_width %>%">
             <h3><%= date == Date.current ? 'Today' : date.strftime('%F') %></h3>
           </td>
+          <td style="width:<%= 100/total_width %>%; text-align: left;">
+            <b><%= l(:field_amount) %></b>
+          </td>
+          <% @quantities.each do |q| %>
+            <td style="width:<%= 100/total_width %>%; text-align: left;" class="closable">
+              <div style="float: right; position: relative;">
+                <%= link_to '',
+                  toggle_exposure_project_meals_path(@project, quantity_id: q.id),
+                  {class: "icon icon-close", method: :post, remote: true} %>
+              </div>
+              <b><%= q.name %></b>
+            </td>
+          <% end %>
+          <td style="width:<%= 100/total_width %>%"></td>
         </tr>
 
         <% meals.each_with_index do |m, index| %>

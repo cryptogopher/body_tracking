@@ -86,13 +86,18 @@ class MealsController < ApplicationController
     ingredients = @project.meal_ingredients
 
     @nutrients = {}
-    ingredients.each do |i|
-      @nutrients[i] = foods[i.food].map do |q, v|
-        [q, v && [v[0]*i.amount/i.food.ref_amount, v[1]]]
+    @quantities.each do |q|
+      @nutrients[q] = ingredients.map do |i|
+        n_amount, n_unit = foods[i.food][q]
+        [i, [n_amount && n_amount * i.amount / i.food.ref_amount, n_unit]]
       end.to_h
+      max_value = @nutrients[q].values.max_by { |a, u| a || 0 }.first
+      @nutrients[q][:mfu_unit] = @nutrients[q].values.map(&:last)
+        .each_with_object(Hash.new(0)) { |u, h| h[u] += 1 }.max_by(&:last).first
+      @nutrients[q][:precision] = [3 - max_value.exponent, 0].max
     end
 
-    @meals_by_date = ingredients.group_by { |i| i.composition }.reject { |m,*| m.new_record? }
+    @meals_by_date = @project.meals.reject { |m,*| m.new_record? }
       .sort_by { |m,*| m.eaten_at || m.created_at }
       .group_by { |m,*| m.eaten_at ? m.eaten_at.to_date : Date.current }
   end

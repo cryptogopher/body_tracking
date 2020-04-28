@@ -1,5 +1,5 @@
 module BodyTrackersHelper
-  def format_value(value)
+  def format_value(value, precision=2, mfu_unit=nil)
     amount, unit = value
     case
     when amount.nil?
@@ -7,7 +7,8 @@ module BodyTrackersHelper
     when amount.nan?
       '?'
     else
-      "#{amount} [#{unit.shortname || '-'}]"
+      unit_desc = unit != mfu_unit ? unit && " [#{unit.shortname}]" || ' [-]' : ''
+      "%.#{precision}f%s" % [amount, unit_desc]
     end
   end
 

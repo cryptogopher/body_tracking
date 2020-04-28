@@ -26,19 +26,25 @@
       class: "icon icon-wiki-page" %>
   </td>
 
-  <td id="notes-<%= m.id %>" class="notes unwrappable"
+  <td id="notes-<%= m.id %>" class="notes unwrappable" colspan="<%= @quantities.length + 1 %>"
       style="text-align: left; border-left: none;">
     <%= notes(m) %>
   </td>
-  <td class="action" style="width: 1%;"><%= meal_links(m) %></td>
+  <td class="action unwrappable" style="width: 1%;"><%= meal_links(m) %></td>
 </tr>
 
 <% m.ingredients.each do |i| %>
   <tr id="ingredient-<%= i.id %>" class="ingredient project idnt idnt-2 buttonable">
-    <td class="name unwrappable" colspan="2"><%= i.food.name %></td>
-    <td class="amount unwrappable" style="text-align: right;">
+    <td class="name ellipsible" colspan="2"><%= i.food.name %></td>
+    <td class="value ellipsible">
       <span><%= i.amount %></span>[<%= i.food.ref_unit.shortname %>]
     </td>
+    <% @quantities.each do |q| %>
+      <td class="value ellipsible">
+        <%= format_value(@nutrients[q][i], @nutrients[q][:precision],
+                         @nutrients[q][:mfu_unit]) %>
+      </td>
+    <% end %>
     <td class="unwrappable" style="width: 1%; text-align: right;">
       <%# Moved to helper to avoid spaces between buttons %>
       <%= adjustment_buttons(i) %>
