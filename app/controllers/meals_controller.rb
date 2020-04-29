@@ -85,6 +85,9 @@ class MealsController < ApplicationController
     foods = @project.meal_foods.compute_quantities(@quantities)
     ingredients = @project.meal_ingredients
 
+    @amount_mfu_unit = ingredients
+      .each_with_object(Hash.new(0)) { |i, h| h[i.food.ref_unit] += 1 }.max_by(&:last).first
+
     @nutrients = {}
     @quantities.each do |q|
       @nutrients[q] = ingredients.map do |i|

@@ -13,8 +13,8 @@
           <td class="date" colspan="2" style="width:<%= 3 * 100/total_width %>%" rowspan="2">
             <h3><%= date == Date.current ? 'Today' : date.strftime('%F') %></h3>
           </td>
-          <td style="width:<%= 100/total_width %>%; text-align: left;" rowspan="2">
-            <b><%= l(:field_amount) %></b>
+          <td class="quantityhead" style="width:<%= 100/total_width %>%;">
+            <%= l(:field_amount) %>
           </td>
           <% @quantities.each do |q| %>
             <td class="quantityhead closable" style="width: <%= 100/total_width %>%;"
@@ -25,10 +25,13 @@
           <td style="width:<%= 100/total_width %>%" rowspan="2"></td>
         </tr>
         <tr>
+          <td class="quantityhead" style="width:<%= 100/total_width %>%;">
+            <%= "[#{@amount_mfu_unit.shortname}]" %>
+          </td>
           <% @quantities.each do |q| %>
             <td class="quantityhead" style="width: <%= 100/total_width %>%;">
               <% mfu_unit = @nutrients[q][:mfu_unit] %>
-              <%= "[#{ mfu_unit ? mfu_unit.shortname : '-'}]" %>
+              <%= "[#{mfu_unit ? mfu_unit.shortname : '-'}]" %>
             </td>
           <% end %>
         </tr>

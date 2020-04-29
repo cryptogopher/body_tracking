@@ -37,7 +37,8 @@
   <tr id="ingredient-<%= i.id %>" class="ingredient project idnt idnt-2 buttonable">
     <td class="name ellipsible" colspan="2"><%= i.food.name %></td>
     <td class="value ellipsible">
-      <span><%= i.amount %></span>[<%= i.food.ref_unit.shortname %>]
+      <span><%= "%g" % i.amount %></span>
+      <%= "[#{i.food.ref_unit.shortname}]" unless i.food.ref_unit == @amount_mfu_unit %>
     </td>
     <% @quantities.each do |q| %>
       <td class="value ellipsible">
