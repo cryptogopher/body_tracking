@@ -5,11 +5,18 @@ table.list tr.food.hidden {opacity: 0.4}
 table.list .date,
 table.list .name,
 table.list .quantity {text-align: left;}
+/* TODO: merge with .closable */
+table.list .quantityhead {
+  text-align: center;
+  vertical-align: bottom;
+  position: relative;
+  padding: 2px 0;
+}
 
 table.list .action,
 table.list .value {text-align: right;}
 
-table.list th.closable {padding-right: 0;}
+table.list .closable {padding-right: 0;}
 table.list .unwrappable {white-space: nowrap;}
 table.list .ellipsible {
   overflow: hidden;

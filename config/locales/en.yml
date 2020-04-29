@@ -23,6 +23,7 @@ en:
   button_notes: 'Notes'
   button_retake: 'Retake'
   button_child: 'Child'
+  button_toggle: 'Toggle'
   activerecord:
     errors:
       models:
@@ -56,6 +57,9 @@ en:
   body_trackers:
     index:
       heading: 'Summary'
+    helpers:
+      exposures_enabled: '--- enabled ---'
+      exposures_available: '--- available ---'
   layouts:
     sidebar:
       heading_body_trackers: 'Body trackers'

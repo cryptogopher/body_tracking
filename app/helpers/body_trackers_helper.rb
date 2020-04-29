@@ -19,13 +19,17 @@ module BodyTrackersHelper
   end
 
   def toggle_exposure_options(enabled, domain)
-    disabled = []
-    enabled = enabled.to_a
-    options = nested_set_options(@project.quantities.send(domain)) do |q|
-      disabled << q.id if enabled.include?(q)
+    enabled = enabled.map { |q| [q.name, q.id] }
+    enabled_ids = enabled.map(&:last)
+
+    options = [[t('body_trackers.helpers.exposures_available'), 0]]
+    options += nested_set_options(@project.quantities.send(domain)) do |q|
       raw("#{'&ensp;' * q.level}#{q.name}")
     end
-    options_for_select(options, disabled: disabled)
+    options.collect! { |name, id| [name, enabled_ids.include?(id) ? 0 : id] }
+
+    options = [[t('body_trackers.helpers.exposures_enabled'), 0]] + enabled + options
+    options_for_select(options, disabled: 0)
   end
 
   def unit_options

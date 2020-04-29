@@ -10,23 +10,27 @@
       <% total_width = 4 + @quantities.length %>
       <% @meals_by_date.reverse_each do |date, meals| %>
         <tr id="date-<%= date.strftime('%Y%m%d') %>" class="date">
-          <td class="date" colspan="2" style="width:<%= 3 * 100/total_width %>%">
+          <td class="date" colspan="2" style="width:<%= 3 * 100/total_width %>%" rowspan="2">
             <h3><%= date == Date.current ? 'Today' : date.strftime('%F') %></h3>
           </td>
-          <td style="width:<%= 100/total_width %>%; text-align: left;">
+          <td style="width:<%= 100/total_width %>%; text-align: left;" rowspan="2">
             <b><%= l(:field_amount) %></b>
           </td>
           <% @quantities.each do |q| %>
-            <td style="width:<%= 100/total_width %>%; text-align: left;" class="closable">
-              <div style="float: right; position: relative;">
-                <%= link_to '',
-                  toggle_exposure_project_meals_path(@project, quantity_id: q.id),
-                  {class: "icon icon-close", method: :post, remote: true} %>
-              </div>
-              <b><%= q.name %></b>
+            <td class="quantityhead closable" style="width: <%= 100/total_width %>%;"
+                title="<%= q.description %>">
+              <%= q.name %>
             </td>
           <% end %>
-          <td style="width:<%= 100/total_width %>%"></td>
+          <td style="width:<%= 100/total_width %>%" rowspan="2"></td>
+        </tr>
+        <tr>
+          <% @quantities.each do |q| %>
+            <td class="quantityhead" style="width: <%= 100/total_width %>%;">
+              <% mfu_unit = @nutrients[q][:mfu_unit] %>
+              <%= "[#{ mfu_unit ? mfu_unit.shortname : '-'}]" %>
+            </td>
+          <% end %>
         </tr>
 
         <% meals.each_with_index do |m, index| %>

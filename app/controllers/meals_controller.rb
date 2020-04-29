@@ -92,9 +92,10 @@ class MealsController < ApplicationController
         [i, [n_amount && n_amount * i.amount / i.food.ref_amount, n_unit]]
       end.to_h
       max_value = @nutrients[q].values.max_by { |a, u| a || 0 }.first
-      @nutrients[q][:mfu_unit] = @nutrients[q].values.map(&:last)
-        .each_with_object(Hash.new(0)) { |u, h| h[u] += 1 }.max_by(&:last).first
-      @nutrients[q][:precision] = [3 - max_value.exponent, 0].max
+
+      @nutrients[q][:mfu_unit] = @nutrients[q]
+        .each_with_object(Hash.new(0)) { |(i, v), h| h[v.last] += 1 }.max_by(&:last).first
+      @nutrients[q][:precision] = max_value && [3 - max_value.exponent, 0].max
     end
 
     @meals_by_date = @project.meals.reject { |m,*| m.new_record? }
