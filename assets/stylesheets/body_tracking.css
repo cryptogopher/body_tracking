@@ -14,7 +14,7 @@ table.list .quantityhead {
 }
 
 table.list .action,
-table.list .value {text-align: right;}
+table.list .value {text-align: right; padding-right: 2px;}
 
 table.list .closable {padding-right: 0;}
 table.list .unwrappable {white-space: nowrap;}
@@ -24,7 +24,7 @@ table.list .ellipsible {
   white-space: nowrap;
   max-width: 1px;
 }
-table.list .buttonable {line-height: 1.8em;}
+table.list tr.buttonable {line-height: 1.8em;}
 
 table.list td.form {
   padding-right: 2px;
