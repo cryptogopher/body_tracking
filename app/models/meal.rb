@@ -39,4 +39,8 @@ class Meal < ActiveRecord::Base
   def toggle_eaten!
     update(eaten_at: self.eaten_at ? nil : DateTime.current)
   end
+
+  def display_date
+    self.eaten_at ? self.eaten_at.to_date : Date.current
+  end
 end

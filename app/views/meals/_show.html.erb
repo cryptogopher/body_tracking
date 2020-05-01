@@ -12,7 +12,7 @@
   </td>
 
   <td id="notes-links-<%= m.id %>" class="unwrappable"
-      style="text-align: left; border-right: none; width: 1%;">
+      style="text-align: left; border-left: none; width: 1%;">
     <%= link_to l(:button_cancel), '', class: 'icon icon-cancel', style: 'display: none;',
       onclick: "$(event.target).closest('tr').find('form').remove();
                 $('td[id=notes-#{m.id}]').contents().show();
@@ -26,10 +26,19 @@
       class: "icon icon-wiki-page" %>
   </td>
 
+<% if false %>
   <td id="notes-<%= m.id %>" class="notes unwrappable" colspan="<%= @quantities.length + 1 %>"
       style="text-align: left; border-left: none;">
     <%= notes(m) %>
   </td>
+<% end %>
+<td class="value ellipsible"></td>
+  <% @quantities.each do |q| %>
+    <td class="value ellipsible">
+      <%= format_value(@nutrient_summary[q][m], @nutrients[q][:precision]) %>
+    </td>
+  <% end %>
+
   <td class="action unwrappable" style="width: 1%;"><%= meal_links(m) %></td>
 </tr>
 
@@ -52,4 +61,3 @@
     </td>
   </tr>
 <% end %>
-</tr>

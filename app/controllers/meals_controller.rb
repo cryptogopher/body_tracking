@@ -86,23 +86,34 @@ class MealsController < ApplicationController
     ingredients = @project.meal_ingredients
 
     @amount_mfu_unit = ingredients
-      .each_with_object(Hash.new(0)) { |i, h| h[i.food.ref_unit] += 1 }.max_by(&:last).first
+      .each_with_object(Hash.new(0)) { |i, h| h[i.food.ref_unit] += 1 }
+      .max_by(&:last).try(&:first)
 
     @nutrients = {}
+    @nutrient_summary = Hash.new { |h,k| h[k] = Hash.new(BigDecimal(0)) }
     @quantities.each do |q|
-      @nutrients[q] = ingredients.map do |i|
+      @nutrients[q] = ingredients.find_all { |i| foods[i.food][q] }.map do |i|
         n_amount, n_unit = foods[i.food][q]
-        [i, [n_amount && n_amount * i.amount / i.food.ref_amount, n_unit]]
+        [i, [n_amount * i.amount / i.food.ref_amount, n_unit]]
       end.to_h
-      max_value = @nutrients[q].values.max_by { |a, u| a || 0 }.first
 
-      @nutrients[q][:mfu_unit] = @nutrients[q]
-        .each_with_object(Hash.new(0)) { |(i, v), h| h[v.last] += 1 }.max_by(&:last).first
-      @nutrients[q][:precision] = max_value && [3 - max_value.exponent, 0].max
+      mfu_unit = @nutrients[q].each_with_object(Hash.new(0)) { |(i, v), h| h[v.last] += 1 }
+        .max_by(&:last).try(&:first)
+      max_value = @nutrients[q].values.max_by { |a, u| a || 0 }.try(&:first) || BigDecimal(0)
+      precision = [3 - max_value.exponent, 0].max
+
+      # TODO: summing up ingredients should take units into account
+      @nutrients[q].each do |i, (a, v)|
+        meal = i.composition
+        @nutrient_summary[q][meal] += a
+        @nutrient_summary[q][meal.display_date] += a
+      end
+
+      @nutrients[q][:mfu_unit] = mfu_unit
+      @nutrients[q][:precision] = precision
     end
 
-    @meals_by_date = @project.meals.reject { |m,*| m.new_record? }
-      .sort_by { |m,*| m.eaten_at || m.created_at }
-      .group_by { |m,*| m.eaten_at ? m.eaten_at.to_date : Date.current }
+    @meals_by_date = @project.meals.reject(&:new_record?)
+      .sort_by { |m| m.eaten_at || m.created_at }.group_by(&:display_date)
   end
 end
