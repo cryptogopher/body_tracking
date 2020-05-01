@@ -31,7 +31,7 @@ table.list td.form {
   text-align: left;
 }
 
-table#meals, table#meals tr:not(.meal) td {border: none;}
+table#meals, table#meals td {border: none;}
 
 fieldset#filters table.filter td {padding-left: 8px;}
 

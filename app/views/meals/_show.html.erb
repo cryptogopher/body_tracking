@@ -1,5 +1,6 @@
-<tr id="meal-<%= m.id %>" class="primary meal project idnt idnt-1 odd">
-  <td class="name unwrappable">
+<tr id="meal-<%= m.id %>" class="primary meal project idnt idnt-1"
+    style="border: solid 2px <%= color %>;">
+  <td class="name unwrappable" style="background-color: <%= color %>;">
     <b><%= "#{t '.label_meal'} ##{index+1}" %></b>
     <% if m.eaten_at %>
       <%= " at #{m.eaten_at.strftime('%R')}" %>

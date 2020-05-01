@@ -31,9 +31,11 @@
           <% end %>
         </tr>
 
-        <tr>
-          <td class="date" colspan="2">
-            <h3><%= date == Date.current ? 'Today' : date.strftime('%F') %></h3>
+        <tr style="border: solid 2px #d9ead3;">
+          <td class="date" colspan="2" style="background-color: #d9ead3;">
+            <h3 style="margin: 0;">
+              <%= date == Date.current ? 'Today' : date.strftime('%F') %>
+            </h3>
           </td>
           <td class="value ellipsible"></td>
           <% @quantities.each do |q| %>
@@ -45,8 +47,12 @@
         </tr>
 
         <% meals.each_with_index do |m, index| %>
-          <%= render partial: 'meals/show', locals: {m: m, index: index} %>
+          <%= render partial: 'meals/show', locals: {
+            m: m, index: index,
+            color: cycle('#d0e0e3', '#c9daf8', '#cfe2f3', '#d9d2e9', '#ead1dc')
+          } %>
         <% end %>
+        <% reset_cycle %>
       <% end %>
     </tbody>
   </table>
