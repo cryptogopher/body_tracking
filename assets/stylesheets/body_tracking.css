@@ -32,6 +32,9 @@ table.list td.form {
   text-align: left;
 }
 
+table.list tbody tr.header:hover {background-color: unset;}
+table.list tbody tr.header:hover td {border: none;}
+
 fieldset#filters table.filter td {padding-left: 8px;}
 
 a.icon:not(.icon-move) {margin-left: 0.3em;}

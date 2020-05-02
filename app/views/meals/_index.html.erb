@@ -9,7 +9,7 @@
     <tbody>
       <% total_width = 4 + @quantities.length %>
       <% @meals_by_date.reverse_each do |date, meals| %>
-        <tr id="date-<%= date.strftime('%Y%m%d') %>" class="date">
+        <tr id="date-<%= date.strftime('%Y%m%d') %>" class="header">
           <td colspan="2" rowspan="2"
               style="width:<%= 3 * 100/total_width %>%; border: none;"></td>
           <td class="quantityhead" style="width:<%= 100/total_width %>%;">
@@ -24,7 +24,7 @@
           <td rowspan="2" style="width:<%= 100/total_width %>%; border: none;"></td>
         </tr>
 
-        <tr>
+        <tr class="header">
           <td class="quantityhead"><%= "[#{@amount_mfu_unit.shortname}]" %></td>
           <% @quantities.each do |q| %>
             <% mfu_unit = @nutrients[q][:mfu_unit] %>
@@ -32,7 +32,7 @@
           <% end %>
         </tr>
 
-        <tr style="background-color: #fff2cc;">
+        <tr class="date" style="background-color: #fff2cc;">
           <td class="date" colspan="2">
             <h3 style="margin: 0;">
               <%= date == Date.current ? 'Today' : date.strftime('%F') %>
