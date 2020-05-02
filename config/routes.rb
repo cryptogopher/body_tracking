@@ -8,7 +8,7 @@ resources :projects, shallow: true do
     end
   end
   resources :ingredients, only: [] do
-    post 'adjust/:adjustment', to: 'ingredients#adjust', as: :adjust, on: :member
+    post 'adjust/:adjustment', to: 'meals#adjust', as: :adjust, on: :member
   end
   resources :meals, only: [:index, :new, :create, :edit, :update, :destroy] do
     member do

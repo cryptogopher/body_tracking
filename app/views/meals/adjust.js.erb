@@ -1,0 +1,9 @@
+$('tr[id=ingredient-<%= @ingredient.id %>]').replaceWith(
+  '<%= j render partial: 'meals/show_ingredient', locals: {i: @ingredient} %>'
+);
+$('tr[id=meal-<%= @meal.id %>]').replaceWith(
+  '<%= j render partial: 'meals/show', locals: {m: @meal, index: @meal_index} %>'
+);
+$('tr[id=date-<%= @date.strftime('%Y%m%d') %>]').replaceWith(
+  '<%= j render partial: 'meals/show_date', locals: {date: @date} %>'
+);

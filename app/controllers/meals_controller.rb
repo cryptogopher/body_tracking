@@ -9,6 +9,7 @@ class MealsController < ApplicationController
   before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
   before_action :find_meal, only: [:edit, :update, :destroy, :edit_notes, :update_notes,
                                    :toggle_eaten]
+  before_action :find_ingredient, only: [:adjust]
   before_action :authorize
 
   def index
@@ -63,6 +64,17 @@ class MealsController < ApplicationController
   def toggle_exposure
     @project.meal_exposures.toggle!(@quantity)
     prepare_meals
+  end
+
+  def adjust
+    amount = params[:adjustment].to_i
+    @ingredient.amount += amount if @ingredient.amount > -amount
+    @ingredient.save
+
+    prepare_meals
+    @meal = @ingredient.composition
+    @date = @meal.display_date
+    @meal_index = @meals_by_date[@date].index(@meal)
   end
 
   private
