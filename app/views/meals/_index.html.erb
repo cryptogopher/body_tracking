@@ -10,7 +10,8 @@
       <% total_width = 4 + @quantities.length %>
       <% @meals_by_date.reverse_each do |date, meals| %>
         <tr id="date-<%= date.strftime('%Y%m%d') %>" class="date">
-          <td colspan="2" rowspan="2" style="width:<%= 3 * 100/total_width %>%"></td>
+          <td colspan="2" rowspan="2"
+              style="width:<%= 3 * 100/total_width %>%; border: none;"></td>
           <td class="quantityhead" style="width:<%= 100/total_width %>%;">
             <%= l(:field_amount) %>
           </td>
@@ -20,7 +21,7 @@
               <%= q.name %>
             </td>
           <% end %>
-          <td style="width:<%= 100/total_width %>%"></td>
+          <td rowspan="2" style="width:<%= 100/total_width %>%; border: none;"></td>
         </tr>
 
         <tr>
@@ -31,8 +32,8 @@
           <% end %>
         </tr>
 
-        <tr style="border: solid 2px #d9ead3;">
-          <td class="date" colspan="2" style="background-color: #d9ead3;">
+        <tr style="background-color: #fff2cc;">
+          <td class="date" colspan="2">
             <h3 style="margin: 0;">
               <%= date == Date.current ? 'Today' : date.strftime('%F') %>
             </h3>
@@ -47,12 +48,8 @@
         </tr>
 
         <% meals.each_with_index do |m, index| %>
-          <%= render partial: 'meals/show', locals: {
-            m: m, index: index,
-            color: cycle('#d0e0e3', '#c9daf8', '#cfe2f3', '#d9d2e9', '#ead1dc')
-          } %>
+          <%= render partial: 'meals/show', locals: {m: m, index: index, color: '#d0e0e3'} %>
         <% end %>
-        <% reset_cycle %>
       <% end %>
     </tbody>
   </table>

@@ -11,6 +11,7 @@ table.list .quantityhead {
   vertical-align: bottom;
   position: relative;
   padding: 2px 0;
+  border: none;
 }
 
 table.list .action,
@@ -30,8 +31,6 @@ table.list td.form {
   padding-right: 2px;
   text-align: left;
 }
-
-table#meals, table#meals td {border: none;}
 
 fieldset#filters table.filter td {padding-left: 8px;}
 
