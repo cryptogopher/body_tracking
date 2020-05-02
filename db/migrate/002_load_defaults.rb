@@ -14,7 +14,7 @@ class LoadDefaults < ActiveRecord::Migration
         e_a = Quantity.create project: nil, domain: :diet, parent: nil,
           name: "Energy", description: "Total energy"
         e_aa = Quantity.create project: nil, domain: :diet, parent: e_a,
-          name: "Calculated", description: "Total energy calculated from macronutrients"
+          name: "Calc. energy", description: "Total energy calculated from macronutrients"
 
         p_a = Quantity.create project: nil, domain: :diet, parent: nil,
           name: "Proteins", description: "Total amount of proteins"
@@ -48,7 +48,7 @@ class LoadDefaults < ActiveRecord::Migration
           " double bond in the trans configuration"
 
         c_a = Quantity.create project: nil, domain: :diet, parent: nil,
-          name: "Carbohydrates", description: "Total amount of carbohydrates"
+          name: "Carbs", description: "Total amount of carbohydrates"
         c_aa = Quantity.create project: nil, domain: :diet, parent: c_a,
           name: "Digestible", description: ""
         c_aaa = Quantity.create project: nil, domain: :diet, parent: c_aa,
@@ -145,7 +145,7 @@ class LoadDefaults < ActiveRecord::Migration
           name: "VF", description: "Visceral fat"
 
         # Formulas go at the and to make sure dependencies exist
-        e_aa.create_formula code: "4*Proteins + 9*Fats + 4*Carbohydrates", zero_nil: true,
+        e_aa.create_formula code: "4*Proteins + 9*Fats + 4*Carbs", zero_nil: true,
           unit: u_b
         b_aaa.create_formula code: "'% fat' * 'Weight'", zero_nil: true, unit: u_ab
 
