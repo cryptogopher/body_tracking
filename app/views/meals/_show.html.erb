@@ -1,5 +1,5 @@
 <tr id="meal-<%= m.id %>" class="primary meal project idnt idnt-1"
-    style="background-color: <%= color %>;">
+    style="background-color: #d0e0e3;">
   <td class="name unwrappable">
     <b><%= "#{t '.label_meal'} ##{index+1}" %></b>
     <% if m.eaten_at %>
@@ -33,6 +33,7 @@
     <%= notes(m) %>
   </td>
 <% end %>
+
   <td class="value ellipsible"></td>
   <% @quantities.each do |q| %>
     <td class="value ellipsible">
@@ -42,23 +43,3 @@
 
   <td class="action unwrappable" style="width: 1%;"><%= meal_links(m) %></td>
 </tr>
-
-<% m.ingredients.each do |i| %>
-  <tr id="ingredient-<%= i.id %>" class="ingredient project idnt idnt-2 buttonable">
-    <td class="name ellipsible" colspan="2"><%= i.food.name %></td>
-    <td class="value ellipsible">
-      <span><%= "%g" % i.amount %></span>
-      <%= "[#{i.food.ref_unit.shortname}]" unless i.food.ref_unit == @amount_mfu_unit %>
-    </td>
-    <% @quantities.each do |q| %>
-      <td class="value ellipsible">
-        <%= format_value(@nutrients[q][i], @nutrients[q][:precision],
-                         @nutrients[q][:mfu_unit]) %>
-      </td>
-    <% end %>
-    <td class="action unwrappable" style="width: 1%; text-align: right;">
-      <%# Moved to helper to avoid spaces between buttons %>
-      <%= adjustment_buttons(i) %>
-    </td>
-  </tr>
-<% end %>

@@ -1,0 +1,16 @@
+<tr id="ingredient-<%= i.id %>" class="ingredient project idnt idnt-2 buttonable">
+  <td class="name ellipsible" colspan="2"><%= i.food.name %></td>
+  <td class="value ellipsible">
+    <span><%= "%g" % i.amount %></span>
+    <%= "[#{i.food.ref_unit.shortname}]" unless i.food.ref_unit == @amount_mfu_unit %>
+  </td>
+  <% @quantities.each do |q| %>
+    <td class="value ellipsible">
+      <%= format_value(*@nutrients[q].values_at(i, :precision, :mfu_unit)) %>
+    </td>
+  <% end %>
+  <td class="action unwrappable" style="width: 1%; text-align: right;">
+    <%# Moved to helper to avoid spaces between buttons %>
+    <%= adjustment_buttons(i) %>
+  </td>
+</tr>
