@@ -1,6 +1,6 @@
 <tr id="meal-<%= m.id %>" class="primary meal project idnt idnt-1"
     style="background-color: #d0e0e3;">
-  <td class="name unwrappable">
+  <td class="name unwrappable" style="border-right: none;">
     <b><%= "#{t '.label_meal'} ##{index+1}" %></b>
     <% if m.eaten_at %>
       <%= " at #{m.eaten_at.strftime('%R')}" %>
@@ -13,7 +13,7 @@
   </td>
 
   <td id="notes-links-<%= m.id %>" class="unwrappable"
-      style="text-align: left; border-left: none; width: 1%;">
+      style="text-align: left; border-left: none; border-right: none; width: 1%;">
     <%= link_to l(:button_cancel), '', class: 'icon icon-cancel', style: 'display: none;',
       onclick: "$(event.target).closest('tr').find('form').remove();
                 $('td[id=notes-#{m.id}]').contents().show();
@@ -34,7 +34,7 @@
   </td>
 <% end %>
 
-  <td class="value ellipsible"></td>
+  <td class="value ellipsible" style="border-left: none;"></td>
   <% @quantities.each do |q| %>
     <td class="value ellipsible">
       <%= format_value(@nutrient_summary[q][m], @nutrients[q][:precision]) %>
