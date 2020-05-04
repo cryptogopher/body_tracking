@@ -62,10 +62,16 @@ class FormulaTest < ActiveSupport::TestCase
         {type: :indexed, content: "quantities['Fats'][_index].nil?||" \
          "quantities['Fats'][_index]/quantities['Proteins'][_index]>2"}
       ],
+
+      # Model method calls
+      '100*Energy/RM.lastBefore(Meal.eaten_at||Meal.created_at)', Set['Energy', 'RM', 'Meal'],
+      # TODO: fill parts
+      []
     ]
 
+    d_methods = ['nil?', 'abs']
     vector.each_slice(3) do |formula, identifiers, parts|
-      parser = FormulaBuilder.new(formula)
+      parser = FormulaBuilder.new(formula, d_methods: d_methods)
       i, p = parser.parse
       assert_empty parser.errors
       assert_equal identifiers, i

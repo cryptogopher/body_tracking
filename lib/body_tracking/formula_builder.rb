@@ -9,24 +9,24 @@ module BodyTracking
     # List of events with parameter count:
     # https://github.com/racker/ruby-1.9.3-lucid/blob/master/ext/ripper/eventids1.c
     class FormulaBuilder < Ripper::SexpBuilder
-      def initialize(*args)
+      def initialize(*args, d_methods: [], q_methods: Hash.new([]))
         super(*args)
         @disallowed = Hash.new { |h,k| h[k] = Set.new }
         @identifiers = Set.new
         @parts = []
+        @decimal_methods = d_methods
+        @quantity_methods = q_methods
       end
 
       def errors
         @errors = []
-        @disallowed.each { |k, v| v.each { |e| @errors << ["disallowed_#{k}", {k => e} ] } }
+        @disallowed.each do |k, v|
+          v.each { |e| @errors << ["disallowed_#{k}".to_sym, {k => e} ] }
+        end
         @errors
       end
 
       private
-
-      DECIMAL_METHODS = ['abs', 'nil?']
-      QUANTITY_METHODS = ['all', 'lastBefore']
-      METHODS = DECIMAL_METHODS + QUANTITY_METHODS
 
       events = private_instance_methods(false).grep(/\Aon_/) {$'.to_sym}
       (PARSER_EVENTS - events).each do |event|
@@ -44,7 +44,7 @@ module BodyTracking
 
       def on_program(stmts)
         @parts << {type: :indexed, content: join_stmts(stmts)}
-        [@identifiers.to_a, @parts]
+        [@identifiers, @parts]
       end
 
       def on_string_content
@@ -106,45 +106,35 @@ module BodyTracking
       end
 
       def on_call(left, dot, right)
-        method, mtype =
-          case right[0]
-          when :bt_ident
-            case
-            when DECIMAL_METHODS.include?(right[1])
-              [right[1], :numeric_method]
-            when QUANTITY_METHODS.include?(right[1])
-              [right[1], :quantity_method]
-            else
-              @disallowed[:method] << right[1]
-              [right[1], :unknown_method]
-            end
-          else
-            raise NotImplementedError, right.inspect
-          end
+        raise(NotImplementedError, right.inspect) unless right[0] == :bt_ident
 
         case left[0]
         when :bt_quantity
-          if mtype == :quantity_method
+          if @quantity_methods[left[1]].include?(right[1])
             part_index = @parts.length
             @parts << {type: :unindexed,
-                       content: "quantities['#{left[1]}']#{dot.to_s}#{method}"}
+                       content: "quantities['#{left[1]}']#{dot.to_s}#{right[1]}"}
             [:bt_quantity_method_call, "parts[#{part_index}]", part_index]
           else
-            [:bt_numeric_method_call, "quantities['#{left[1]}'][index]#{dot.to_s}#{method}"]
+            @disallowed[:method] << right[1] unless @decimal_methods.include?(right[1])
+            [:bt_numeric_method_call,
+             "quantities['#{left[1]}'][_index]#{dot.to_s}#{right[1]}"]
           end
         when :bt_quantity_method_call
-          if mtype == :quantity_method
-            @parts[left[2]][:content] << "#{dot.to_s}#{method}"
+          if @quantity_methods.default.include?(right[1])
+            @parts[left[2]][:content] << "#{dot.to_s}#{right[1]}"
             left
           else
-            [:bt_numeric_method_call, "#{left[1]}#{dot.to_s}#{method}"]
+            @disallowed[:method] << right[1] unless @decimal_methods.include?(right[1])
+            [:bt_numeric_method_call, "#{left[1]}#{dot.to_s}#{right[1]}"]
           end
         when :bt_numeric_method_call, :bt_expression
-          if mtype == :quantity_method
+          if @quantity_methods.default.include?(right[1])
             # TODO: add error reporting
             raise NotImplementedError
           else
-            [:bt_numeric_method_call, "#{left[1]}#{dot.to_s}#{method}"]
+            @disallowed[:method] << right[1] unless @decimal_methods.include?(right[1])
+            [:bt_numeric_method_call, "#{left[1]}#{dot.to_s}#{right[1]}"]
           end
         else
           raise NotImplementedError, left.inspect
@@ -182,7 +172,7 @@ module BodyTracking
         [
           :bt_expression,
           [left, right].map do |side|
-            side[0] == :bt_quantity ? "quantities['#{side[1]}'][index]" : "#{side[1]}"
+            side[0] == :bt_quantity ? "quantities['#{side[1]}'][_index]" : "#{side[1]}"
           end.join(op.to_s)
         ]
       end
@@ -234,7 +224,7 @@ module BodyTracking
           when :bt_expression, :bt_numeric_method_call
             token
           when :bt_quantity
-            "quantities['#{token}'][index]"
+            "quantities['#{token}'][_index]"
           else
             raise NotImplementedError, stmt.inspect
           end

@@ -39,12 +39,16 @@ class Formula < ActiveRecord::Base
   private
 
   def parse
-    parser = FormulaBuilder.new(self.code)
+    d_methods = ['abs', 'nil?']
+    q_methods = Hash.new(['all', 'lastBefore'])
+    q_methods['Meal'] = Meal.attribute_names
+
+    parser = FormulaBuilder.new(self.code, d_methods: d_methods, q_methods: q_methods)
     identifiers, parts = parser.parse
     errors = parser.errors
 
     quantities = Quantity.where(project: self.quantity.project, name: identifiers)
-    (identifiers - quantities.map(&:name)).each do |q|
+    (identifiers - quantities.map(&:name) - quantity_m.keys).each do |q|
       errors << [:unknown_quantity, {quantity: q}]
     end
 

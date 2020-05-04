@@ -91,12 +91,12 @@ class QuantitiesController < ApplicationController
 
   def create_child
     @quantity = @project.quantities.new(quantity_params)
-    if @quantity.save
-      flash[:notice] = 'Created new quantity'
-      prepare_quantities
-    else
+    unless @quantity.save
+      @parent_quantity = @quantity.parent
       render :new_child
     end
+    flash[:notice] = 'Created new quantity'
+    prepare_quantities
   end
 
   private
