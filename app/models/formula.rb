@@ -30,7 +30,7 @@ class Formula < ActiveRecord::Base
     args = []
     @parts.each do |p|
       code = p[:type] == :indexed ?
-        "length.times.map { |index| #{p[:content]} }" : p[:content]
+        "length.times.map { |_index| #{p[:content]} }" : p[:content]
       args << get_binding(quantities, args, length).eval(code)
     end
     args.last.map { |v| [v, self.unit] }
@@ -47,8 +47,8 @@ class Formula < ActiveRecord::Base
     identifiers, parts = parser.parse
     errors = parser.errors
 
-    quantities = Quantity.where(project: self.quantity.project, name: identifiers)
-    (identifiers - quantities.map(&:name) - quantity_m.keys).each do |q|
+    quantities = Quantity.where(project: self.quantity.project, name: identifiers.to_a)
+    (identifiers - quantities.map(&:name) - q_methods.keys).each do |q|
       errors << [:unknown_quantity, {quantity: q}]
     end
 

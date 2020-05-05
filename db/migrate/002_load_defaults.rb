@@ -15,6 +15,8 @@ class LoadDefaults < ActiveRecord::Migration
           name: "Energy", description: "Total energy"
         e_aa = Quantity.create project: nil, domain: :diet, parent: e_a,
           name: "Calc. energy", description: "Total energy calculated from macronutrients"
+        e_ab = Quantity.create domain: :diet, parent: e_a, name: "Energy as %RM",
+          description: "Energy percent value relative to current resting metabolism"
 
         p_a = Quantity.create project: nil, domain: :diet, parent: nil,
           name: "Proteins", description: "Total amount of proteins"
@@ -147,6 +149,8 @@ class LoadDefaults < ActiveRecord::Migration
         # Formulas go at the and to make sure dependencies exist
         e_aa.create_formula code: "4*Proteins + 9*Fats + 4*Carbs", zero_nil: true,
           unit: u_b
+        e_ab.create_formula code: "100*Energy/RM.lastBefore(Meal.eaten_at||Meal.created_at)",
+          zero_nil: true, unit: u_c
         b_aaa.create_formula code: "'% fat' * 'Weight'", zero_nil: true, unit: u_ab
 
         s_a = Source.create project: nil, name: "nutrition label",

@@ -99,7 +99,7 @@ module BodyTracking
           begin
             calculated = q.formula.calculate(inputs.to_h)
           rescue Exception => e
-            output_items.each { |o_i| subitems[q][o_i] = [BigDecimal::NAN, nil] }
+            output_items.each { |o_i| subitems[q][o_i] = nil }
             q.formula.errors.add(
               :code, :computation_failed,
               {
