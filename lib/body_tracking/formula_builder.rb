@@ -112,9 +112,14 @@ module BodyTracking
         when :bt_quantity
           if @quantity_methods[left[1]].include?(right[1])
             part_index = @parts.length
-            @parts << {type: :unindexed,
-                       content: "quantities['#{left[1]}']#{dot.to_s}#{right[1]}"}
-            [:bt_quantity_method_call, "parts[#{part_index}]", part_index]
+            if @quantity_methods.has_key?(left[1])
+              [:bt_numeric_method_call,
+               "quantities['#{left[1]}'][_index]#{dot.to_s}#{right[1]}"]
+            else
+              @parts << {type: :unindexed,
+                         content: "quantities['#{left[1]}']#{dot.to_s}#{right[1]}"}
+              [:bt_quantity_method_call, "parts[#{part_index}]", part_index]
+            end
           else
             @disallowed[:method] << right[1] unless @decimal_methods.include?(right[1])
             [:bt_numeric_method_call,
