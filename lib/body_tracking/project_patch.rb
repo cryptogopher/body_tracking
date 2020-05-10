@@ -4,7 +4,7 @@ module BodyTracking::ProjectPatch
     has_many :quantities, -> { order "lft" }, dependent: :destroy
     has_many :units, dependent: :destroy
 
-    has_many :foods, -> { order "name" }, dependent: :destroy,
+    has_many :foods, -> { order "foods.name" }, dependent: :destroy,
       extend: BodyTracking::ItemsWithQuantities
     has_many :nutrient_exposures, -> { where view_type: "Nutrient" }, dependent: :destroy,
       foreign_key: :view_id, foreign_type: :view_type,
