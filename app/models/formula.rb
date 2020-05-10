@@ -20,7 +20,7 @@ class Formula < ActiveRecord::Base
   def calculate(inputs)
     raise(InvalidInputs, 'No inputs') if inputs.empty?
 
-    deps = inputs.map { |q, v| [q.name, v.transpose[0]] }.to_h
+    deps = inputs.map { |q, v| [q.name, v.transpose.first] }.to_h
     length = deps.values.first.length
 
     raise(InvalidFormula, 'Invalid formula') unless self.valid?
@@ -41,6 +41,13 @@ class Formula < ActiveRecord::Base
   end
 
   private
+
+  class QuantityInput < Array
+    def initialize(q, *args)
+      super(*args)
+      @quantity = q
+    end
+  end
 
   def parse
     d_methods = ['abs', 'nil?']
