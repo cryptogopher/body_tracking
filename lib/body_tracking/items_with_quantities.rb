@@ -1,16 +1,19 @@
 module BodyTracking
   module ItemsWithQuantities
-    RELATIONS = {
+    ITEM_TYPES = {
+      'Ingredient' => {
+        domain: :diet,
+        associations: [:food, :nutrients],
+        value_field: :amount
+      },
       'Food' => {
         domain: :diet,
-        subitem_class: Nutrient,
-        association: :food,
+        associations: [:nutrients],
         value_field: :amount
       },
       'Measurement' => {
         domain: :measurement,
-        subitem_class: Readout,
-        association: :measurement,
+        associations: [:readouts],
         value_field: :value
       }
     }
@@ -30,7 +33,7 @@ module BodyTracking
         if filters[:formula][:code].present?
           owner = proxy_association.owner
           project = owner.is_a?(Project) ? owner : owner.project
-          domain = RELATIONS[proxy_association.klass.name][:domain]
+          domain = ITEM_TYPES[proxy_association.klass.name][:domain]
           filter_q_attrs = {
             name: 'Filter formula',
             formula_attributes: filters[:formula],
@@ -53,23 +56,91 @@ module BodyTracking
     def compute_quantities(requested_q, filter_q = nil)
       items = all
 
-      relations = RELATIONS[proxy_association.klass.name]
+      item_type = ITEM_TYPES[proxy_association.klass.name]
       subitems = Hash.new { |h,k| h[k] = {} }
-      relations[:subitem_class].where(relations[:association] => items)
-        .includes(:quantity, :unit).order('quantities.lft').each do |s|
-
-        item = s.send(relations[:association])
-        subitem_value = s.send(relations[:value_field])
-        subitems[s.quantity][item] = [subitem_value, s.unit]
+      # Ingredient.includes(food: {nutrients: [:quantity, :unit]}).order('quantities.lft')
+      # Food.includes(nutrients: [:quantity, :unit]).order('quantities.lft')
+      includes = item_type[:associations].reverse
+        .inject([:quantity, :unit]) { |relation, assoc| {assoc => relation} }
+      all.includes(includes).order('quantities.lft').each do |i|
+        item_type[:associations].inject(i) { |o, m| o.send(m) }.each do |s|
+          subitem_value =
+            if i.respond_to?(item_type[:value_field])
+              s_value = s.send(item_type[:value_field])
+              i_value = i.send(item_type[:value_field])
+              # NOTE: for now scaling is designed only for Ingredients
+              s_value * i_value / i.food.ref_amount
+            else
+              s.send(item_type[:value_field])
+            end
+          subitems[s.quantity][i] = [subitem_value, s.unit]
+        end
       end
 
-      quantities = (requested_q || Quantity.none) + Array(filter_q)
-      completed_q = Formula.resolve(quantities, items, subitems)
+
+      unchecked_q = requested_q.map { |q| [q, nil] }
+      unchecked_q << [filter_q, nil] if filter_q
+
+      completed_q = {}
+      # FIXME: loop should finish unless there is circular dependency in formulas
+      # for now we don't guard against that
+      while !unchecked_q.empty?
+        q, deps = unchecked_q.shift
+
+        # quantity not computable: no formula/invalid formula (syntax error/runtime error)
+        # or not requiring calculation/computed
+        if !q.formula || q.formula.errors.any? || !q.formula.valid? ||
+            (subitems[q].length == items.count)
+          completed_q[q] = subitems.delete(q) { {} }
+          next
+        end
+
+        # quantity with formula requires refresh of dependencies availability
+        if deps.nil? || !deps.empty?
+          deps ||= q.formula.quantity_deps.clone
+          deps.reject! { |d| completed_q.has_key?(d) }
+          deps.each { |d| unchecked_q << [d, nil] unless unchecked_q.index { |u| u[0] == d } }
+        end
+
+        # quantity with formula has all dependencies satisfied, requires calculation
+        if deps.empty?
+          output_items = items.select { |i| subitems[q][i].nil? }
+          input_q = q.formula.dependencies
+          inputs = input_q.map do |i_q|
+            # Yielding for all 'items', not only 'output_items' as completed_q may
+            # be used for multiple formulas with different unknowns item sets
+            completed_q[i_q] ||= yield(i_q, items) unless i_q.class == Quantity
+            values = completed_q[i_q].values_at(*output_items).map { |v| v || [nil, nil] }
+            values.map! { |v, u| [v || BigDecimal(0), u] } if q.formula.zero_nil
+            [i_q, values]
+          end
+          begin
+            calculated = q.formula.calculate(inputs.to_h)
+          rescue Exception => e
+            output_items.each { |o_i| subitems[q][o_i] = nil }
+            q.formula.errors.add(
+              :code, :computation_failed,
+              {
+                quantity: q.name,
+                description: e.message,
+                count: output_items.size == subitems[q].size ? 'all' : output_items.size
+              }
+            )
+          else
+            output_items.each_with_index { |o_i, idx| subitems[q][o_i] = calculated[idx] }
+          end
+          unchecked_q.unshift([q, deps])
+          next
+        end
+
+        # quantity still has unsatisfied dependencies, move to the end of queue
+        unchecked_q << [q, deps]
+      end
 
       filter_values = completed_q.delete(filter_q)
       items.to_a.keep_if { |i| filter_values[i][0] } if filter_values
       subitems.merge!(completed_q)
-      subitem_keys = subitems.keys.sort_by { |q| q.lft }
+      subitem_keys = subitems.keys.select { |k| k.class == Quantity }.sort_by { |q| q.lft }
       items.map { |i| [i, subitem_keys.map { |q| [q, subitems[q][i]] }.to_h] }.to_h
     end
   end

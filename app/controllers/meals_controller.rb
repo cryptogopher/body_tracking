@@ -94,35 +94,32 @@ class MealsController < ApplicationController
 
   def prepare_meals
     @quantities = @project.meal_quantities.includes(:formula)
-    foods = @project.meal_foods.compute_quantities(@quantities)
-    ingredients = @project.meal_ingredients
+    @ingredients = @project.meal_ingredients.compute_quantities(@quantities) do |q, items|
+      Hash.new { |h,k| k.composition } if q == Meal
+    end
 
-    @amount_mfu_unit = ingredients
-      .each_with_object(Hash.new(0)) { |i, h| h[i.food.ref_unit] += 1 }
+    @amount_mfu_unit = @ingredients
+      .each_with_object(Hash.new(0)) { |(i, qv), h| h[i.food.ref_unit] += 1 }
       .max_by(&:last).try(&:first)
 
-    @nutrients = {}
-    @nutrient_summary = Hash.new { |h,k| h[k] = Hash.new(BigDecimal(0)) }
+    @ingredient_summary = Hash.new { |h,k| h[k] = Hash.new(BigDecimal(0)) }
     @quantities.each do |q|
-      @nutrients[q] = ingredients.find_all { |i| foods[i.food][q] }.map do |i|
-        n_amount, n_unit = foods[i.food][q]
-        [i, [n_amount * i.amount / i.food.ref_amount, n_unit]]
-      end.to_h
-
-      mfu_unit = @nutrients[q].each_with_object(Hash.new(0)) { |(i, v), h| h[v.last] += 1 }
+      @ingredient_summary[:mfu_unit][q] = @ingredients
+        .each_with_object(Hash.new(0)) { |(i, qv), h| h[qv[q].last] += 1 if qv[q] }
         .max_by(&:last).try(&:first)
-      max_value = @nutrients[q].values.max_by { |a, u| a || 0 }.try(&:first) || BigDecimal(0)
-      precision = [3 - max_value.exponent, 0].max
 
-      # TODO: summing up ingredients should take units into account
-      @nutrients[q].each do |i, (a, v)|
-        meal = i.composition
-        @nutrient_summary[q][meal] += a
-        @nutrient_summary[q][meal.display_date] += a
+      max_value = @ingredients.max_by { |i, qv| qv[q].try(&:first) || 0 }.last[q].try(&:first)
+      max_value ||= BigDecimal(0)
+      @ingredient_summary[:precision][q] = [3 - max_value.exponent, 0].max
+    end
+
+    # TODO: summing up ingredients should take units into account
+    @ingredients.each do |i, qv|
+      meal = i.composition
+      qv.compact.each do |q, (a, u)|
+        @ingredient_summary[meal][q] += a
+        @ingredient_summary[meal.display_date][q] += a
       end
-
-      @nutrients[q][:mfu_unit] = mfu_unit
-      @nutrients[q][:precision] = precision
     end
 
     @meals_by_date = @project.meals.reject(&:new_record?)

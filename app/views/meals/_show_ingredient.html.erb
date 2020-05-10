@@ -6,7 +6,8 @@
   </td>
   <% @quantities.each do |q| %>
     <td class="value ellipsible">
-      <%= format_value(*@nutrients[q].values_at(i, :precision, :mfu_unit)) %>
+      <%= format_value(@ingredients[i][q], @ingredient_summary[:precision][q],
+                       @ingredient_summary[:mfu_unit][q]) %>
     </td>
   <% end %>
   <td class="action unwrappable" style="width: 1%; text-align: right;">

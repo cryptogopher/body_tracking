@@ -15,6 +15,7 @@ class Food < ActiveRecord::Base
   belongs_to :project, required: true
   belongs_to :ref_unit, class_name: 'Unit', required: true
   belongs_to :source, required: false
+  has_many :ingredients, dependent: :restrict_with_error
 
   has_many :nutrients, inverse_of: :food, dependent: :destroy, validate: true
   validates :nutrients, presence: true

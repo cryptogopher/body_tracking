@@ -7,7 +7,7 @@
   <td class="value ellipsible" style="border-left: none;"></td>
   <% @quantities.each do |q| %>
     <td class="value ellipsible">
-      <%= format_value(@nutrient_summary[q][date], @nutrients[q][:precision]) %>
+      <%= format_value(@ingredient_summary[date][q], @ingredient_summary[:precision][q]) %>
     </td>
   <% end %>
   <td></td>

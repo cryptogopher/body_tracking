@@ -51,7 +51,7 @@ en:
               disallowed_token: 'includes disallowed token: "%{token}"'
               disallowed_keyword: 'includes disallowed keyword: "%{keyword}"'
               disallowed_method: 'includes disallowed method call: "%{method}"'
-              unknown_quantity: 'contains undefined quantity: %{quantity}'
+              unknown_dependency: 'contains undefined dependency: %{identifier}'
               computation_failed: 'computation failed for "%{quantity}": %{description}
                 (%{count} values missing)'
   body_trackers:

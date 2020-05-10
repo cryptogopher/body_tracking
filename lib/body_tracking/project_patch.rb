@@ -17,7 +17,8 @@ module BodyTracking::ProjectPatch
       extend: BodyTracking::ItemsWithQuantities, through: :measurement_routines
 
     has_many :meals, -> { order "eaten_at DESC" }, dependent: :destroy
-    has_many :meal_ingredients, through: :meals, source: 'ingredients'
+    has_many :meal_ingredients, through: :meals, source: 'ingredients',
+      extend: BodyTracking::ItemsWithQuantities
     has_many :meal_foods, through: :meal_ingredients, source: 'food',
       extend: BodyTracking::ItemsWithQuantities
     has_many :meal_exposures, -> { where view_type: "Meal" }, dependent: :destroy,
