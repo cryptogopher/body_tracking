@@ -1,12 +1,5 @@
 class CreateSchema < ActiveRecord::Migration
   def change
-    create_table :units do |t|
-      t.references :project
-      t.string :name
-      t.string :shortname
-      t.timestamps null: false
-    end
-
     create_table :quantities do |t|
       t.references :project
       t.integer :domain
@@ -32,10 +25,42 @@ class CreateSchema < ActiveRecord::Migration
       t.references :quantity
     end
 
+    create_table :quantity_values do |t|
+      t.string :type
+      t.references :registry, polymorphic: true
+      t.references :quantity
+      t.decimal :value, precision: 12, scale: 6
+      t.references :unit
+      t.timestamps null: false
+    end
+
+    create_table :units do |t|
+      t.references :project
+      t.string :name
+      t.string :shortname
+      t.timestamps null: false
+    end
+
     create_table :sources do |t|
       t.references :project
       t.string :name
       t.text :description
+      t.timestamps null: false
+    end
+
+    create_table :meals do |t|
+      t.references :project
+      t.text :notes
+      t.timestamp :eaten_at
+      t.timestamps null: false
+    end
+
+    create_table :ingredients do |t|
+      t.references :composition, polymorphic: true
+      t.references :food
+      t.decimal :amount, precision: 12, scale: 6
+      t.references :part_of
+      t.decimal :ready_ratio, precision: 12, scale: 6
       t.timestamps null: false
     end
 
@@ -53,14 +78,6 @@ class CreateSchema < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    create_table :nutrients do |t|
-      t.references :food
-      t.references :quantity
-      t.decimal :amount, precision: 12, scale: 6
-      t.references :unit
-      t.timestamps null: false
-    end
-
     create_table :measurement_routines do |t|
       t.references :project
       t.string :name
@@ -73,30 +90,6 @@ class CreateSchema < ActiveRecord::Migration
       t.references :source
       t.text :notes
       t.timestamp :taken_at
-      t.timestamps null: false
-    end
-
-    create_table :readouts do |t|
-      t.references :measurement
-      t.references :quantity
-      t.decimal :value, precision: 12, scale: 6
-      t.references :unit
-      t.timestamps null: false
-    end
-
-    create_table :meals do |t|
-      t.references :project
-      t.text :notes
-      t.timestamp :eaten_at
-      t.timestamps null: false
-    end
-
-    create_table :ingredients do |t|
-      t.references :composition, polymorphic: true
-      t.references :food
-      t.decimal :amount, precision: 12, scale: 6
-      t.references :part_of
-      t.decimal :ready_ratio, precision: 12, scale: 6
       t.timestamps null: false
     end
   end

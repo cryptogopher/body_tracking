@@ -21,6 +21,7 @@ class Meal < ActiveRecord::Base
   def eaten_at
     self[:eaten_at].getlocal if self[:eaten_at]
   end
+  alias_attribute :completed_at, :eaten_at
 
   def eaten_at_date
     self.eaten_at

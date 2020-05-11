@@ -1,10 +1,9 @@
-class Nutrient < ActiveRecord::Base
+class Nutrient < QuantityValue
   belongs_to :food, inverse_of: :nutrients, required: true
-  belongs_to :quantity, required: true
-  belongs_to :unit, required: true
 
-  # Uniqueness is checked exclusively on Food level (see Readout model for details)
+  validates :value, numericality: {greater_than_or_equal_to: 0.0}
+  # Uniqueness NOT validated here, see Value for explanation
   #validates :quantity, uniqueness: {scope: :food_id}
 
-  validates :amount, numericality: {greater_than_or_equal_to: 0.0}
+  alias_attribute :amount, :value
 end

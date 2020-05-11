@@ -25,6 +25,7 @@ class Measurement < ActiveRecord::Base
   end
 
   validates :taken_at, presence: true
+  alias_attribute :completed_at, :taken_at
 
   after_initialize do
     if new_record?
