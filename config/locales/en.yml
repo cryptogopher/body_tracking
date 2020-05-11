@@ -47,11 +47,11 @@ en:
         formula:
           attributes:
             code:
-              disallowed_syntax: 'cannot be parsed: %{syntax}'
-              disallowed_token: 'includes disallowed token: "%{token}"'
-              disallowed_keyword: 'includes disallowed keyword: "%{keyword}"'
-              disallowed_method: 'includes disallowed method call: "%{method}"'
-              unknown_dependency: 'contains undefined dependency: %{identifier}'
+              disallowed_syntax: 'cannot be parsed "%{syntax}"'
+              disallowed_token: 'includes disallowed token "%{token}"'
+              disallowed_keyword: 'includes disallowed keyword "%{keyword}"'
+              disallowed_method: 'includes disallowed method call "%{method}"'
+              unknown_dependency: 'contains undefined dependency "%{identifier}"'
               computation_failed: 'computation failed for "%{quantity}": %{description}
                 (%{count} values missing)'
   body_trackers:

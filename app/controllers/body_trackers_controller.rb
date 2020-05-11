@@ -9,6 +9,8 @@ class BodyTrackersController < ApplicationController
   end
 
   def defaults
+    failed_objects = []
+
     # Units
     available_units = @project.units.pluck(:shortname, :id).to_h
     defaults = Unit.where(project: nil).map do |u|
@@ -38,7 +40,11 @@ class BodyTrackersController < ApplicationController
           attrs['formula_attributes']['unit_id'] = available_units[q.formula.unit.shortname]
         end
         obj = @project.quantities.create(attrs)
-        available_quantities[[q.name, q.domain]] = obj if obj.persisted?
+        if obj.persisted?
+          available_quantities[[q.name, q.domain]] = obj
+        else
+          failed_objects << obj
+        end
       end
     end
 
@@ -61,6 +67,13 @@ class BodyTrackersController < ApplicationController
 
     flash[:notice] += " and #{new_sources.length > 0 ? new_sources.length : "no" } new" \
       " #{'source'.pluralize(new_sources.length)}"
+
+    if failed_objects.present?
+      flash[:notice] += " (loading #{failed_objects.length} objects failed, see errors)"
+      flash[:error] = failed_objects.map do |o|
+        "<p>#{o.class.name} #{o.name}: #{o.errors.full_messages.join(', ')}</p>"
+      end.join.html_safe
+    end
 
     redirect_to :back
   end

@@ -44,6 +44,7 @@ class Quantity < ActiveRecord::Base
     end
   end
 
+  # TODO: move as an association extension module
   def self.filter(project, filters)
     quantities = all
 
