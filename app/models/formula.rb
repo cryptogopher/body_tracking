@@ -58,7 +58,15 @@ class Formula < ActiveRecord::Base
     identifiers, parts = parser.parse
     errors = parser.errors
 
-    quantities = Quantity.where(project: self.quantity.project, name: identifiers.to_a)
+    project = self.quantity.project
+    quantities =
+      if project
+        # This is required to properly validate with in-memory records, e.g.
+        # during import of defaults
+        project.quantities.select { |q| identifiers.include?(q.name) }
+      else
+        Quantity.where(project: nil, name: identifiers.to_a)
+      end
     identifiers -= quantities.map(&:name)
     models = identifiers.map(&:safe_constantize).compact || []
     (identifiers - models.map(&:class_name)).each do |i|

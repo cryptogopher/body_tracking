@@ -32,23 +32,21 @@ class BodyTrackersController < ApplicationController
         attrs = q.attributes.except('id', 'project_id', 'parent_id', 'lft', 'rgt',
                                     'created_at', 'updated_at')
         if q.parent
-          attrs['parent_id'] = available_quantities[[q.parent.name, q.parent.domain]].id
+          attrs['parent'] = available_quantities[[q.parent.name, q.parent.domain]]
         end
         if q.formula
           attrs['formula_attributes'] = q.formula.attributes
             .except('id', 'quantity_id', 'unit_id', 'created_at', 'updated_at')
           attrs['formula_attributes']['unit_id'] = available_units[q.formula.unit.shortname]
         end
-        obj = @project.quantities.create(attrs)
-        if obj.persisted?
-          available_quantities[[q.name, q.domain]] = obj
-        else
-          failed_objects << obj
-        end
+        available_quantities[[q.name, q.domain]] = @project.quantities.build(attrs)
       end
     end
+    Quantity.transaction do
+      failed_objects += available_quantities.values.reject { |o| o.persisted? || o.save }
+    end
 
-    new_quantities_count = available_quantities.length - quantities_count
+    new_quantities_count = @project.quantities(true).size - quantities_count
     flash[:notice] += ", #{new_quantities_count > 0 ? new_quantities_count : "no" } new" \
       " #{'quantity'.pluralize(new_quantities_count)}"
 
