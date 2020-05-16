@@ -2,6 +2,11 @@ class Ingredient < ActiveRecord::Base
   belongs_to :composition, inverse_of: :ingredients, polymorphic: true, required: true
   belongs_to :food, required: true
   belongs_to :part_of, required: false
+  has_many :nutrients, through: :food, source: :nutrients
+
+  DOMAIN = :diet
+  alias_attribute :subitems, :nutrients
+  scope :subitems, -> { includes(nutrients: [:quantity, :unit]) }
 
   validates :ready_ratio, numericality: {greater_than_or_equal_to: 0.0}
   validates :amount, numericality: {greater_than_or_equal_to: 0.0}

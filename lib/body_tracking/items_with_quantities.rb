@@ -1,23 +1,5 @@
 module BodyTracking
   module ItemsWithQuantities
-    ITEM_TYPES = {
-      'Ingredient' => {
-        domain: :diet,
-        associations: [:food, :nutrients],
-        value_field: :amount
-      },
-      'Food' => {
-        domain: :diet,
-        associations: [:nutrients],
-        value_field: :amount
-      },
-      'Measurement' => {
-        domain: :measurement,
-        associations: [:readouts],
-        value_field: :value
-      }
-    }
-
     def filter(filters, requested_q = nil)
       items = all
 
@@ -33,11 +15,10 @@ module BodyTracking
         if filters[:formula][:code].present?
           owner = proxy_association.owner
           project = owner.is_a?(Project) ? owner : owner.project
-          domain = ITEM_TYPES[proxy_association.klass.name][:domain]
           filter_q_attrs = {
             name: 'Filter formula',
             formula_attributes: filters[:formula],
-            domain: domain
+            domain: proxy_association.klass::DOMAIN
           }
           project.quantities.new(filter_q_attrs)
         end
@@ -56,23 +37,10 @@ module BodyTracking
     def compute_quantities(requested_q, filter_q = nil)
       items = all
 
-      item_type = ITEM_TYPES[proxy_association.klass.name]
       subitems = Hash.new { |h,k| h[k] = {} }
-      # Ingredient.includes(food: {nutrients: [:quantity, :unit]}).order('quantities.lft')
-      # Food.includes(nutrients: [:quantity, :unit]).order('quantities.lft')
-      includes = item_type[:associations].reverse
-        .inject([:quantity, :unit]) { |relation, assoc| {assoc => relation} }
-      all.includes(includes).order('quantities.lft').each do |i|
-        item_type[:associations].inject(i) { |o, m| o.send(m) }.each do |s|
-          subitem_value =
-            if i.respond_to?(item_type[:value_field])
-              s_value = s.send(item_type[:value_field])
-              i_value = i.send(item_type[:value_field])
-              # NOTE: for now scaling is designed only for Ingredients
-              s_value * i_value / i.food.ref_amount
-            else
-              s.send(item_type[:value_field])
-            end
+      all.subitems.order('quantities.lft').each do |i|
+        i.subitems.each do |s|
+          subitem_value = i.respond_to?(:amount) ? i.amount*s.amount/s.ref_amount : s.value
           subitems[s.quantity][i] = [subitem_value, s.unit]
         end
       end

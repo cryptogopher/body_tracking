@@ -16,12 +16,16 @@ class Food < ActiveRecord::Base
   belongs_to :ref_unit, class_name: 'Unit', required: true
   belongs_to :source, required: false
   has_many :ingredients, dependent: :restrict_with_error
+  has_many :nutrients, foreign_key: 'registry_id', inverse_of: :food, dependent: :destroy,
+    validate: true
 
-  has_many :nutrients, inverse_of: :food, dependent: :destroy, validate: true
+  DOMAIN = :diet
+  alias_attribute :subitems, :nutrients
+  scope :subitems, -> { includes(nutrients: [:quantity, :unit]) }
+
   validates :nutrients, presence: true
-  accepts_nested_attributes_for :nutrients, allow_destroy: true, reject_if: proc { |attrs|
-    attrs['quantity_id'].blank? && attrs['amount'].blank?
-  }
+  accepts_nested_attributes_for :nutrients, allow_destroy: true,
+    reject_if: proc { |attrs| attrs['quantity_id'].blank? && attrs['amount'].blank? }
   # Nutrient quantity_id uniqueness check for nested attributes
   validate do
     quantities = self.nutrients.reject { |n| n.marked_for_destruction? }

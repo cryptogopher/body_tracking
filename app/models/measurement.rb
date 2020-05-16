@@ -1,19 +1,22 @@
 class Measurement < ActiveRecord::Base
   belongs_to :routine, required: true, inverse_of: :measurements,
     class_name: 'MeasurementRoutine'
-  accepts_nested_attributes_for :routine, allow_destroy: true, reject_if: proc { |attrs|
-    attrs['name'].blank?
-  }
-  after_destroy { self.routine.destroy if self.routine.measurements.empty? }
-  has_one :project, through: :routine
-
   belongs_to :source, required: false
+  has_one :project, through: :routine
+  has_many :readouts, foreign_key: 'registry_id', inverse_of: :measurement,
+    dependent: :destroy, validate: true
 
-  has_many :readouts, inverse_of: :measurement, dependent: :destroy, validate: true
+  DOMAIN = :measurement
+  alias_attribute :subitems, :readouts
+  scope :subitems, -> { includes(readouts: [:quantity, :unit]) }
+
+  accepts_nested_attributes_for :routine, allow_destroy: true,
+    reject_if: proc { |attrs| attrs['name'].blank? }
+  after_destroy { self.routine.destroy if self.routine.measurements.empty? }
+
   validates :readouts, presence: true
-  accepts_nested_attributes_for :readouts, allow_destroy: true, reject_if: proc { |attrs|
-    attrs['quantity_id'].blank? && attrs['value'].blank?
-  }
+  accepts_nested_attributes_for :readouts, allow_destroy: true,
+    reject_if: proc { |attrs| attrs['quantity_id'].blank? && attrs['value'].blank? }
   # Readout quantity_id + unit_id uniqueness validation. Cannot be effectively
   # checked on Readout model level.
   validate do
