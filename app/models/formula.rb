@@ -20,7 +20,7 @@ class Formula < ActiveRecord::Base
   def calculate(inputs)
     raise(InvalidInputs, 'No inputs') if inputs.empty?
 
-    deps = inputs.map { |q, v| [q.name, v.transpose.first] }.to_h
+    deps = inputs.map { |q, v| [q.name, QuantityInput.new(q, v.transpose.first)] }.to_h
     length = deps.values.first.length
 
     raise(InvalidFormula, 'Invalid formula') unless self.valid?
@@ -46,6 +46,10 @@ class Formula < ActiveRecord::Base
     def initialize(q, *args)
       super(*args)
       @quantity = q
+    end
+
+    def lastBefore(timepoints)
+      self.map{ BigDecimal(2000) }
     end
   end
 
@@ -77,7 +81,7 @@ class Formula < ActiveRecord::Base
     errors
   end
 
-  def get_binding(quantities, args, length)
+  def get_binding(quantities, parts, length)
     binding
   end
 end

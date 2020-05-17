@@ -65,13 +65,20 @@ class FormulaTest < ActiveSupport::TestCase
 
       # Model method calls
       '100*Energy/RM.lastBefore(Meal.eaten_at||Meal.created_at)', Set['Energy', 'RM', 'Meal'],
-      # TODO: fill parts
-      []
+      [
+        {type: :indexed, content: "quantities['Meal'][_index].eaten_at||" \
+         "quantities['Meal'][_index].created_at"},
+        {type: :unindexed, content: "quantities['RM'].lastBefore(parts[0])"},
+        {type: :indexed, content: "100*quantities['Energy'][_index]/parts[1][_index]"}
+      ]
     ]
 
     d_methods = ['nil?', 'abs']
+    q_methods = Hash.new(['all', 'lastBefore'])
+    q_methods['Meal'] = ['created_at', 'eaten_at']
+
     vector.each_slice(3) do |formula, identifiers, parts|
-      parser = FormulaBuilder.new(formula, d_methods: d_methods)
+      parser = FormulaBuilder.new(formula, d_methods: d_methods, q_methods: q_methods)
       i, p = parser.parse
       assert_empty parser.errors
       assert_equal identifiers, i

@@ -177,7 +177,14 @@ module BodyTracking
         [
           :bt_expression,
           [left, right].map do |side|
-            side[0] == :bt_quantity ? "quantities['#{side[1]}'][_index]" : "#{side[1]}"
+            case side[0]
+            when :bt_quantity
+              "quantities['#{side[1]}'][_index]"
+            when :bt_quantity_method_call
+              "#{side[1]}[_index]"
+            else
+              "#{side[1]}"
+            end
           end.join(op.to_s)
         ]
       end
