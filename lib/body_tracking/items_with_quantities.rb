@@ -46,6 +46,7 @@ module BodyTracking
       end
 
 
+      requested_q ||= Quantity.none
       unchecked_q = requested_q.map { |q| [q, nil] }
       unchecked_q << [filter_q, nil] if filter_q
 
