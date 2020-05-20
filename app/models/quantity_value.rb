@@ -1,4 +1,6 @@
 class QuantityValue < ActiveRecord::Base
+  # Requirement validation for :registry left to subclasses
+  belongs_to :registry, polymorphic: true
   belongs_to :quantity, required: true
   belongs_to :unit, required: true
 

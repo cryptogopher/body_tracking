@@ -9,6 +9,7 @@ class Quantity < ActiveRecord::Base
   belongs_to :project, required: false
   has_many :nutrients, dependent: :restrict_with_error
   has_many :readouts, dependent: :restrict_with_error
+  has_many :quantity_values, dependent: :restrict_with_error
   has_many :exposures, dependent: :destroy
 
   has_one :formula, inverse_of: :quantity, dependent: :destroy, validate: true

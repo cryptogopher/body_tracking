@@ -6,7 +6,7 @@ class Ingredient < ActiveRecord::Base
 
   DOMAIN = :diet
   alias_attribute :subitems, :nutrients
-  scope :subitems, -> { includes(nutrients: [:quantity, :unit]) }
+  scope :with_subitems, -> { includes(nutrients: [:quantity, :unit]) }
 
   validates :ready_ratio, numericality: {greater_than_or_equal_to: 0.0}
   validates :amount, numericality: {greater_than_or_equal_to: 0.0}

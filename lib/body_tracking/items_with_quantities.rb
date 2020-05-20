@@ -38,7 +38,7 @@ module BodyTracking
       items = all
 
       subitems = Hash.new { |h,k| h[k] = {} }
-      all.subitems.order('quantities.lft').each do |i|
+      all.with_subitems.order('quantities.lft').each do |i|
         i.subitems.each do |s|
           subitem_value = i.respond_to?(:amount) ? i.amount*s.amount/s.ref_amount : s.value
           subitems[s.quantity][i] = [subitem_value, s.unit]

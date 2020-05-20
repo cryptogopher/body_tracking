@@ -49,7 +49,7 @@ class FoodsController < ApplicationController
 
   def destroy
     if @food.destroy
-      flash[:notice] = 'Deleted food'
+      flash.now[:notice] = 'Deleted food'
     end
   end
 

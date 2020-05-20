@@ -93,6 +93,11 @@ class MealsController < ApplicationController
   end
 
   def prepare_meals
+    @meals_by_date = @project.meals.reject(&:new_record?)
+      .sort_by { |m| m.eaten_at || m.created_at }.group_by(&:display_date)
+
+    return if @meals_by_date.empty?
+
     @quantities = @project.meal_quantities.includes(:formula)
     @ingredients = @project.meal_ingredients.compute_quantities(@quantities) do |q, items|
       Hash.new { |h,k| k.composition } if q == Meal
@@ -100,7 +105,7 @@ class MealsController < ApplicationController
 
     @amount_mfu_unit = @ingredients
       .each_with_object(Hash.new(0)) { |(i, qv), h| h[i.food.ref_unit] += 1 }
-      .max_by(&:last).try(&:first)
+      .max_by(&:last).first
 
     @ingredient_summary = Hash.new { |h,k| h[k] = Hash.new(BigDecimal(0)) }
     @quantities.each do |q|
@@ -108,8 +113,7 @@ class MealsController < ApplicationController
         .each_with_object(Hash.new(0)) { |(i, qv), h| h[qv[q].last] += 1 if qv[q] }
         .max_by(&:last).try(&:first)
 
-      max_value = @ingredients.max_by { |i, qv| qv[q].try(&:first) || 0 }.last[q].try(&:first)
-      max_value ||= BigDecimal(0)
+      max_value = @ingredients.map { |i, qv| qv[q].try(&:first) || BigDecimal(0) }.max
       @ingredient_summary[:precision][q] = [3 - max_value.exponent, 0].max
     end
 
@@ -121,8 +125,5 @@ class MealsController < ApplicationController
         @ingredient_summary[meal.display_date][q] += a
       end
     end
-
-    @meals_by_date = @project.meals.reject(&:new_record?)
-      .sort_by { |m| m.eaten_at || m.created_at }.group_by(&:display_date)
   end
 end

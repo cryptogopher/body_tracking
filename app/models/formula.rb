@@ -50,6 +50,8 @@ class Formula < ActiveRecord::Base
 
     def lastBefore(timepoints)
       self.map{ BigDecimal(2000) }
+      last_timepoint = timepoints.max
+      @quantity.quantity_values.includes(:registry)
     end
   end
 

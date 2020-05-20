@@ -3,12 +3,12 @@ class Measurement < ActiveRecord::Base
     class_name: 'MeasurementRoutine'
   belongs_to :source, required: false
   has_one :project, through: :routine
-  has_many :readouts, foreign_key: 'registry_id', inverse_of: :measurement,
-    dependent: :destroy, validate: true
+  has_many :readouts, as: :registry, inverse_of: :measurement, dependent: :destroy,
+    validate: true
 
   DOMAIN = :measurement
   alias_attribute :subitems, :readouts
-  scope :subitems, -> { includes(readouts: [:quantity, :unit]) }
+  scope :with_subitems, -> { includes(readouts: [:quantity, :unit]) }
 
   accepts_nested_attributes_for :routine, allow_destroy: true,
     reject_if: proc { |attrs| attrs['name'].blank? }
