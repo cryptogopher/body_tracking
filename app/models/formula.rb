@@ -49,9 +49,20 @@ class Formula < ActiveRecord::Base
     end
 
     def lastBefore(timepoints)
-      self.map{ BigDecimal(2000) }
-      last_timepoint = timepoints.max
-      @quantity.quantity_values.includes(:registry)
+      # NOTE: maybe optimize query, limiting range by min-max timepoints?
+      # impact on caching?
+      values = @quantity.values.includes(:registry)
+        .map { |qv| [qv.registry.completed_at, qv.value] }.sort_by(&:first)
+
+      return [nil]*timepoints.length if values.empty?
+
+      vindex = 0
+      lastval = nil
+      timepoints.each_with_index.sort_by { |t, i| t || Time.current }.map do |time, index|
+        #lastval = values[vindex++].last while values[vindex].first <= time
+        vindex += values[vindex..-1].find_all { |vtime, v| lastval = v; vtime <= time }.length
+        [lastval, index]
+      end.sort_by(&:last).transpose.first
     end
   end
 
