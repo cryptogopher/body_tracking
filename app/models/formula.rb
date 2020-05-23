@@ -59,8 +59,12 @@ class Formula < ActiveRecord::Base
       vindex = 0
       lastval = nil
       timepoints.each_with_index.sort_by { |t, i| t || Time.current }.map do |time, index|
-        #lastval = values[vindex++].last while values[vindex].first <= time
-        vindex += values[vindex..-1].find_all { |vtime, v| lastval = v; vtime <= time }.length
+        while vindex < values.length && values[vindex].first <= time
+          lastval = values[vindex].last
+          vindex += 1
+        end
+        #vindex += values[vindex..-1].find_all { |vtime, v| lastval = v; vtime <= time }
+        #.length
         [lastval, index]
       end.sort_by(&:last).transpose.first
     end
