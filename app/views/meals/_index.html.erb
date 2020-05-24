@@ -8,21 +8,33 @@
   <table id="meals" class="list odd-even">
     <tbody>
       <% total_width = 4 + @quantities.length %>
+      <% header = table_header_spec(@quantities) %>
       <% @meals_by_date.reverse_each do |date, meals| %>
-        <tr class="header">
-          <td colspan="2" rowspan="2"
-              style="width:<%= 3 * 100/total_width %>%; border: none;"></td>
-          <td class="quantityhead" style="width:<%= 100/total_width %>%;">
-            <%= l(:field_amount) %>
-          </td>
-          <% @quantities.each do |q| %>
-            <td class="quantityhead" style="width: <%= 100/total_width %>%;"
-                title="<%= q.description %>">
-              <%= q.name %>
-            </td>
-          <% end %>
-          <td rowspan="2" style="width:<%= 100/total_width %>%; border: none;"></td>
-        </tr>
+        <% header.each_with_index do |row, i| %>
+          <tr class="header">
+            <% if i == 0 %>
+              <td colspan="2" rowspan="<%= 1 + header.length %>"
+                  style="width:<%= 3 * 100/total_width %>%; border: none;"></td>
+              <td class="quantityhead" rowspan="<%= header.length %>"
+                  style="width:<%= 100/total_width %>%;"><%= l(:field_amount) %></td>
+            <% end %>
+
+            <% row.each do |q, span| %>
+              <td class="<%= span ? 'quantityhead' : 'quantityheadempty' %>"
+                  <%= "colspan=#{span}" if span && span > 0 %>
+                  <%= "rowspan=#{-span}" if span && span < 0 %>
+                  style="width: <%= (span && span > 0 ? span : 1) * 100/total_width %>%;"
+                  title="<%= q.description %>">
+                <%= q.name if span %>
+              </td>
+            <% end %>
+
+            <% if i == 0 %>
+              <td rowspan="<%= 1 + header.length %>"
+                  style="width:<%= 100/total_width %>%; border: none;"></td>
+            <% end %>
+          </tr>
+        <% end %>
 
         <tr class="header">
           <td class="quantityhead"><%= "[#{@amount_mfu_unit.shortname}]" %></td>

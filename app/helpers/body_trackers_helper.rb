@@ -37,4 +37,38 @@ module BodyTrackersHelper
       [u.shortname, u.id]
     end
   end
+
+  def table_header_spec(quantities)
+    # spec: table of rows (tr), where each row is a hash of cells (td) (hash keeps items
+    # ordered the way they were added). Hash values determine cell property:
+    # * int > 0 - quantity name-labelled cell with 'int' size colspan
+    # * int < 0 - quantity name-labelled cell with 'int' size rowspan
+    # * nil - non-labelled cell without col-/rowspan
+    spec = []
+    default_row = Hash.new(0)
+
+    # Determine colspans first...
+    quantities.each do |q|
+      ancestors = q.self_and_ancestors.each_with_index do |a, i|
+        spec[i] ||= default_row.dup
+        spec[i][a] += 1
+      end
+      spec[ancestors.length...spec.length].each { |row| row[ancestors.last] = nil }
+      default_row[ancestors.last] = nil
+    end
+
+    # ...then rowspans
+    single_columns = []
+    spec.each_with_index do |row, i|
+      single_columns.each { |q| row.delete(q) }
+      row.each do |q, span|
+        if span == 1
+          row[q] = -(spec.length - i)
+          single_columns << q
+        end
+      end
+    end
+
+    spec
+  end
 end

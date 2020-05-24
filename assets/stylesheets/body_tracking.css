@@ -8,11 +8,11 @@ table.list .quantity {text-align: left;}
 /* TODO: merge with .closable */
 table.list .quantityhead {
   text-align: center;
-  vertical-align: bottom;
   position: relative;
   padding: 2px 0;
-  border: none;
+  border-bottom: none;
 }
+table.list .quantityheadempty {border-top: none; border-bottom: none;}
 
 table.list .action,
 table.list .value {text-align: right; padding-right: 2px;}
