@@ -61,7 +61,7 @@ module BodyTrackersHelper
     single_columns = []
     spec[1..-1].each_with_index do |row, i|
       row.each do |q, span|
-        # Current span nil and previous span == 1
+        # Current span is nil and previous span == 1
         if span.nil? && (spec[i][q] == 1)
           spec[i][q] = -(spec.length - i)
           single_columns << q

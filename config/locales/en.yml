@@ -44,6 +44,8 @@ en:
           attributes:
             parent:
               parent_domain_mismatch: 'parent quantity has to be in the same domain'
+            name:
+              name_ambiguous: 'name creates ambiguity in quantity formulas for: %{names}'
         formula:
           attributes:
             code:

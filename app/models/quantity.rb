@@ -13,11 +13,20 @@ class Quantity < ActiveRecord::Base
   has_many :exposures, dependent: :destroy
 
   has_one :formula, inverse_of: :quantity, dependent: :destroy, validate: true
-  accepts_nested_attributes_for :formula, allow_destroy: true, reject_if: proc { |attrs|
-    attrs['code'].blank?
-  }
+  accepts_nested_attributes_for :formula, allow_destroy: true,
+    reject_if: proc { |attrs| attrs['code'].blank? }
 
-  validates :name, presence: true, uniqueness: {scope: :project_id}
+  validates :name, presence: true
+  # Quantity :name uniqueness relaxed to formulas unambiguity
+  validate if: -> { name_changed? } do
+    formulas = project.formulas.where('formulas.code LIKE ?', "%#{name}%").includes(:quantity)
+    # FIXME: should actually parse formulas in formulas and check for exact name match;
+    # current code is just quick'n'dirty partial solution
+    if formulas.exists?
+      quantity_names = formulas.map { |f| "'#{f.quantity.name}'" }.join(',')
+      errors.add(:name, :name_ambiguous, names: quantity_names)
+    end
+  end
   validates :domain, inclusion: {in: domains.keys}
   validate if: -> { parent.present? } do
     errors.add(:parent, :parent_domain_mismatch) unless domain == parent.domain
