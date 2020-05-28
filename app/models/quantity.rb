@@ -14,7 +14,10 @@ class Quantity < ActiveRecord::Base
 
   has_one :formula, inverse_of: :quantity, dependent: :destroy, validate: true
   accepts_nested_attributes_for :formula, allow_destroy: true,
-    reject_if: proc { |attrs| attrs['code'].blank? }
+    reject_if: proc { |attrs| attrs['id'].blank? && attrs['code'].blank? }
+  before_validation do
+    formula.mark_for_destruction if formula.present? && formula.code.blank?
+  end
 
   validates :name, presence: true
   # Quantity :name uniqueness relaxed to formulas unambiguity

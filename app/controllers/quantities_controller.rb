@@ -113,9 +113,11 @@ class QuantitiesController < ApplicationController
       :description,
       formula_attributes:
       [
+        :id,
         :code,
         :zero_nil,
-        :unit_id
+        :unit_id,
+        :_destroy
       ]
     )
   end
