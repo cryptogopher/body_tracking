@@ -9,12 +9,13 @@
   <%= error_messages_for *formulas %>
 
   <table class="nutrients list odd-even">
+    <% total_width = 4 + @quantities.length %>
     <thead>
       <tr>
-        <% total_width = 4 + @quantities.length %>
-        <th style="width:<%= 3 * 100/total_width %>%"><%= l(:field_name) %></th>
+        <th rowspan="2" style="width:<%= 3 * 100/total_width %>%"><%= l(:field_name) %></th>
         <% @quantities.each do |q| %>
-          <th style="width:<%= 100/total_width %>%" class="closable ellipsible">
+          <th class="closable ellipsible"
+              style="width:<%= 100/total_width %>%; border-bottom:none;">
             <div style="float:right;position:relative;">
               <%= link_to '',
                 toggle_exposure_project_foods_path(@project, quantity_id: q.id),
@@ -23,8 +24,11 @@
             <%= q.name %>
           </th>
         <% end %>
-        <th style="width:<%= 100/total_width %>%"><%= l(:field_action) %></th>
+        <th rowspan="2" style="width:<%= 100/total_width %>%"><%= l(:field_action) %></th>
       </tr>
+      <% @quantities.each do |q| %>
+        <th><%= "[#{@food_summary[:mfu_unit][q].try(&:shortname) || '-'}]" %></th>
+      <% end %>
     </thead>
 
     <tbody>
@@ -37,7 +41,10 @@
             <span class="icon icon-bullet-closed"><%= food.name %></span>
           </td>
           <% @quantities.each do |q| %>
-            <td class="primary value ellipsible"><%= format_value(nutrients[q]) %></td>
+            <td class="primary value ellipsible">
+              <%= format_value(nutrients[q], @food_summary[:precision][q],
+                               @food_summary[:mfu_unit][q]) %>
+            </td>
           <% end %>
           <td class="action unwrappable"><%= action_links(food, :nutrients) %></td>
         </tr>

@@ -39,8 +39,9 @@
         <tr class="header">
           <td class="quantityhead"><%= "[#{@amount_mfu_unit.shortname}]" %></td>
           <% @quantities.each do |q| %>
-            <% mfu_unit = @ingredient_summary[:mfu_unit][q] %>
-            <td class="quantityhead"><%= "[#{mfu_unit ? mfu_unit.shortname : '-'}]" %></td>
+            <td class="quantityhead">
+              <%= "[#{@ingredient_summary[:mfu_unit][q].try(&:shortname) || '-'}]" %>
+            </td>
           <% end %>
         </tr>
 

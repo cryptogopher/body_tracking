@@ -216,5 +216,15 @@ class FoodsController < ApplicationController
   def prepare_nutrients
     @quantities = @project.nutrient_quantities.includes(:formula)
     @foods, @filter_q = @project.foods.filter(session[:f_filters], @quantities)
+
+    @food_summary = Hash.new { |h,k| h[k] = Hash.new(BigDecimal(0)) }
+    @quantities.each do |q|
+      @food_summary[:mfu_unit][q] = @foods
+        .each_with_object(Hash.new(0)) { |(i, qv), h| h[qv[q].last] += 1 if qv[q] }
+        .max_by(&:last).try(&:first)
+
+      max_value = @foods.map { |i, qv| qv[q].try(&:first) || BigDecimal(0) }.max
+      @food_summary[:precision][q] = [4 - max_value.exponent, 0].max
+    end
   end
 end
