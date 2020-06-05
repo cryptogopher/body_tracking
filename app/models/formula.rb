@@ -79,22 +79,28 @@ class Formula < ActiveRecord::Base
     identifiers, parts = parser.parse
     errors = parser.errors
 
-    project = self.quantity.project
-    quantities =
-      if project
-        # This is required to properly validate with in-memory records, e.g.
-        # during import of defaults
-        project.quantities.select { |q| identifiers.include?(q.name) }
-      else
-        Quantity.where(project: nil, name: identifiers.to_a)
+    # Search through association if possible to properly validate with in-memory records,
+    # e.g. during import of defaults (so impossible to use recursive sql instead)
+    q_names = identifiers.map { |i| i.split('::').last }
+    q_paths = {}
+    (quantity.project.try(&:quantities) || Quantity.where(project: nil))
+      .select { |q| q_names.include?(q.name) }.each do |q|
+
+      # NOTE: after upgrade do Ruby 2.7 replace with Enumerator#produce
+      current, path = q, q.name
+      while current
+        q_paths[path] = q_paths.has_key?(path) ? nil : q
+        current, path = current.parent, "#{current.parent.try(:name)}::#{path}"
       end
-    identifiers -= quantities.map(&:name)
+    end
+    quantities = []
+    identifiers.reject! { |i| q_paths[i] && quantities << q_paths[i] }
     models = identifiers.map(&:safe_constantize).compact || []
     (identifiers - models.map(&:class_name)).each do |i|
       errors << [:unknown_dependency, {identifier: i}]
     end
 
-    @parts, @quantity_deps, @model_deps = parts, quantities.to_a, models if errors.empty?
+    @parts, @quantity_deps, @model_deps = parts, quantities, models if errors.empty?
     errors
   end
 
