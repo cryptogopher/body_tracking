@@ -110,7 +110,12 @@ module BodyTracking
 
         case left[0]
         when :bt_quantity
-          if @quantity_methods[left[1]].include?(right[1])
+          case
+          when dot == :'::'
+            token = "#{left[1]}#{dot}#{right[1]}"
+            @identifiers << token
+            [:bt_quantity, token]
+          when @quantity_methods[left[1]].include?(right[1])
             part_index = @parts.length
             if @quantity_methods.has_key?(left[1])
               [:bt_numeric_method_call,

@@ -70,7 +70,16 @@ class FormulaTest < ActiveSupport::TestCase
          "quantities['Meal'][_index].created_at"},
         {type: :unindexed, content: "quantities['RM'].lastBefore(parts[0])"},
         {type: :indexed, content: "100*quantities['Energy'][_index]/parts[1][_index]"}
-      ]
+      ],
+
+      # Qualified quantity identifiers
+      'Energy::calculated > Energy', Set['Energy::calculated', 'Energy'], [
+        {type: :indexed, content: "quantities['Energy::calculated'][_index]>" \
+         "quantities['Energy'][_index]"}
+      ],
+      '"Energy::as %RM" < 100', Set['Energy::as %RM'], [
+        {type: :indexed, content: "quantities['Energy::as %RM'][_index]<100"}
+      ],
     ]
 
     d_methods = ['nil?', 'abs']
