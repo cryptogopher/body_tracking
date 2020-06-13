@@ -25,7 +25,7 @@ class Quantity < ActiveRecord::Base
   # Formula ambiguity vlidation delayed after save, as otherwise there seems to
   # be no other way to validate against newly changed :name
   after_save do
-    next unless name_changed?
+    next unless name_changed? || changes.empty?
     formulas = project.formulas.where('formulas.code LIKE ?', "%#{name}%").includes(:quantity)
     next unless formulas.exists?
 
