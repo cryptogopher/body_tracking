@@ -54,6 +54,7 @@ en:
               disallowed_keyword: 'includes disallowed keyword "%{keyword}"'
               disallowed_method: 'includes disallowed method call "%{method}"'
               unknown_dependency: 'contains undefined dependency "%{identifier}"'
+              ambiguous_dependency: 'contains ambiguous reference to "%{identifier}"'
               computation_failed: 'computation failed for "%{quantity}": %{description}
                 (%{count} values missing)'
   body_trackers:

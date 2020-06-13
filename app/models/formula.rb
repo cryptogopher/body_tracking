@@ -8,7 +8,16 @@ class Formula < ActiveRecord::Base
 
   validates :code, presence: true
   validate do
-    parse.each { |message, params| errors.add(:code, message, params) }
+    messages = parse.each { |message, params| errors.add(:code, message, params) }
+    # NOTE: mimics errors.details available in Rails 5.2; remove once not needed;
+    # used only in Quantity :name change validation
+    unless errors.instance_variable_defined?(:@details)
+      class << errors
+        attr_accessor :details
+      end
+      errors.details = Hash.new { |h,k| h[k] = []}
+      messages.each { |message, *| errors.details[:code] << {error: message} }
+    end
   end
 
   after_initialize do
@@ -86,15 +95,23 @@ class Formula < ActiveRecord::Base
     (quantity.project.try(&:quantities) || Quantity.where(project: nil))
       .select { |q| q_names.include?(q.name) }.each do |q|
 
-      # NOTE: after upgrade do Ruby 2.7 replace with Enumerator#produce
+      # NOTE: after upgrade to Ruby 2.7 replace with Enumerator#produce
       current, path = q, q.name
-      while current
+      loop do
         q_paths[path] = q_paths.has_key?(path) ? nil : q
+        break unless current
         current, path = current.parent, "#{current.parent.try(:name)}::#{path}"
       end
     end
+
     quantities = []
-    identifiers.reject! { |i| q_paths[i] && quantities << q_paths[i] }
+    identifiers.reject! do |i|
+      if q_paths.has_key?(i)
+        q = q_paths[i]
+        q.nil? ? errors << [:ambiguous_dependency, {identifier: i}] : quantities << q
+      end
+    end
+
     models = identifiers.map(&:safe_constantize).compact || []
     (identifiers - models.map(&:class_name)).each do |i|
       errors << [:unknown_dependency, {identifier: i}]

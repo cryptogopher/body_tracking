@@ -6,7 +6,7 @@ class Quantity < ActiveRecord::Base
   }
 
   acts_as_nested_set dependent: :destroy, scope: :project
-  belongs_to :project, required: false
+  belongs_to :project, inverse_of: :quantities, required: false
   has_many :nutrients, dependent: :restrict_with_error
   has_many :readouts, dependent: :restrict_with_error
   has_many :values, class_name: 'QuantityValue', dependent: :restrict_with_error
@@ -19,17 +19,26 @@ class Quantity < ActiveRecord::Base
     formula.mark_for_destruction if formula.present? && formula.code.blank?
   end
 
-  validates :name, presence: true
+  # TODO: :name should be validated against model names (Meal, Ingredient etc.)
   # Quantity :name uniqueness relaxed to formulas unambiguity
-  validate if: -> { name_changed? } do
+  validates :name, presence: true, uniqueness: {scope: [:project_id, :parent_id]}
+  # Formula ambiguity vlidation delayed after save, as otherwise there seems to
+  # be no other way to validate against newly changed :name
+  after_save do
+    next unless name_changed?
     formulas = project.formulas.where('formulas.code LIKE ?', "%#{name}%").includes(:quantity)
-    # FIXME: should actually parse formulas in formulas and check for exact name match;
-    # current code is just quick'n'dirty partial solution
-    if formulas.exists?
-      quantity_names = formulas.map { |f| "'#{f.quantity.name}'" }.join(',')
+    next unless formulas.exists?
+
+    quantity_names = formulas.reject(&:valid?)
+      .select { |f| f.errors.details[:code].any? { |e| e[:error] == :ambiguous_dependency } }
+      .map { |f| "'#{f.quantity.name}'" }.join(', ')
+
+    unless quantity_names.blank?
       errors.add(:name, :name_ambiguous, names: quantity_names)
+      raise ActiveRecord::RecordInvalid.new(self)
     end
   end
+
   validates :domain, inclusion: {in: domains.keys}
   validate if: -> { parent.present? } do
     errors.add(:parent, :parent_domain_mismatch) unless domain == parent.domain
