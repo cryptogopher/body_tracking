@@ -14,9 +14,22 @@ class LoadDefaults < ActiveRecord::Migration
         e_a = Quantity.create project: nil, domain: :diet, parent: nil,
           name: "Energy", description: "Total energy"
         e_aa = Quantity.create project: nil, domain: :diet, parent: e_a,
-          name: "Calc. energy", description: "Total energy calculated from macronutrients"
-        e_ab = Quantity.create domain: :diet, parent: e_a, name: "Energy as %RM",
-          description: "Energy percent value relative to current resting metabolism"
+          name: "calculated", description: "Total energy calculated from macronutrients"
+        e_ab = Quantity.create project: nil, domain: :diet, parent: e_a,
+          name: "as %RM", description: "Total energy percent value relative to current" \
+          " resting metabolism"
+        e_ac = Quantity.create domain: :diet, parent: e_a,
+          name: "proteins", description: "Calculated proteins energy"
+        e_aca = Quantity.create domain: :diet, parent: e_ac,
+          name: "as %RM", description: ""
+        e_ad = Quantity.create domain: :diet, parent: e_a,
+          name: "fats", description: "Calculated fats energy"
+        e_ada = Quantity.create domain: :diet, parent: e_ad,
+          name: "as %RM", description: ""
+        e_ae = Quantity.create domain: :diet, parent: e_a,
+          name: "carbs", description: "Calculated carbs energy"
+        e_aea = Quantity.create domain: :diet, parent: e_ae,
+          name: "as %RM", description: ""
 
         p_a = Quantity.create project: nil, domain: :diet, parent: nil,
           name: "Proteins", description: "Total amount of proteins"
@@ -147,11 +160,25 @@ class LoadDefaults < ActiveRecord::Migration
           name: "VF", description: "Visceral fat"
 
         # Formulas go at the and to make sure dependencies exist
-        e_aa.create_formula code: "4*Proteins + 9*Fats + 4*Carbs", zero_nil: true,
-          unit: u_b
-        e_ab.create_formula code: "100*Energy/RM.lastBefore(Meal.eaten_at||Meal.created_at)",
-          zero_nil: true, unit: u_c
-        b_aaa.create_formula code: "'% fat' * 'Weight'", zero_nil: true, unit: u_ab
+        e_aa.create_formula zero_nil: true, unit: u_b,
+          code: "4*Proteins + 9*Fats + 4*Carbs + 2*Fibre"
+        e_ab.create_formula zero_nil: true, unit: u_c,
+          code: "100*Energy/RM.lastBefore(Meal.eaten_at||Meal.created_at)"
+        e_ac.create_formula zero_nil: true, unit: u_b,
+          code: "4*Proteins"
+        e_aca.create_formula zero_nil: true, unit: u_c,
+          code: "100*proteins/RM.lastBefore(Meal.eaten_at||Meal.created_at)"
+        e_ad.create_formula zero_nil: true, unit: u_b,
+          code: "4*Fats"
+        e_ada.create_formula zero_nil: true, unit: u_c,
+          code: "100*fats/RM.lastBefore(Meal.eaten_at||Meal.created_at)"
+        e_ae.create_formula zero_nil: true, unit: u_b,
+          code: "4*Carbs"
+        e_aea.create_formula zero_nil: true, unit: u_c,
+          code: "100*carbs/RM.lastBefore(Meal.eaten_at||Meal.created_at)"
+
+        b_aaa.create_formula zero_nil: true, unit: u_ab,
+          code: "'% fat' * Weight"
 
         s_a = Source.create project: nil, name: "nutrition label",
           description: "nutrition facts taken from package nutrition label"
