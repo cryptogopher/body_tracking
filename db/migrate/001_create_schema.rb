@@ -92,5 +92,14 @@ class CreateSchema < ActiveRecord::Migration
       t.timestamp :taken_at
       t.timestamps null: false
     end
+
+    create_table :targets do |t|
+      t.references :goal
+      t.references :threshold
+      t.string :condition
+      t.string :scope
+      t.date :effective_from
+      t.timestamps null: false
+    end
   end
 end

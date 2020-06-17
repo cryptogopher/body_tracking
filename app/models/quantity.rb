@@ -26,7 +26,8 @@ class Quantity < ActiveRecord::Base
   # be no other way to validate against newly changed :name
   after_save do
     next unless name_changed? || changes.empty?
-    formulas = project.formulas.where('formulas.code LIKE ?', "%#{name}%").includes(:quantity)
+    formulas = Formula.joins(:quantity).where(quantities: {project_id: project})
+      .where('formulas.code LIKE ?', "%#{name}%").includes(:quantity)
     next unless formulas.exists?
 
     quantity_names = formulas.reject(&:valid?)
