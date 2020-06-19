@@ -1,5 +1,6 @@
 (Rails::VERSION::MAJOR < 5 ? ActionDispatch : ActiveSupport)::Reloader.to_prepare do
   Project.include BodyTracking::ProjectPatch
+  CollectiveIdea.include BodyTracking::AwesomeNestedSetPatch
 end
 
 Redmine::Plugin.register :body_tracking do

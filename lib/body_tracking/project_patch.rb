@@ -1,6 +1,7 @@
 module BodyTracking::ProjectPatch
   Project.class_eval do
     has_many :sources, dependent: :destroy
+    # TODO: includes(:parent) ?
     has_many :quantities, -> { order "lft" }, inverse_of: :project, dependent: :destroy
     has_many :formulas, through: :quantities
     has_many :units, dependent: :destroy

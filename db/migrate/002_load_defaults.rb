@@ -186,6 +186,7 @@ class LoadDefaults < ActiveRecord::Migration
 
       dir.down do
         Source.where(project: nil).delete_all
+        Formula.joins(:quantity).where(quantities: {project_id: nil}).delete_all
         Quantity.where(project: nil).delete_all
         Unit.where(project: nil).delete_all
       end

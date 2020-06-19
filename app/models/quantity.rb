@@ -22,8 +22,8 @@ class Quantity < ActiveRecord::Base
   # TODO: :name should be validated against model names (Meal, Ingredient etc.)
   # Quantity :name uniqueness relaxed to formulas unambiguity
   validates :name, presence: true, uniqueness: {scope: [:project_id, :parent_id]}
-  # Formula ambiguity vlidation delayed after save, as otherwise there seems to
-  # be no other way to validate against newly changed :name
+  # Formula ambiguity validation delayed after_save, as there seems to be no
+  # other way to validate against newly changed Quantity :name from Formula
   after_save do
     next unless name_changed? || changes.empty?
     formulas = Formula.joins(:quantity).where(quantities: {project_id: project})

@@ -24,22 +24,22 @@ class BodyTrackersController < ApplicationController
       " #{'unit'.pluralize(new_units.length)}"
 
     # Quantities
-    available_quantities = @project.quantities.map { |q| [[q.name, q.domain], q] }.to_h
+    available_quantities = Quantity.each_with_path(@project.quantities).map(&:rotate).to_h
     quantities_count = available_quantities.length
     defaults = Quantity.where(project: nil)
-    Quantity.each_with_level(defaults) do |q, level|
-      unless available_quantities.has_key?([q.name, q.domain])
+    Quantity.each_with_path(defaults) do |q, path|
+      unless available_quantities.has_key?(path)
         attrs = q.attributes.except('id', 'project_id', 'parent_id', 'lft', 'rgt',
                                     'created_at', 'updated_at')
         if q.parent
-          attrs['parent'] = available_quantities[[q.parent.name, q.parent.domain]]
+          attrs['parent'] = available_quantities[path.rpartition('::').first]
         end
         if q.formula
           attrs['formula_attributes'] = q.formula.attributes
             .except('id', 'quantity_id', 'unit_id', 'created_at', 'updated_at')
           attrs['formula_attributes']['unit_id'] = available_units[q.formula.unit.shortname]
         end
-        available_quantities[[q.name, q.domain]] = @project.quantities.build(attrs)
+        available_quantities[path] = @project.quantities.build(attrs)
       end
     end
     Quantity.transaction do
