@@ -217,6 +217,8 @@ class FoodsController < ApplicationController
     @quantities = @project.nutrient_quantities.includes(:formula)
     @foods, @filter_q = @project.foods.filter(session[:f_filters], @quantities)
 
+    return if @foods.empty?
+
     @food_summary = Hash.new { |h,k| h[k] = Hash.new(BigDecimal(0)) }
     @quantities.each do |q|
       @food_summary[:mfu_unit][q] = @foods
