@@ -95,7 +95,7 @@ class CreateSchema < ActiveRecord::Migration
 
     create_table :targets do |t|
       t.references :goal
-      t.references :threshold
+      t.references :item, polymorphic: true
       t.string :condition
       t.string :scope
       t.date :effective_from
