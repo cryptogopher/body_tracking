@@ -93,6 +93,13 @@ class CreateSchema < ActiveRecord::Migration
       t.timestamps null: false
     end
 
+    create_table :goals do |t|
+      t.references :project
+      t.string :name
+      t.text :description
+      t.timestamps null: false
+    end
+
     create_table :targets do |t|
       t.references :goal
       t.references :item, polymorphic: true

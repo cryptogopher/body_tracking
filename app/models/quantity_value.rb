@@ -1,5 +1,9 @@
 class QuantityValue < ActiveRecord::Base
   # Requirement validation for :registry left to subclasses
+  # Polymorphic registry (including :registry_type) is required - despite 1:1
+  # mapping between Nutrient:Food, Readout:Measurement, Threshold:Target ... -
+  # to allow for accessing registry item without knowing QuantityValue (subitem)
+  # type, e.g. qv.registry.completed_at
   belongs_to :registry, polymorphic: true
   belongs_to :quantity, required: true
   belongs_to :unit, required: true

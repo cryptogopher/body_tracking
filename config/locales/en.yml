@@ -70,6 +70,8 @@ en:
       heading_diet: 'Diet'
       heading_common: 'Common'
       link_summary: 'Summary'
+      link_targets: 'Targets'
+      link_goals: 'Goals'
       link_measurements: 'Measurements'
       link_meals: 'Meals'
       link_foods: 'Foods'
@@ -79,6 +81,18 @@ en:
       link_units: 'Units'
       link_defaults: 'Load defaults'
       confirm_defaults: 'This will load default data sources, quantities and units. Continue?'
+  targets:
+    contextual:
+      link_new_target: 'New target'
+    form:
+      button_new_target: 'Add target'
+      button_delete_target: 'Delete'
+    new_form:
+      heading_new_target: 'New target'
+    index:
+      heading: 'Targets'
+    show:
+      label_target: 'Target'
   meals:
     contextual:
       link_new_meal: 'New meal'

@@ -15,8 +15,8 @@ module BodyTracking::ProjectPatch
       source: 'quantity'
 
     has_many :measurement_routines, dependent: :destroy
-    has_many :measurements, -> { order "taken_at DESC" }, dependent: :destroy,
-      extend: BodyTracking::ItemsWithQuantities, through: :measurement_routines
+    has_many :measurements, -> { order "taken_at DESC" }, through: :measurement_routines,
+      extend: BodyTracking::ItemsWithQuantities
 
     has_many :meals, -> { order "eaten_at DESC" }, dependent: :destroy
     has_many :meal_ingredients, through: :meals, source: 'ingredients',
@@ -28,5 +28,8 @@ module BodyTracking::ProjectPatch
       class_name: 'Exposure', extend: BodyTracking::TogglableExposures
     has_many :meal_quantities, -> { order "lft" }, through: :meal_exposures,
       source: 'quantity'
+
+    has_many :thresholds, through: :quantities
+    has_many :targets, through: :thresholds, source_type: 'Target'
   end
 end

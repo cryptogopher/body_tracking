@@ -7,10 +7,11 @@ resources :projects, shallow: true do
       post 'defaults'
     end
   end
+  resources :targets, except: [:show]
   resources :ingredients, only: [] do
     post 'adjust/:adjustment', to: 'meals#adjust', as: :adjust, on: :member
   end
-  resources :meals, only: [:index, :new, :create, :edit, :update, :destroy] do
+  resources :meals, except: [:show] do
     member do
       get 'edit_notes'
       patch 'update_notes'
@@ -26,7 +27,7 @@ resources :projects, shallow: true do
       post 'toggle_exposure', to: 'measurements#toggle_exposure'
     end
   end
-  resources :measurements, only: [:index, :new, :create, :edit, :update, :destroy] do
+  resources :measurements, except: [:show] do
     member do
       get 'retake'
     end
@@ -34,7 +35,7 @@ resources :projects, shallow: true do
       get 'filter'
     end
   end
-  resources :foods, only: [:index, :new, :create, :edit, :update, :destroy] do
+  resources :foods, except: [:show] do
     post 'toggle', on: :member
     collection do
       get 'nutrients'
@@ -45,7 +46,7 @@ resources :projects, shallow: true do
     end
   end
   resources :sources, only: [:index, :create, :destroy]
-  resources :quantities, only: [:index, :new, :create, :edit, :update, :destroy] do
+  resources :quantities, except: [:show] do
     member do
       get 'new_child'
       post 'create_child'

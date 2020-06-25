@@ -10,5 +10,16 @@ class Target < ActiveRecord::Base
   # TODO: validate thresholds count according to condition type
   validates :condition, inclusion: {in: [:<, :<=, :>, :>=, :==]}
   validates :scope, inclusion: {in: [:day], if: -> { thresholds.first.domain == :diet }}
-  validates :effective_from, presence: {unless: goal?}, absence: {if: goal?}
+  validates :effective_from, presence: {unless: -> { goal.present? }},
+    absence: {if: -> { goal.present? }}
+
+  after_initialize do
+    if new_record?
+      self.condition = :<
+    end
+  end
+
+  def arity
+    BigDecimal.method(condition).arity
+  end
 end

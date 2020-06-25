@@ -1,0 +1,34 @@
+<% if @targets.any? { |t| t.persisted? } %>
+  <table class="list">
+    <thead>
+      <tr>
+        <th style="width:5%"><%= l(:field_taken_at_date) %></th>
+        <th><%= l(:field_name) %></th>
+        <th><%= l(:field_notes) %></th>
+        <th><%= l(:field_source) %></th>
+        <th style="width:5%"><%= l(:field_action) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @measurements.each do |m| %>
+        <% next if m.new_record? %>
+        <tr id="measurement-<%= m.id %>" class="primary measurement">
+          <td class="date unwrappable"><%= format_datetime(m) %></td>
+          <td class="name">
+            <div style="float:left;">
+              <%= link_to m.routine.name, readouts_measurement_routine_path(m.routine) %>
+            </div>
+            <div style="float:right;">
+              <small><%= " (#{pluralize(m.readouts.size, 'readout')})" %></small>
+            </div>
+          </td>
+          <td class="notes ellipsible"><%= m.notes %></td>
+          <td class="source"><%= m.source.name if m.source.present? %></td>
+          <td class="action unwrappable"><%= action_links(m) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>

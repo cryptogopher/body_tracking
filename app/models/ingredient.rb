@@ -2,7 +2,7 @@ class Ingredient < ActiveRecord::Base
   belongs_to :composition, inverse_of: :ingredients, polymorphic: true, required: true
   belongs_to :food, required: true
   belongs_to :part_of, required: false
-  has_many :nutrients, through: :food, source: :nutrients
+  has_many :nutrients, through: :food
 
   DOMAIN = :diet
   alias_attribute :subitems, :nutrients
