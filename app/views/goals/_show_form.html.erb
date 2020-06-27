@@ -1,0 +1,27 @@
+<div>
+<%= fields_for 'target[goal_attributes]', goal do |ff| %>
+  <p>
+  <label><%= l(:field_goal) %><span class="required"> *</span></label>
+  <%= ff.select :id,
+    options_from_collection_for_select(@project.goals, :id, :name, goal.id),
+    {required: true}, autocomplete: 'off',
+    onchange: "var goal_id = $('#target_goal_attributes_id').val();
+               $.ajax({
+                 url: '#{goal_path(id: :goal_id)}'.replace('goal_id', goal_id),
+                 dataType: 'script'
+               });
+               return false;" %>
+  <%= link_to l(:button_edit), '#',
+    onclick: "var goal_id = $('#target_goal_attributes_id').val();
+              $.ajax({
+                url: '#{edit_goal_path(id: :goal_id)}'.replace('goal_id', goal_id),
+                dataType: 'script'
+              });
+              return false;",
+    class: 'icon icon-edit' %>
+  </p>
+<% end %>
+<% if goal.description? %>
+  <p style='white-space: pre-wrap;' ><%= goal.description %></p>
+<% end %>
+</div>

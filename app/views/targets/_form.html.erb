@@ -1,0 +1,65 @@
+<%= error_messages_for @target %>
+
+<div class="box">
+  <div id='goal-form' class="tabular">
+    <% if @target.goal.persisted? %>
+      <%= render partial: 'goals/show_form', locals: {goal: @target.goal} %>
+      <%= f.date_field(:effective_from, required: true) if @target.is_binding? %>
+    <% else %>
+      <%= render partial: 'goals/form', locals: {goal: @target.goal} %>
+    <% end %>
+  </div>
+  <hr style="width: 95%;">
+  <div class="tabular">
+    <p class="target">
+    <% @target.thresholds.each_with_index do |t, index| %>
+      <%= f.fields_for 'thresholds_attributes', t, index: '' do |ff| %>
+        <% if index == 0 %>
+          <%= ff.select :quantity_id, quantity_options,
+            {include_blank: true, required: true, label: :field_target} %>
+          <%= f.select :condition, condition_options, required: true %>
+        <% end %>
+        <%= ff.hidden_field :id %>
+        <%= ff.number_field :value, {size: 8, step: :any, label: ''} %>
+        <% if index == 0 %>
+          <%= ff.select :unit_id, unit_options, {label: ''} %>
+        <% end %>
+      <% end %>
+    <% end %>
+    <%= link_to t(".button_delete_target"), '#',
+      class: 'icon icon-del',
+      onclick: "deleteTarget(); return false;" %>
+    </p>
+    <%= link_to t(".button_new_target"), '#',
+      class: 'icon icon-add',
+      onclick: 'newTarget(); return false;' %>
+  </div>
+</div>
+
+<%= javascript_tag do %>
+  function newReadout() {
+    var form = $(event.target).closest('form');
+    var row = form.find('p.readout:visible:last');
+    var new_row = row.clone().insertAfter(row);
+    new_row.find('input[id$=__id], input[id$=__value], select[id$=_quantity__id]').val('');
+    new_row.find('select[id$=__unit_id]').val(row.find('select[id$=__unit_id]').val());
+    new_row.find('input[id$=__destroy]').val('');
+    new_row.find('label:first').hide();
+    form.find('p.readout:visible a.icon-del').show();
+  }
+
+  function deleteReadout() {
+    var form = $(event.target).closest('form');
+    var row = $(event.target).closest('p.readout');
+    if (row.find('input[id$=__id]').val()) {
+      row.hide();
+      row.find('input[id$=__destroy]').val('1');
+    } else {
+      row.remove();
+    }
+    form.find('p.readout:visible:first label:first').show();
+    if (form.find('p.readout:visible').length <= 1) {
+      form.find('p.readout:visible a.icon-del').hide();
+    }
+  }
+<% end %>

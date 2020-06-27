@@ -32,6 +32,12 @@ module BodyTrackersHelper
     options_for_select(options, disabled: 0)
   end
 
+  def quantity_options(domain = :all)
+    nested_set_options(@project.quantities.send(domain)) do |q|
+      raw("#{'&ensp;' * q.level}#{q.name}")
+    end
+  end
+
   def unit_options
     @project.units.map do |u|
       [u.shortname, u.id]

@@ -1,10 +1,4 @@
 module FoodsHelper
-  def quantity_options
-    nested_set_options(@project.quantities.diet) do |q|
-      raw("#{'&ensp;' * q.level}#{q.name}")
-    end
-  end
-
   def visibility_options(selected)
     options = [["visible", 1], ["hidden", 0]]
     options_for_select(options, selected)

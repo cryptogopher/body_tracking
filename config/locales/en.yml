@@ -27,6 +27,11 @@ en:
   activerecord:
     errors:
       models:
+        target:
+          attributes:
+            thresholds:
+              count_mismatch: 'count invalid for given condition'
+              quantity_mismatch: 'should refer to the same quantity'
         meal:
           attributes:
             ingredients:
@@ -34,7 +39,7 @@ en:
         measurement:
           attributes:
             readouts:
-              duplicated_quantity_unit_pair: 'each quantity+unit pair can only be specified
+              duplicated_quantity_unit_pair: 'each (quantity, unit) pair can only be specified
                 once per measurement'
         food:
           attributes:

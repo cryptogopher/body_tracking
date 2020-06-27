@@ -7,6 +7,7 @@ resources :projects, shallow: true do
       post 'defaults'
     end
   end
+  resources :goals, only: [:show, :edit]
   resources :targets, except: [:show]
   resources :ingredients, only: [] do
     post 'adjust/:adjustment', to: 'meals#adjust', as: :adjust, on: :member

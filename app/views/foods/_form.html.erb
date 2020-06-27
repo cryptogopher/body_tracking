@@ -25,7 +25,7 @@
     <%= f.fields_for 'nutrients_attributes', n, index: '' do |ff| %>
       <p class="nutrient">
         <%= ff.hidden_field :id %>
-        <%= ff.select :quantity_id, quantity_options,
+        <%= ff.select :quantity_id, quantity_options(:diet),
           {include_blank: true, required: true, label: (index > 0 ? '' : :field_nutrients)} %>
         <%= ff.number_field :amount, {size: 8, min: 0, step: :any, label: ''} %>
         <%= ff.select :unit_id, unit_options, {label: ''} %>

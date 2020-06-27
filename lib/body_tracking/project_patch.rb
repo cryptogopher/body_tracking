@@ -29,7 +29,11 @@ module BodyTracking::ProjectPatch
     has_many :meal_quantities, -> { order "lft" }, through: :meal_exposures,
       source: 'quantity'
 
-    has_many :thresholds, through: :quantities
-    has_many :targets, through: :thresholds, source_type: 'Target'
+    has_many :goals, dependent: :destroy do
+      def binding
+        find_or_create_by(name: "binding")
+      end
+    end
+    has_many :targets, through: :goals
   end
 end

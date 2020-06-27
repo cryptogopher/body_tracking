@@ -1,14 +1,6 @@
-module MeasurementsHelper
-  def format_datetime(m)
-    m.taken_at
-      .strftime("%F <small>%R&emsp;(~#{time_ago_in_words(m.taken_at)} ago)</small>")
-      .html_safe
-  end
-
-  def source_options
-    @project.sources.map do |s|
-      [s.name, s.id]
-    end
+module TargetsHelper
+  def condition_options
+    Target::CONDITIONS.each_with_index.to_a
   end
 
   def action_links(m)

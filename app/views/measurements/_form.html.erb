@@ -30,7 +30,7 @@
       <%= f.fields_for 'readouts_attributes', r, index: '' do |ff| %>
         <p class="readout">
         <%= ff.hidden_field :id %>
-        <%= ff.select :quantity_id, quantity_options,
+        <%= ff.select :quantity_id, quantity_options(:measurement),
           {include_blank: true, required: true, label: (index > 0 ? '' : :field_readouts)} %>
         <%= ff.number_field :value, {size: 8, step: :any, label: ''} %>
         <%= ff.select :unit_id, unit_options, {label: ''} %>
