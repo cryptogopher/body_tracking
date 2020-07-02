@@ -13,21 +13,20 @@ class Target < ActiveRecord::Base
     errors.add(:thresholds, :count_mismatch) unless thresholds.count == arity
     errors.add(:thresholds, :quantity_mismatch) if thresholds.to_a.uniq(&:quantity) != 1
   end
-  validates :condition, inclusion: {in: CONDITIONS }
-  validates :scope, inclusion: {in: [:day], if: -> { thresholds.first.domain == :diet }}
+  validates :condition, inclusion: {in: CONDITIONS}
+  validates :scope, inclusion: {in: [:ingredient, :meal, :day],
+                                if: -> { thresholds.first.quantity.domain == :diet }}
   validates :effective_from, presence: {unless: :is_binding?}, absence: {if: :is_binding?}
 
   after_initialize do
     if new_record?
       self.condition = CONDITIONS.first
+      self.effective_from = Date.current if is_binding?
     end
   end
 
+  delegate :is_binding?, to: :goal
   def arity
     BigDecimal.method(condition).arity
-  end
-
-  def is_binding?
-    goal == goal.project.goals.binding
   end
 end

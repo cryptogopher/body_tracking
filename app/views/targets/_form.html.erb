@@ -3,8 +3,9 @@
 <div class="box">
   <div id='goal-form' class="tabular">
     <% if @target.goal.persisted? %>
-      <%= render partial: 'goals/show_form', locals: {goal: @target.goal} %>
-      <%= f.date_field(:effective_from, required: true) if @target.is_binding? %>
+      <p><%= render partial: 'goals/show_form', locals: {goal: @target.goal} %></p>
+      <%#= t '.effective_from' %>
+      <p><%= f.date_field :effective_from, disabled: !@target.is_binding? %></p>
     <% else %>
       <%= render partial: 'goals/form', locals: {goal: @target.goal} %>
     <% end %>
@@ -17,7 +18,7 @@
         <% if index == 0 %>
           <%= ff.select :quantity_id, quantity_options,
             {include_blank: true, required: true, label: :field_target} %>
-          <%= f.select :condition, condition_options, required: true %>
+          <%= f.select :condition, condition_options, required: true, label: '' %>
         <% end %>
         <%= ff.hidden_field :id %>
         <%= ff.number_field :value, {size: 8, step: :any, label: ''} %>
@@ -26,13 +27,13 @@
         <% end %>
       <% end %>
     <% end %>
-    <%= link_to t(".button_delete_target"), '#',
-      class: 'icon icon-del',
+    <%= link_to t(".button_delete_target"), '#', class: 'icon icon-del',
       onclick: "deleteTarget(); return false;" %>
     </p>
-    <%= link_to t(".button_new_target"), '#',
-      class: 'icon icon-add',
+    <p>
+    <%= link_to t(".button_new_target"), '#', class: 'icon icon-add',
       onclick: 'newTarget(); return false;' %>
+    </p>
   </div>
 </div>
 
