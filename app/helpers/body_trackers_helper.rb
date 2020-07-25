@@ -33,8 +33,13 @@ module BodyTrackersHelper
   end
 
   def quantity_options(domain = :all)
-    nested_set_options(@project.quantities.send(domain)) do |q|
-      raw("#{'&ensp;' * q.level}#{q.name}")
+    Quantity.each_with_ancestors(@project.quantities.send(domain)).map do |ancestors|
+      quantity = ancestors.last
+      [
+        raw("#{'&ensp;' * (ancestors.length-2)}#{quantity.name}"),
+        quantity.id,
+        {'data-path' => ancestors[1..-2].reduce('::') { |m, q| "#{m}#{q.try(:name)}::" }}
+      ]
     end
   end
 
@@ -44,6 +49,7 @@ module BodyTrackersHelper
     end
   end
 
+  # TODO: rename to quantities_table_header
   def table_header_spec(quantities)
     # spec: table of rows (tr), where each row is a hash of cells (td) (hash keeps items
     # ordered the way they were added). Hash values determine cell property:

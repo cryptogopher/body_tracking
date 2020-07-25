@@ -1,5 +1,5 @@
 class Target < ActiveRecord::Base
-  CONDITIONS = [:<, :<=, :>, :>=, :==]
+  CONDITIONS = ['<', '<=', '>', '>=', '==']
 
   belongs_to :goal, inverse_of: :targets, required: true
   belongs_to :item, polymorphic: true, inverse_of: :targets
@@ -10,8 +10,8 @@ class Target < ActiveRecord::Base
   accepts_nested_attributes_for :thresholds, allow_destroy: true,
     reject_if: proc { |attrs| attrs['quantity_id'].blank? && attrs['value'].blank? }
   validate do
-    errors.add(:thresholds, :count_mismatch) unless thresholds.count == arity
-    errors.add(:thresholds, :quantity_mismatch) if thresholds.to_a.uniq(&:quantity) != 1
+    errors.add(:thresholds, :count_mismatch) unless thresholds.length == arity
+    errors.add(:thresholds, :quantity_mismatch) if thresholds.to_a.uniq(&:quantity).length != 1
   end
   validates :condition, inclusion: {in: CONDITIONS}
   validates :scope, inclusion: {in: [:ingredient, :meal, :day],
@@ -20,8 +20,9 @@ class Target < ActiveRecord::Base
 
   after_initialize do
     if new_record?
-      self.condition = CONDITIONS.first
-      self.effective_from = Date.current if is_binding?
+      self.condition ||= CONDITIONS.first
+      # Target should be only instantiated through Goal, so :is_binding? will be available
+      self.effective_from ||= Date.current if is_binding?
     end
   end
 

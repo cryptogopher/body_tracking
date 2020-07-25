@@ -93,6 +93,7 @@ en:
     contextual:
       link_new_target: 'New target'
     form:
+      choose_quantity: "Choose quantity"
       button_new_target: 'Add target'
       button_delete_target: 'Delete'
       effective_from: ', effective from:'

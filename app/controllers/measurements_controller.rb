@@ -31,7 +31,7 @@ class MeasurementsController < ApplicationController
     # Nested attributes cannot create outer object (Measurement) and at the same time edit
     # existing nested object (MeasurementRoutine) if it's not associated with outer object
     # https://stackoverflow.com/questions/6346134/
-    # That's why routine needs to be found and associated before measurement initialization
+    # That's why Routine needs to be found and associated before Measurement initialization
     @measurement = @project.measurements.new
     update_routine_from_params
     @measurement.attributes = measurement_params
@@ -127,7 +127,8 @@ class MeasurementsController < ApplicationController
 
   def update_routine_from_params
     routine_id = params[:measurement][:routine_attributes][:id]
-    @measurement.routine = @project.measurement_routines.find_by(id: routine_id) if routine_id
+    return unless routine_id
+    @measurement.routine = @project.measurement_routines.find_by(id: routine_id)
   end
 
   def prepare_items

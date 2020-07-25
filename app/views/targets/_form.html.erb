@@ -1,66 +1,86 @@
-<%= error_messages_for @target %>
+<%= error_messages_for *@targets %>
 
-<div class="box">
-  <div id='goal-form' class="tabular">
-    <% if @target.goal.persisted? %>
-      <p><%= render partial: 'goals/show_form', locals: {goal: @target.goal} %></p>
-      <%#= t '.effective_from' %>
-      <p><%= f.date_field :effective_from, disabled: !@target.is_binding? %></p>
-    <% else %>
-      <%= render partial: 'goals/form', locals: {goal: @target.goal} %>
-    <% end %>
-  </div>
-  <hr style="width: 95%;">
-  <div class="tabular">
-    <p class="target">
-    <% @target.thresholds.each_with_index do |t, index| %>
-      <%= f.fields_for 'thresholds_attributes', t, index: '' do |ff| %>
-        <% if index == 0 %>
-          <%= ff.select :quantity_id, quantity_options,
-            {include_blank: true, required: true, label: :field_target} %>
-          <%= f.select :condition, condition_options, required: true, label: '' %>
-        <% end %>
-        <%= ff.hidden_field :id %>
-        <%= ff.number_field :value, {size: 8, step: :any, label: ''} %>
-        <% if index == 0 %>
-          <%= ff.select :unit_id, unit_options, {label: ''} %>
-        <% end %>
+<% @targets.group_by(&:goal).each do |goal, targets| %>
+  <div class="box">
+    <div id='goal-form' class="tabular">
+      <% if goal.persisted? %>
+        <p><%= render partial: 'goals/show_form', locals: {goal: goal} %></p>
+        <%#= t '.effective_from' %>
+        <p><%= f.date_field :effective_from, disabled: goal.is_binding? %></p>
+      <% else %>
+        <%= render partial: 'goals/form', locals: {goal: goal} %>
       <% end %>
-    <% end %>
-    <%= link_to t(".button_delete_target"), '#', class: 'icon icon-del',
-      onclick: "deleteTarget(); return false;" %>
-    </p>
-    <p>
-    <%= link_to t(".button_new_target"), '#', class: 'icon icon-add',
-      onclick: 'newTarget(); return false;' %>
-    </p>
+    </div>
+
+    <hr style="width: 95%;">
+
+    <div class="tabular">
+      <% targets.each do |target| %>
+        <p class="target">
+        <%= f.fields_for 'targets', target, index: '' do |target_f| %>
+          <%= target_f.hidden_field :id %>
+          <%= target_f.hidden_field :_destroy %>
+          <em class="info"><%= t ".choose_quantity" %></em>
+          <% target.thresholds.each_with_index do |thr, index| %>
+            <%= target_f.fields_for 'thresholds_attributes', thr, index: '' do |threshold_f| %>
+              <%= threshold_f.hidden_field :id %>
+              <% if index == 0 %>
+                <%= threshold_f.select :quantity_id, quantity_options,
+                  {include_blank: true, required: true, label: :field_target},
+                  onchange: "showQuantityPath(event);" %>
+                <%= target_f.select :condition, condition_options, required: true,
+                  label: '' %>
+              <% end %>
+              <%= threshold_f.number_field :value, {size: 8, step: :any, label: ''} %>
+              <% if index == 0 %>
+                <%= threshold_f.select :unit_id, unit_options, {label: ''} %>
+              <% end %>
+            <% end %>
+          <% end %>
+          <%= link_to t(".button_delete_target"), '#', class: 'icon icon-del',
+            onclick: "deleteTarget(); return false;" %>
+        <% end %>
+        </p>
+      <% end %>
+      <p>
+      <%= link_to t(".button_new_target"), '#', class: 'icon icon-add',
+        onclick: 'newTarget(); return false;' %>
+      </p>
+    </div>
   </div>
-</div>
+<% end %>
 
 <%= javascript_tag do %>
-  function newReadout() {
+  function showQuantityPath(event) {
+    $(event.target).prevAll('em').text($('option:selected', event.target).attr('data-path'));
+  }
+  $(document).ajaxComplete(function() {
+    $('select[id$=__quantity_id]').trigger(jQuery.Event('change'));
+  })
+
+  function newTarget() {
     var form = $(event.target).closest('form');
-    var row = form.find('p.readout:visible:last');
+    var row = form.find('p.target:visible:last');
     var new_row = row.clone().insertAfter(row);
-    new_row.find('input[id$=__id], input[id$=__value], select[id$=_quantity__id]').val('');
+    new_row.find('em').text('<%= t ".choose_quantity" %>');
+    new_row.find('input, select').val('');
     new_row.find('select[id$=__unit_id]').val(row.find('select[id$=__unit_id]').val());
-    new_row.find('input[id$=__destroy]').val('');
     new_row.find('label:first').hide();
-    form.find('p.readout:visible a.icon-del').show();
+    form.find('p.target:visible a.icon-del').show();
   }
 
-  function deleteReadout() {
+  function deleteTarget() {
     var form = $(event.target).closest('form');
-    var row = $(event.target).closest('p.readout');
+    var row = $(event.target).closest('p.target');
     if (row.find('input[id$=__id]').val()) {
       row.hide();
       row.find('input[id$=__destroy]').val('1');
     } else {
       row.remove();
     }
-    form.find('p.readout:visible:first label:first').show();
-    if (form.find('p.readout:visible').length <= 1) {
-      form.find('p.readout:visible a.icon-del').hide();
+    form.find('p.target:visible:first label:first').show();
+    if (form.find('p.target:visible').length <= 1) {
+      form.find('p.target:visible a.icon-del').hide();
     }
   }
 <% end %>

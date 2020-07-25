@@ -1,6 +1,6 @@
 module TargetsHelper
   def condition_options
-    Target::CONDITIONS.each_with_index.to_a
+    Target::CONDITIONS
   end
 
   def action_links(m)

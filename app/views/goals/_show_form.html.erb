@@ -1,4 +1,4 @@
-<%= fields_for 'target[goal_attributes]', goal do |ff| %>
+<%= fields_for 'goal', goal do |ff| %>
   <label><%= l(:field_goal) %><span class="required"> *</span></label>
   <%= ff.select :id,
     options_from_collection_for_select(@project.goals, :id, :name, goal.id),

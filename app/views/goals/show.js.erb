@@ -1,0 +1,2 @@
+$('#goal-form').html('<%= j render partial: 'goals/show_form', locals: {goal: @goal} %>');
+$('input#target_effective_from').prop('disabled', <%= @goal.is_binding? %>)
