@@ -7,8 +7,16 @@ resources :projects, shallow: true do
       post 'defaults'
     end
   end
-  resources :goals, only: [:show, :edit]
-  resources :targets, except: [:show]
+  resources :goals, only: [:show, :edit] do
+    member do
+      post 'toggle_exposure', to: 'goals#toggle_exposure'
+    end
+  end
+  resources :targets, except: [:show] do
+    collection do
+      post 'reapply/:date', to: 'targets#reapply', as: :reapply
+    end
+  end
   resources :ingredients, only: [] do
     post 'adjust/:adjustment', to: 'meals#adjust', as: :adjust, on: :member
   end

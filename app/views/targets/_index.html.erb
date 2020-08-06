@@ -1,31 +1,86 @@
-<% if @targets.any? { |t| t.persisted? } %>
-  <table class="list">
-    <thead>
-      <tr>
-        <th style="width:5%"><%= l(:field_taken_at_date) %></th>
-        <th><%= l(:field_name) %></th>
-        <th><%= l(:field_notes) %></th>
-        <th><%= l(:field_source) %></th>
-        <th style="width:5%"><%= l(:field_action) %></th>
-      </tr>
-    </thead>
+<%#= render partial: 'measurements/filters',
+  locals: {url: filter_project_measurements_path(@project, @view_params)} %>
+
+<% if @targets_by_date.any? %>
+  <%= render partial: 'targets/options' %>
+
+  <% formulas = @quantities.map { |q| q.formula } %>
+  <%# formulas.unshift(@filter_q.formula) if @filter_q %>
+  <%= error_messages_for *formulas %>
+
+  <table id="targets" class="list odd-even">
     <tbody>
-      <% @measurements.each do |m| %>
-        <% next if m.new_record? %>
-        <tr id="measurement-<%= m.id %>" class="primary measurement">
-          <td class="date unwrappable"><%= format_datetime(m) %></td>
-          <td class="name">
-            <div style="float:left;">
-              <%= link_to m.routine.name, readouts_measurement_routine_path(m.routine) %>
-            </div>
-            <div style="float:right;">
-              <small><%= " (#{pluralize(m.readouts.size, 'readout')})" %></small>
-            </div>
-          </td>
-          <td class="notes ellipsible"><%= m.notes %></td>
-          <td class="source"><%= m.source.name if m.source.present? %></td>
-          <td class="action unwrappable"><%= action_links(m) %></td>
+      <% total_width = 3 + @quantities.length %>
+      <% header = quantities_table_header(@quantities) %>
+      <% header.each_with_index do |row, i| %>
+        <tr class="header">
+          <% if i == 0 %>
+            <td class="quantityhead" rowspan="<%= header.length %>"
+                style="width:<%= 2 * 100/total_width %>%"><%= l(:field_effective_from) %></td>
+          <% end %>
+
+          <% row.each do |q, span| %>
+            <td class="<%= span ? 'quantityhead' : 'quantityheadempty' %>"
+                <%= "colspan=#{span}" if span && span > 0 %>
+                <%= "rowspan=#{-span}" if span && span < 0 %>
+                style="width: <%= (span && span > 0 ? span : 1) * 100/total_width %>%;"
+                title="<%= q.description %>">
+              <%= q.name if span %>
+            </td>
+          <% end %>
+
+          <% if i == 0 %>
+            <td rowspan="<%= header.length %>"
+                style="width:<%= 100/total_width %>%;border:none;"><%= l(:field_action) %></td>
+          <% end %>
         </tr>
+      <% end %>
+
+      <% @targets_by_date.each do |date, targets| %>
+        <% row_class = "date #{cycle('odd', 'even')}" %>
+        <tr id="date-<%= date.strftime('%Y%m%d') %>" class="primary <%= row_class %>">
+          <td class="date unwrappable" style="cursor: pointer;"
+              onclick="$(this).closest('tr').toggle();
+                       $(this).closest('tr').nextUntil('tr.primary', '.date').toggle();
+                       return false;">
+            <span class="icon icon-bullet-closed"><%= format_date(date) %></span>
+          </td>
+          <% @quantities.each do |q| %>
+            <td class="primary value ellipsible"><%= targets[q] %></td>
+          <% end %>
+          <td class="action unwrappable"><%= action_links(date) %></td>
+        </tr>
+
+        <tr class="<%= row_class %>" style="display:none">
+          <% rows = @quantities.empty? ? 1 : (targets.length - 1) / @quantities.length + 1 %>
+          <td rowspan="<%= rows %>" class="date unwrappable" style="cursor: pointer;"
+              onclick="$(this).closest('tr').prev('tr.primary').toggle();
+                       $(this).closest('tr').prev('tr.primary')
+                         .nextUntil('tr.primary', '.date').toggle();
+                       return false;">
+            <span class="icon icon-bullet-open"><%= format_date(date) %></span>
+          </td>
+          <% @quantities.each do |q| %>
+            <td class="primary quantity ellipsible">
+              <%= q.name %><p class="value"><%= targets.delete(q) %></p>
+            </td>
+          <% end %>
+          <td rowspan="<%= rows %>" class="action unwrappable"><%= action_links(date) %></td>
+        </tr>
+
+        <% targets.each_slice(@quantities.length) do |extras| %>
+          <tr class="extra <%= row_class %>" style="display:none">
+            <% extras.each do |q, t| %>
+              <td class="extra quantity ellipsible">
+                <%= q.name %><p class="value"><%= t %></p>
+              </td>
+            <% end %>
+            <% if @quantities.length > extras.length %>
+              <td class="space" colspan="<%= @quantities.length - extras.length %>"></td>
+            <% end %>
+          </tr>
+        <% end %>
+
       <% end %>
     </tbody>
   </table>

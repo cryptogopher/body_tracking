@@ -1,0 +1,27 @@
+<% total_width = 4 + @quantities.length %>
+<% header = quantities_table_header(@quantities) %>
+<% header.each_with_index do |row, i| %>
+  <tr class="header">
+    <% if i == 0 %>
+      <td colspan="2" rowspan="<%= 1 + header.length %>"
+          style="width:<%= 3 * 100/total_width %>%; border: none;"></td>
+      <td class="quantityhead" rowspan="<%= header.length %>"
+          style="width:<%= 100/total_width %>%;"><%= l(:field_amount) %></td>
+    <% end %>
+
+    <% row.each do |q, span| %>
+      <td class="<%= span ? 'quantityhead' : 'quantityheadempty' %>"
+          <%= "colspan=#{span}" if span && span > 0 %>
+          <%= "rowspan=#{-span}" if span && span < 0 %>
+          style="width: <%= (span && span > 0 ? span : 1) * 100/total_width %>%;"
+          title="<%= q.description %>">
+        <%= q.name if span %>
+      </td>
+    <% end %>
+
+    <% if i == 0 %>
+      <td rowspan="<%= 1 + header.length %>"
+          style="width:<%= 100/total_width %>%; border: none;"></td>
+    <% end %>
+  </tr>
+<% end %>

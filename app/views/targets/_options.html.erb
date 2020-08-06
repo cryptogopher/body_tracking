@@ -1,0 +1,18 @@
+<fieldset id="options" class="collapsible">
+  <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
+  <div>
+    <%= form_tag toggle_exposure_goal_path(current_goal, @view_params),
+      id: 'toggle-exposure-form', name: 'toggle-exposure-form',
+      method: :post, remote: true do %>
+
+      <table>
+        <tr>
+          <td style="width:100%"></td>
+          <td><%= select_tag 'quantity_id',
+            toggle_exposure_options(current_goal.quantities) %></td>
+          <td><%= submit_tag l(:button_add) %></td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+</fieldset>

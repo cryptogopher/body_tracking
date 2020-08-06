@@ -16,7 +16,7 @@ class Target < ActiveRecord::Base
   validates :condition, inclusion: {in: CONDITIONS}
   validates :scope, inclusion: {in: [:ingredient, :meal, :day],
                                 if: -> { thresholds.first.quantity.domain == :diet }}
-  validates :effective_from, presence: {unless: :is_binding?}, absence: {if: :is_binding?}
+  validates :effective_from, presence: {if: :is_binding?}, absence: {unless: :is_binding?}
 
   after_initialize do
     if new_record?
@@ -29,5 +29,9 @@ class Target < ActiveRecord::Base
   delegate :is_binding?, to: :goal
   def arity
     BigDecimal.method(condition).arity
+  end
+
+  def to_s
+    "#{condition} #{thresholds.first.value} [#{thresholds.first.unit.shortname}]"
   end
 end

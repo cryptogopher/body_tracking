@@ -8,7 +8,7 @@
   <table id="meals" class="list odd-even">
     <tbody>
       <% total_width = 4 + @quantities.length %>
-      <% header = table_header_spec(@quantities) %>
+      <% header = quantities_table_header(@quantities) %>
       <% @meals_by_date.reverse_each do |date, meals| %>
         <% header.each_with_index do |row, i| %>
           <tr class="header">

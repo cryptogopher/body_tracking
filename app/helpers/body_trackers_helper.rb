@@ -14,11 +14,15 @@ module BodyTrackersHelper
     end
   end
 
-  def format_time(t)
-    t.strftime("%R") if t
+  def format_date(d)
+    d&.strftime("%F")
   end
 
-  def toggle_exposure_options(enabled, domain)
+  def format_time(t)
+    t&.strftime("%R")
+  end
+
+  def toggle_exposure_options(enabled, domain = :all)
     enabled = enabled.map { |q| [q.name, q.id] }
     enabled_ids = enabled.map(&:last)
 
@@ -49,8 +53,7 @@ module BodyTrackersHelper
     end
   end
 
-  # TODO: rename to quantities_table_header
-  def table_header_spec(quantities)
+  def quantities_table_header(quantities)
     # spec: table of rows (tr), where each row is a hash of cells (td) (hash keeps items
     # ordered the way they were added). Hash values determine cell property:
     # * int > 0 - quantity name-labelled cell with 'int' size colspan

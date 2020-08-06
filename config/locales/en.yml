@@ -22,6 +22,7 @@ en:
   field_formula: 'Formula'
   field_code: 'Formula'
   field_shortname: 'Short name'
+  button_reapply: 'Reapply'
   button_eat: 'Eat'
   button_notes: 'Notes'
   button_retake: 'Retake'
