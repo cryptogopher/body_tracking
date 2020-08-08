@@ -1,4 +1,5 @@
-class LoadDefaults < ActiveRecord::Migration
+class LoadDefaults <
+  (Rails::VERSION::MAJOR < 5 ? ActiveRecord::Migration : ActiveRecord::Migration[4.2])
   def change
     reversible do |dir|
       dir.up do
