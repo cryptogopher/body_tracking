@@ -1,2 +1,4 @@
 targets_01:
+  goal_id: <%= Project.find(1).goals.binding.id %>
   condition: '=='
+  effective_from: <%= 1.week.ago.to_s(:db) %>

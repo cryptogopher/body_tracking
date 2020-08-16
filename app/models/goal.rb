@@ -6,6 +6,7 @@ class Goal < ActiveRecord::Base
     class_name: 'Exposure', extend: BodyTracking::TogglableExposures
   has_many :quantities, -> { order "lft" }, through: :target_exposures
 
+  validates :target_exposures, presence: true
   validates :name, presence: true, uniqueness: {scope: :project_id}
 
   def is_binding?

@@ -21,9 +21,7 @@ class BodyTrackingSystemTestCase < ApplicationSystemTestCase
   end
 
   fixtures :projects
-#  fixtures :users, :email_addresses, :trackers, :projects,
-#    :roles, :members, :member_roles, :enabled_modules
-  plugin_fixtures :targets
+  plugin_fixtures :quantities, :units, :exposures, :targets, :quantity_values
 
   include AbstractController::Translation
 

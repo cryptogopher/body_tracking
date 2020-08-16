@@ -1,0 +1,7 @@
+quantity_values_001:
+  type: Threshold
+  registry_type: Target
+  registry: targets_01
+  quantity: quantities_energy
+  value: 2500
+  unit: units_kcal

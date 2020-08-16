@@ -1,0 +1,8 @@
+quantities_energy:
+  project: projects_001
+  domain: diet
+  parent: null
+  lft: 1
+  rgt: 2
+  name: Energy
+  description: Total energy
