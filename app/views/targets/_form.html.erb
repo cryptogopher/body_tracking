@@ -3,7 +3,7 @@
 <% @targets.group_by(&:goal).each do |goal, targets| %>
   <div class="box">
     <div id='goal-form' class="tabular">
-      <% if goal.persisted? %>
+      <% if goal.persisted? || goal.is_binding? %>
         <p><%= render partial: 'goals/show_form', locals: {goal: goal} %></p>
         <%#= t '.effective_from' %>
         <p><%= f.date_field :effective_from, disabled: !goal.is_binding? %></p>

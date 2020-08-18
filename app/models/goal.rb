@@ -7,9 +7,12 @@ class Goal < ActiveRecord::Base
   has_many :quantities, -> { order "lft" }, through: :target_exposures
 
   validates :target_exposures, presence: true
+  validates :is_binding, uniqueness: {scope: :project_id}, if: :is_binding?
   validates :name, presence: true, uniqueness: {scope: :project_id}
 
-  def is_binding?
-    self == project.goals.binding
+  after_initialize do
+    if new_record?
+      self.is_binding = false if self.is_binding.nil?
+    end
   end
 end

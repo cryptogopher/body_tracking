@@ -1,14 +1,14 @@
 units_gram:
-  project: projects_001
+  project_id: 1
   name: 'gram'
   shortname: 'g'
 
 units_percent:
-  project: projects_001
+  project_id: 1
   name: 'percent'
   shortname: '%'
 
 units_kcal:
-  project: projects_001
+  project_id: 1
   name: 'kilocalorie'
   shortname: 'kcal'

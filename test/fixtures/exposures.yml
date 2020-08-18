@@ -1,4 +1,4 @@
 exposures_01:
   view_type: Goal
-  view_id: <%= Project.find(1).goals.binding.id %>
+  view: goals_binding
   quantity: quantities_energy

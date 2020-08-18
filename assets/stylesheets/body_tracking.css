@@ -5,14 +5,22 @@ table.list tr.food.hidden {opacity: 0.4}
 table.list .date,
 table.list .name,
 table.list .quantity {text-align: left;}
-/* TODO: merge with .closable */
-table.list .quantityhead {
+/* TODO: merge with .closable and/or remove .closable */
+/* TODO: replace .quantityhead(empty) with th.quantity/.empty */
+table.list .quantityhead, table.list th.quantity {
   text-align: center;
   position: relative;
   padding: 2px 0;
   border-bottom: none;
 }
 table.list .quantityheadempty {border-top: none; border-bottom: none;}
+table.list th.quantity {
+  text-align: center;
+  position: relative;
+  padding: 2px 0;
+  border-bottom: none;
+}
+table.list th.empty {border-top: none;}
 
 table.list .action,
 table.list .value {text-align: right; padding-right: 2px;}

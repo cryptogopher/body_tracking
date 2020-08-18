@@ -74,6 +74,7 @@ class CreateSchema <
       t.integer :group
       t.references :source
       t.string :source_ident
+      # TODO: rename to is_hidden
       t.boolean :hidden
       t.decimal :ready_amount, precision: 12, scale: 6
       t.timestamps null: false
@@ -96,6 +97,7 @@ class CreateSchema <
 
     create_table :goals do |t|
       t.references :project
+      t.boolean :is_binding
       t.string :name
       t.text :description
       t.timestamps null: false

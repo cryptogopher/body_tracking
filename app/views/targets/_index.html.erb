@@ -9,33 +9,35 @@
   <%= error_messages_for *formulas %>
 
   <table id="targets" class="list odd-even">
-    <tbody>
+    <thead>
       <% total_width = 3 + @quantities.length %>
       <% header = quantities_table_header(@quantities) %>
       <% header.each_with_index do |row, i| %>
         <tr class="header">
           <% if i == 0 %>
-            <td class="quantityhead" rowspan="<%= header.length %>"
-                style="width:<%= 2 * 100/total_width %>%"><%= l(:field_effective_from) %></td>
+            <th class="quantity" rowspan="<%= header.length %>"
+                style="width:<%= 2 * 100/total_width %>%"><%= l(:field_effective_from) %></th>
           <% end %>
 
           <% row.each do |q, span| %>
-            <td class="<%= span ? 'quantityhead' : 'quantityheadempty' %>"
+            <th class="quantity <%= 'empty' unless span %>"
                 <%= "colspan=#{span}" if span && span > 0 %>
                 <%= "rowspan=#{-span}" if span && span < 0 %>
                 style="width: <%= (span && span > 0 ? span : 1) * 100/total_width %>%;"
                 title="<%= q.description %>">
               <%= q.name if span %>
-            </td>
+            </th>
           <% end %>
 
           <% if i == 0 %>
-            <td rowspan="<%= header.length %>"
-                style="width:<%= 100/total_width %>%;border:none;"><%= l(:field_action) %></td>
+            <th rowspan="<%= header.length %>"
+                style="width:<%= 100/total_width %>%;border:none;"><%= l(:field_action) %></th>
           <% end %>
         </tr>
       <% end %>
+    </thead>
 
+    <tbody>
       <% @targets_by_date.each do |date, targets| %>
         <% row_class = "date #{cycle('odd', 'even')}" %>
         <tr id="date-<%= date.strftime('%Y%m%d') %>" class="primary <%= row_class %>">
