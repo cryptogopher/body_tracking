@@ -17,7 +17,8 @@ class BodyTrackingSystemTestCase < ApplicationSystemTestCase
   }
 
   Capybara.configure do |config|
-    config.save_path = './tmp/screenshots/'
+    config.save_path = Rails.root.join('tmp', 'screenshots')
+    FileUtils.rm Dir.glob(File.join(config.save_path, '*.png'))
   end
 
   fixtures :projects
