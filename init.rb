@@ -25,7 +25,7 @@ Redmine::Plugin.register :body_tracking do
       quantities: [:index, :parents, :filter],
       units: [:index],
     }, read: true
-    permission :manage_common, {
+    permission :manage_body_trackers, {
       body_trackers: [:defaults],
       goals: [:edit],
       targets: [:new, :create, :edit, :update, :destroy, :reapply, :toggle_exposure],

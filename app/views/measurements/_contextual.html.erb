@@ -1,4 +1,4 @@
-<% if User.current.allowed_to?(:manage_common, @project) %>
+<% if User.current.allowed_to?(:manage_body_trackers, @project) %>
   <%= link_to t(".link_new_measurement"),
     new_project_measurement_path(@project, @view_params),
     {remote: true, class: 'icon icon-add'} %>

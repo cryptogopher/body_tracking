@@ -6,12 +6,7 @@ class TargetsTest < BodyTrackingSystemTestCase
     
     @project1 = projects(:projects_001)
 
-    log_user 'alice', 'foo'
-  end
-
-  def teardown
-    logout_user
-    super
+    log_user 'jsmith', 'jsmith'
   end
 
   def test_index
@@ -29,6 +24,31 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_selector 'div#targets', visible: :yes, exact_text: t(:label_no_data)
   end
 
-  def test_create_saves_binding_goal_if_nonexistent
+  def test_index_shows_and_hides_new_target_form
+  end
+
+  def test_create_binding_target
+    visit project_targets_path(@project1)
+    assert_current_path project_targets_path(@project1)
+    assert_no_selector 'form#new-target-form'
+    click_link t('targets.contextual.link_new_target')
+    within 'form#new-target-form' do
+      assert has_select?(t(:field_goal), selected: t('targets.form.binding_goal'))
+      assert has_field?(t(:field_effective_from), with: Date.current.strftime)
+      within 'p.target' do
+        select quantities(:quantities_energy).name
+        select '=='
+        fill_in with: '1750'
+        select units(:units_kcal).shortname
+      end
+      assert_difference 'Target.count' => 1, 'Threshold.count' => 1, 'Goal.count' => 0 do
+        click_on t(:button_create)
+      end
+    end
+    assert_current_path project_targets_path(@project1)
+    assert_selector 'table#targets tbody tr', count: @project1.targets.count
+  end
+
+  def test_create_binding_target_when_binding_goal_does_not_exist
   end
 end

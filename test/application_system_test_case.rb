@@ -21,8 +21,11 @@ class BodyTrackingSystemTestCase < ApplicationSystemTestCase
     FileUtils.rm Dir.glob(File.join(config.save_path, '*.png'))
   end
 
-  fixtures :projects
-  plugin_fixtures :quantities, :units, :goals, :exposures, :targets, :quantity_values
+  fixtures :projects, :users, :members
+  # Redmine fixtures use explicit IDs, so it's impossible to access them by name.
+  # Use: 'project_id: 1' and NOT 'project: projects_001'
+  plugin_fixtures :enabled_modules, :roles, :member_roles,
+    :quantities, :units, :goals, :exposures, :targets, :quantity_values
 
   include AbstractController::Translation
 

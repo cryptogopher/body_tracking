@@ -1,5 +1,5 @@
 <div class="contextual">
-  <% if User.current.allowed_to?(:manage_common, @project) %>
+  <% if User.current.allowed_to?(:manage_body_trackers, @project) %>
     <%= link_to t(".link_new_source"), '#', class: 'icon icon-add',
       onclick: '$("#add-source").show(); $("#source_name").focus(); return false;' %>
   <% end %>

@@ -1,0 +1,3 @@
+enabled_modules_body_tracking:
+  name: body_tracking
+  project_id: 1

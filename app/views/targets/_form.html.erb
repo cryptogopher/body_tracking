@@ -5,7 +5,6 @@
     <div id='goal-form' class="tabular">
       <% if goal.persisted? || goal.is_binding? %>
         <p><%= render partial: 'goals/show_form', locals: {goal: goal} %></p>
-        <%#= t '.effective_from' %>
         <p><%= f.date_field :effective_from, disabled: !goal.is_binding? %></p>
       <% else %>
         <%= render partial: 'goals/form', locals: {goal: goal} %>

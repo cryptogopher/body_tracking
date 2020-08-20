@@ -1,5 +1,5 @@
 <div class="contextual">
-  <% if User.current.allowed_to?(:manage_common, @project) %>
+  <% if User.current.allowed_to?(:manage_body_trackers, @project) %>
     <%= link_to t(".link_new_quantity"), new_project_quantity_path(@project),
       {remote: true, class: 'icon icon-add'} %>
   <% end %>
