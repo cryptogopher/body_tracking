@@ -12,7 +12,6 @@ class TargetsTest < BodyTrackingSystemTestCase
   def test_index
     assert_not_equal 0, @project1.targets.count
     visit project_targets_path(@project1)
-    assert_current_path project_targets_path(@project1)
     assert_selector 'table#targets tbody tr', count: @project1.targets.count
   end
 
@@ -25,12 +24,16 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_index_shows_and_hides_new_target_form
+    visit project_targets_path(@project1)
+    assert_no_selector 'form#new-target-form'
+    click_link t('targets.contextual.link_new_target')
+    assert_selector 'form#new-target-form', count: 1
+    click_on t(:button_cancel)
+    assert_no_selector 'form#new-target-form'
   end
 
   def test_create_binding_target
     visit project_targets_path(@project1)
-    assert_current_path project_targets_path(@project1)
-    assert_no_selector 'form#new-target-form'
     click_link t('targets.contextual.link_new_target')
     within 'form#new-target-form' do
       assert has_select?(t(:field_goal), selected: t('targets.form.binding_goal'))
@@ -45,7 +48,6 @@ class TargetsTest < BodyTrackingSystemTestCase
         click_on t(:button_create)
       end
     end
-    assert_current_path project_targets_path(@project1)
     assert_selector 'table#targets tbody tr', count: @project1.targets.count
   end
 
