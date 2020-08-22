@@ -22,19 +22,19 @@ class TargetsController < ApplicationController
   end
 
   def create
-    goal = @project.goals.find_by(id: params[:goal][:id]) || @project.goals.build(goal_params)
+    goal = @project.goals.binding if params[:goal][:id].blank?
+    goal ||= @project.goals.find_by(id: params[:goal][:id])
+    goal ||= @project.goals.build(goal_params)
+
     @targets = goal.targets.build(targets_params[:targets]) do |target|
       target.effective_from = params[:target][:effective_from]
     end
-    # FIXME: add goal exposures before save and require (in model) goal.target_exposures to
-    # be present (same for measurement/food?)
+    if goal.target_exposures.empty?
+      goal.quantities << @targets.map { |t| t.thresholds.first.quantity }.first(6)
+    end
 
     # :save only after build, to re-display values in case records are invalid
     if goal.save && Target.transaction { @targets.all?(&:save) }
-      if goal.target_exposures.empty?
-        goal.quantities << @targets.map { |t| t.thresholds.first.quantity }.first(6)
-      end
-
       flash[:notice] = 'Created new target(s)'
       prepare_targets
     else

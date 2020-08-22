@@ -7,5 +7,6 @@ class MeasurementRoutine < ActiveRecord::Base
     class_name: 'Exposure', extend: BodyTracking::TogglableExposures
   has_many :quantities, -> { order "lft" }, through: :readout_exposures
 
+  # TODO: require readout_exposures to be present
   validates :name, presence: true, uniqueness: {scope: :project_id}
 end
