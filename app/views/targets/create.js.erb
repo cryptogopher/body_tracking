@@ -1,4 +1,4 @@
-$('#new-targets').empty();
+$('#new-target').empty();
 <% case @view_params[:view] %>
   <% when :by_date %>
     $('#targets').html('<%= j render partial: 'targets/by_effective_date' %>');

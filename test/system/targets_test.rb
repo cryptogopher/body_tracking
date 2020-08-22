@@ -33,6 +33,7 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_create_binding_target
+    assert @project1.goals.exists?(is_binding: true)
     visit project_targets_path(@project1)
     click_link t('targets.contextual.link_new_target')
     within 'form#new-target-form' do
@@ -44,7 +45,8 @@ class TargetsTest < BodyTrackingSystemTestCase
         fill_in with: '1750'
         select units(:units_kcal).shortname
       end
-      assert_difference 'Target.count' => 1, 'Threshold.count' => 1, 'Goal.count' => 0 do
+      assert_difference 'Target.count' => 1, '@project1.targets.reload.count' => 1,
+        'Threshold.count' => 1, 'Goal.count' => 0 do
         click_on t(:button_create)
       end
     end
@@ -53,8 +55,8 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_create_binding_target_when_binding_goal_does_not_exist
-    @project1.goals.delete_all
-    assert_equal 0, @project1.goals.count
+    @project1.goals.where(is_binding: true).delete_all
+    assert_equal 0, @project1.goals.count(&:is_binding?)
     visit project_targets_path(@project1)
     click_link t('targets.contextual.link_new_target')
     within 'form#new-target-form' do
