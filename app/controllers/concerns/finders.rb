@@ -1,6 +1,13 @@
 module Concerns::Finders
   private
 
+  def find_goal(id = params[:id])
+    @goal = Goal.find(id)
+    @project = @goal.project
+  rescue ActiveRecord::RecordNotFound
+    render_404
+  end
+
   def find_meal
     @meal = Meal.find(params[:id])
     @project = @meal.project

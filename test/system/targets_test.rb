@@ -23,7 +23,7 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_selector 'div#targets', visible: :yes, exact_text: t(:label_no_data)
   end
 
-  def test_index_shows_and_hides_new_target_form
+  def test_index_show_and_hide_new_target_form
     visit project_targets_path(@project1)
     assert_no_selector 'form#new-target-form'
     click_link t('targets.contextual.link_new_target')
@@ -33,23 +33,23 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_create_binding_target
-    assert @project1.goals.exists?(is_binding: true)
-    visit project_targets_path(@project1)
-    click_link t('targets.contextual.link_new_target')
-    within 'form#new-target-form' do
-      assert has_select?(t(:field_goal), selected: t('targets.form.binding_goal'))
-      assert has_field?(t(:field_effective_from), with: Date.current.strftime)
-      within 'p.target' do
-        select quantities(:quantities_energy).name
-        select '=='
-        fill_in with: '1750'
-        select units(:units_kcal).shortname
-      end
-      assert_difference 'Target.count' => 1, '@project1.targets.reload.count' => 1,
-        'Threshold.count' => 1, 'Goal.count' => 0 do
+    assert_difference 'Goal.count' => 0, 'Target.count' => 1,
+                      '@project1.targets.reload.count' => 1, 'Threshold.count' => 1 do
+      visit project_targets_path(@project1)
+      click_link t('targets.contextual.link_new_target')
+      within 'form#new-target-form' do
+        assert has_select?(t(:field_goal), selected: t('targets.form.binding_goal'))
+        assert has_field?(t(:field_effective_from), with: Date.current.strftime)
+        within 'p.target' do
+          select quantities(:quantities_energy).name
+          select '=='
+          fill_in with: '1750'
+          select units(:units_kcal).shortname
+        end
         click_on t(:button_create)
       end
     end
+    assert_equal @project1.goals.binding, Target.last.goal
     assert_no_selector 'form#new-target-form'
     assert_selector 'table#targets tbody tr', count: @project1.targets.count
   end
@@ -57,20 +57,24 @@ class TargetsTest < BodyTrackingSystemTestCase
   def test_create_binding_target_when_binding_goal_does_not_exist
     @project1.goals.where(is_binding: true).delete_all
     assert_equal 0, @project1.goals.count(&:is_binding?)
-    visit project_targets_path(@project1)
-    click_link t('targets.contextual.link_new_target')
-    within 'form#new-target-form' do
-      # Assume binding Goal is initialized (not saved) and selected by default
-      within 'p.target' do
-        select quantities(:quantities_energy).name
-        select '=='
-        fill_in with: '1750'
-        select units(:units_kcal).shortname
-      end
-      assert_difference ['Goal.count', '@project1.goals.reload.count(&:is_binding?)'], 1 do
+    assert_difference ['Goal.count', '@project1.goals.reload.count(&:is_binding?)',
+                       '@project1.targets.reload.count'], 1 do
+      visit project_targets_path(@project1)
+      click_link t('targets.contextual.link_new_target')
+      within 'form#new-target-form' do
+        # Assume binding Goal is selected by default
+        within 'p.target' do
+          select quantities(:quantities_energy).name
+          select '=='
+          fill_in with: '1750'
+          select units(:units_kcal).shortname
+        end
         click_on t(:button_create)
       end
     end
-    assert_selector 'table#targets tbody tr', count: 1
+    assert_equal @project1.goals.binding, Target.last.goal
+  end
+
+  def test_edit
   end
 end

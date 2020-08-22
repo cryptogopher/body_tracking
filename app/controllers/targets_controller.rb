@@ -22,9 +22,9 @@ class TargetsController < ApplicationController
   end
 
   def create
-    goal = @project.goals.binding if params[:goal][:id].blank?
-    goal ||= @project.goals.find_by(id: params[:goal][:id])
-    goal ||= @project.goals.build(goal_params)
+    goal_id = params[:goal][:id]
+    goal = goal_id.present? ? @project.goals.find(goal_id) : @project.goals.new
+    goal.attributes = goal_params unless goal.is_binding?
 
     @targets = goal.targets.build(targets_params[:targets]) do |target|
       target.effective_from = params[:target][:effective_from]
@@ -70,7 +70,7 @@ class TargetsController < ApplicationController
   private
 
   def goal_params
-    params.require(:goal).permit(:id, :name, :description)
+    params.require(:goal).permit(:name, :description)
   end
 
   def targets_params
