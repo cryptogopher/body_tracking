@@ -1,53 +1,51 @@
 <%= error_messages_for *@targets %>
 
-<% @targets.group_by(&:goal).each do |goal, targets| %>
-  <div class="box">
-    <div id='goal-form' class="tabular">
-      <% if goal.persisted? || goal.is_binding? %>
-        <p><%= render partial: 'goals/show_form', locals: {goal: goal} %></p>
-        <p><%= f.date_field :effective_from, disabled: !goal.is_binding? %></p>
-      <% else %>
-        <%= render partial: 'goals/form', locals: {goal: goal} %>
-      <% end %>
-    </div>
+<div class="box">
+  <div id='goal-form' class="tabular">
+    <% if current_goal.persisted? %>
+      <p><%= render partial: 'goals/show_form', locals: {goal: current_goal} %></p>
+      <p><%= f.date_field :effective_from, disabled: !current_goal.is_binding? %></p>
+    <% else %>
+      <%= render partial: 'goals/form', locals: {goal: current_goal} %>
+    <% end %>
+  </div>
 
-    <hr style="width: 95%;">
+  <hr style="width: 95%;">
 
-    <div class="tabular">
-      <% targets.each do |target| %>
-        <p class="target">
-        <%= f.fields_for 'targets', target, index: '' do |target_f| %>
-          <%= target_f.hidden_field :id %>
-          <%= target_f.hidden_field :_destroy %>
-          <em class="info"><%= t ".choose_quantity" %></em>
-          <% target.thresholds.each_with_index do |thr, index| %>
-            <%= target_f.fields_for 'thresholds_attributes', thr, index: '' do |threshold_f| %>
-              <%= threshold_f.hidden_field :id %>
-              <% if index == 0 %>
-                <%= threshold_f.select :quantity_id, quantity_options,
-                  {include_blank: true, required: true, label: :field_target},
-                  onchange: "showQuantityPath(event);" %>
-                <%= target_f.select :condition, condition_options, required: true,
-                  label: '' %>
-              <% end %>
-              <%= threshold_f.number_field :value, {size: 8, step: :any, label: ''} %>
-              <% if index == 0 %>
-                <%= threshold_f.select :unit_id, unit_options, {label: ''} %>
-              <% end %>
+  <div class="tabular">
+    <% @targets.each do |target| %>
+      <p class="target">
+      <%= f.fields_for 'targets', target, index: '' do |target_f| %>
+        <%= target_f.hidden_field :id %>
+        <%= target_f.hidden_field :_destroy %>
+        <em class="info"><%= t ".choose_quantity" %></em>
+        <% target.thresholds.each_with_index do |thr, index| %>
+          <%= target_f.fields_for 'thresholds_attributes', thr, index: '' do |threshold_f| %>
+            <%= threshold_f.hidden_field :id %>
+            <% if index == 0 %>
+              <%= threshold_f.select :quantity_id, quantity_options,
+                {include_blank: true, required: true, label: :field_target},
+                onchange: "showQuantityPath(event);" %>
+              <%= target_f.select :condition, condition_options, required: true,
+                label: '' %>
+            <% end %>
+            <%= threshold_f.number_field :value, {size: 8, step: :any, label: ''} %>
+            <% if index == 0 %>
+              <%= threshold_f.select :unit_id, unit_options, {label: ''} %>
             <% end %>
           <% end %>
-          <%= link_to t(".button_delete_target"), '#', class: 'icon icon-del',
-            onclick: "deleteTarget(); return false;" %>
         <% end %>
-        </p>
+        <%= link_to t(".button_delete_target"), '#', class: 'icon icon-del',
+          onclick: "deleteTarget(); return false;" %>
       <% end %>
-      <p>
-      <%= link_to t(".button_new_target"), '#', class: 'icon icon-add',
-        onclick: 'newTarget(); return false;' %>
       </p>
-    </div>
+    <% end %>
+    <p>
+    <%= link_to t(".button_new_target"), '#', class: 'icon icon-add',
+      onclick: 'newTarget(); return false;' %>
+    </p>
   </div>
-<% end %>
+</div>
 
 <%= javascript_tag do %>
   function showQuantityPath(event) {
