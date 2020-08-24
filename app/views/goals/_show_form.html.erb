@@ -1,23 +1,21 @@
-<%= fields_for 'goal', goal do |ff| %>
-  <label for="goal_id"><%= l(:field_goal) %><span class="required"> *</span></label>
-  <%= ff.select :id,
-    options_from_collection_for_select(@project.goals, :id, :name, goal.id),
-    {required: true}, autocomplete: 'off',
-    onchange: "var goal_id = $('#target_goal_attributes_id').val();
-               $.ajax({
-                 url: '#{goal_path(id: :goal_id)}'.replace('goal_id', goal_id),
-                 dataType: 'script'
-               });
-               return false;" %>
-  <%= link_to l(:button_add), '#',
-    onclick: "var goal_id = $('#target_goal_attributes_id').val();
-              $.ajax({
-                url: '#{edit_goal_path(id: :goal_id)}'.replace('goal_id', goal_id),
-                dataType: 'script'
-              });
-              return false;",
-    class: 'icon icon-add' %>
-<% end %>
-<% if goal.description? %>
-  <p style='white-space: pre-wrap;' ><%= goal.description %></p>
+<label for="goal_id"><%= l(:field_goal) %><span class="required"> *</span></label>
+<%= select_tag :goal_id,
+  options_from_collection_for_select(@project.goals, :id, :name, @goal.id),
+  required: true, autocomplete: 'off',
+  onchange: "var goal_id = $('#target_goal_attributes_id').val();
+             $.ajax({
+               url: '#{goal_path(id: :goal_id)}'.replace('goal_id', goal_id),
+               dataType: 'script'
+             });
+             return false;" %>
+<%= link_to l(:button_add), '#',
+  onclick: "var goal_id = $('#target_goal_attributes_id').val();
+            $.ajax({
+              url: '#{edit_goal_path(id: :goal_id)}'.replace('goal_id', goal_id),
+              dataType: 'script'
+            });
+            return false;",
+  class: 'icon icon-add' %>
+<% if @goal.description? %>
+  <p style='white-space: pre-wrap;' ><%= @goal.description %></p>
 <% end %>
