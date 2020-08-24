@@ -2,40 +2,44 @@ class TargetsController < ApplicationController
   layout 'body_tracking'
   menu_item :body_trackers
   helper :body_trackers
-  helper_method :current_goal
 
   include Concerns::Finders
 
-  before_action :find_project_by_project_id, only: [:index, :new, :create]
-  before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
-  before_action :find_goal, only: [:toggle_exposure]
-  before_action :set_view_params
+  before_action :find_goal_by_project_id, only: [:index, :new]
+  #,  if: ->{ params[:project_id].present? }
+  #before_action :find_goal, only: [:index, :new],
+  #  unless: -> { @goal }
+  before_action :find_project_by_project_id, only: [:create]
+  before_action :authorize
+  #before_action :set_view_params
 
   def index
     prepare_targets
   end
 
   def new
-    target = current_goal.targets.new
+    target = @goal.targets.new
     target.arity.times { target.thresholds.new }
     @targets = [target]
   end
 
   def create
-    goal_id = params[:goal][:id]
-    goal = goal_id.present? ? @project.goals.find(goal_id) : @project.goals.new
-    goal.attributes = goal_params unless goal.is_binding?
+    @goal = @project.goals.find(params[:goal_id]) if params[:goal_id].present?
+    @goal ||= @project.goals.new
+    @goal.attributes = goal_params unless @goal.is_binding?
 
-    @targets = goal.targets.build(targets_params[:targets]) do |target|
+    @targets = @goal.targets.build(targets_params[:targets]) do |target|
       target.effective_from = params[:target][:effective_from]
     end
-    if goal.target_exposures.empty?
-      goal.quantities << @targets.map { |t| t.thresholds.first.quantity }.first(6)
+    if @goal.target_exposures.empty?
+      @goal.quantities << @targets.map { |t| t.thresholds.first.quantity }.first(6)
     end
 
     # :save only after build, to re-display values in case records are invalid
-    if goal.save && Target.transaction { @targets.all?(&:save) }
+    if @goal.save && Target.transaction { @targets.all?(&:save) }
       flash[:notice] = 'Created new target(s)'
+      # create view should only refresh targets belonging to @goal
+      # e.g. by rendering to div#goal-id-targets
       prepare_targets
     else
       @targets.each do |target|
@@ -50,6 +54,8 @@ class TargetsController < ApplicationController
   end
 
   def update
+    goal_id = params[:goal][:id]
+    goal = goal_id.present? ? @project.goals.find(goal_id) : @project.goals.binding
   end
 
   def destroy
@@ -59,12 +65,8 @@ class TargetsController < ApplicationController
   end
 
   def toggle_exposure
-    current_goal.target_exposures.toggle!(@quantity)
+    @goal.target_exposures.toggle!(@quantity)
     prepare_targets
-  end
-
-  def current_goal
-    @goal || @project.goals.binding
   end
 
   private
@@ -90,7 +92,7 @@ class TargetsController < ApplicationController
   end
 
   def prepare_targets
-    @quantities = current_goal.quantities.includes(:formula)
+    @quantities = @goal.quantities.includes(:formula)
 
     @targets_by_date = Hash.new { |h,k| h[k] = {} }
     @project.targets.includes(:item, thresholds: [:quantity]).reject(&:new_record?)
@@ -106,6 +108,6 @@ class TargetsController < ApplicationController
                    else
                      {view: :by_scope, scope: :all}
                    end
-    @view_params[goal_id] = @goal.id if @goal
+    @view_params[:goal_id] = @goal.id if @goal
   end
 end

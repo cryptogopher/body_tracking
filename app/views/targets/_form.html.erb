@@ -2,11 +2,11 @@
 
 <div class="box">
   <div id='goal-form' class="tabular">
-    <% if current_goal.persisted? %>
-      <p><%= render partial: 'goals/show_form', locals: {goal: current_goal} %></p>
-      <p><%= f.date_field :effective_from, disabled: !current_goal.is_binding? %></p>
+    <% if @goal.persisted? %>
+      <p><%= render partial: 'goals/show_form' %></p>
+      <p><%= f.date_field :effective_from, disabled: !@goal.is_binding? %></p>
     <% else %>
-      <%= render partial: 'goals/form', locals: {goal: current_goal} %>
+      <%= render partial: 'goals/form' %>
     <% end %>
   </div>
 

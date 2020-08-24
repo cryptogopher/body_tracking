@@ -8,6 +8,13 @@ module Concerns::Finders
     render_404
   end
 
+  def find_goal_by_project_id
+    @project = Project.find(params[:project_id])
+    @goal = @project.goals.binding
+  rescue ActiveRecord::RecordNotFound
+    render_404
+  end
+
   def find_meal
     @meal = Meal.find(params[:id])
     @project = @meal.project
