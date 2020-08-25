@@ -75,6 +75,10 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_equal @project1.goals.binding, Target.last.goal
   end
 
-  def test_edit
+  # TODO: test_create_failure(s)
+  # * restoring user input
+  # * removing empty targets
+
+  def test_update
   end
 end

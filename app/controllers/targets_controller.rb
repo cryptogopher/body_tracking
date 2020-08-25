@@ -5,7 +5,7 @@ class TargetsController < ApplicationController
 
   include Concerns::Finders
 
-  before_action :find_goal_by_project_id, only: [:index, :new]
+  before_action :find_goal_by_project_id, only: [:index, :new, :edit]
   #,  if: ->{ params[:project_id].present? }
   #before_action :find_goal, only: [:index, :new],
   #  unless: -> { @goal }
@@ -51,6 +51,7 @@ class TargetsController < ApplicationController
   end
 
   def edit
+    @targets = @goal.targets.where(effective_from: params[:effective_from])
   end
 
   def update
@@ -108,6 +109,6 @@ class TargetsController < ApplicationController
                    else
                      {view: :by_scope, scope: :all}
                    end
-    @view_params[:goal_id] = @goal.id if @goal
+    #@view_params[:goal_id] = @goal.id if @goal
   end
 end
