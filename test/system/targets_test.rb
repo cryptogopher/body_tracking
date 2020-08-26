@@ -3,9 +3,7 @@ require File.expand_path('../../application_system_test_case', __FILE__)
 class TargetsTest < BodyTrackingSystemTestCase
   def setup
     super
-    
     @project1 = projects(:projects_001)
-
     log_user 'jsmith', 'jsmith'
   end
 

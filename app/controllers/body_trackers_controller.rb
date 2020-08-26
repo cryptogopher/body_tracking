@@ -46,7 +46,7 @@ class BodyTrackersController < ApplicationController
       failed_objects += available_quantities.values.reject { |o| o.persisted? || o.save }
     end
 
-    new_quantities_count = @project.quantities(true).size - quantities_count
+    new_quantities_count = @project.quantities.reload.size - quantities_count
     flash[:notice] += ", #{new_quantities_count > 0 ? new_quantities_count : "no" } new" \
       " #{'quantity'.pluralize(new_quantities_count)}"
 
