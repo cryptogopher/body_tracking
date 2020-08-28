@@ -23,8 +23,8 @@ class BodyTrackersTest < BodyTrackingSystemTestCase
         click_link t('layouts.sidebar.link_defaults')
       end
       # click_link is asynchronuous, need to wait for page reload before
-      # checking differences
-      assert_selector 'div#flash_notice'
+      # checking differences and wait a little longer than normally
+      assert_selector 'div#flash_notice', wait: 10
       assert_no_selector 'div#flash_error'
     end
   end
