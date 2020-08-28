@@ -1,6 +1,8 @@
 class Source < ActiveRecord::Base
   belongs_to :project, required: false
 
+  scope :defaults, -> { where(project: nil) }
+
   validates :name, presence: true, uniqueness: {scope: :project_id}
 
   # Has to go before any 'dependent:' association

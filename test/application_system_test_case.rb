@@ -25,7 +25,7 @@ class BodyTrackingSystemTestCase < ApplicationSystemTestCase
   # Redmine fixtures use explicit IDs, so it's impossible to access them by name.
   # Use: 'project_id: 1' and NOT 'project: projects_001'
   plugin_fixtures :enabled_modules, :roles, :member_roles,
-    :quantities, :units, :goals, :exposures, :targets, :quantity_values
+    :sources, :quantities, :units, :formulas, :goals, :exposures, :targets, :quantity_values
 
   include AbstractController::Translation
 

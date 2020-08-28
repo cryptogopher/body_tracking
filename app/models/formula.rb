@@ -6,6 +6,8 @@ class Formula < ActiveRecord::Base
   belongs_to :quantity, inverse_of: :formula, required: true
   belongs_to :unit
 
+  scope :defaults, -> { includes(:quantity).where(quantities: {project: nil}) }
+
   validates :code, presence: true
   validate do
     messages = parse.each { |message, params| errors.add(:code, message, params) }
@@ -92,7 +94,7 @@ class Formula < ActiveRecord::Base
     # e.g. during import of defaults (so impossible to use recursive sql instead)
     q_names = identifiers.map { |i| i.split('::').last }
     q_paths = {}
-    (quantity.project.try(&:quantities) || Quantity.where(project: nil))
+    (quantity.project.try(&:quantities) || Quantity.defaults)
       .select { |q| q_names.include?(q.name) }.each do |q|
 
       # NOTE: after upgrade to Ruby 2.7 replace with Enumerator#produce

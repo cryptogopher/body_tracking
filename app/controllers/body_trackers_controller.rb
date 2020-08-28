@@ -13,7 +13,7 @@ class BodyTrackersController < ApplicationController
 
     # Units
     available_units = @project.units.pluck(:shortname, :id).to_h
-    defaults = Unit.where(project: nil).map do |u|
+    defaults = Unit.defaults.map do |u|
       u.attributes.except('id', 'project_id', 'created_at', 'updated_at')
     end
     defaults.delete_if { |u| available_units.has_key?(u['shortname']) }
@@ -26,7 +26,7 @@ class BodyTrackersController < ApplicationController
     # Quantities
     available_quantities = Quantity.each_with_path(@project.quantities).map(&:rotate).to_h
     quantities_count = available_quantities.length
-    defaults = Quantity.where(project: nil)
+    defaults = Quantity.defaults
     Quantity.each_with_path(defaults) do |q, path|
       unless available_quantities.has_key?(path)
         attrs = q.attributes.except('id', 'project_id', 'parent_id', 'lft', 'rgt',
@@ -56,7 +56,7 @@ class BodyTrackersController < ApplicationController
 
     # Sources
     available_sources = @project.sources.pluck(:name, :id).to_h
-    defaults = Source.where(project: nil).map do |s|
+    defaults = Source.defaults.map do |s|
       s.attributes.except('id', 'project_id', 'created_at', 'updated_at')
     end
     defaults.delete_if { |s| available_sources.has_key?(s['name']) }
