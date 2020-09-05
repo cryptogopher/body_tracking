@@ -24,7 +24,7 @@ class MealsController < ApplicationController
   def create
     @meal = @project.meals.new(meal_params)
     if @meal.save
-      flash[:notice] = 'Created new meal'
+      flash.now[:notice] = 'Created new meal'
       prepare_meals
     else
       @meal.ingredients.new if @meal.ingredients.empty?
@@ -37,7 +37,7 @@ class MealsController < ApplicationController
 
   def update
     if @meal.update(meal_params)
-      flash[:notice] = 'Updated meal'
+      flash.now[:notice] = 'Updated meal'
       prepare_meals
       render :index
     else
@@ -46,7 +46,7 @@ class MealsController < ApplicationController
   end
 
   def destroy
-    flash[:notice] = 'Deleted meal' if @meal.destroy
+    flash.now[:notice] = 'Deleted meal' if @meal.destroy
   end
 
   def edit_notes

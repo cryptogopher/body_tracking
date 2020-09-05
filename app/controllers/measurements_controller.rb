@@ -42,7 +42,7 @@ class MeasurementsController < ApplicationController
         routine.quantities << @measurement.readouts.map(&:quantity).first(6)
       end
 
-      flash[:notice] = 'Created new measurement'
+      flash.now[:notice] = 'Created new measurement'
       prepare_items
     else
       @measurement.readouts.new if @measurement.readouts.empty?
@@ -56,10 +56,11 @@ class MeasurementsController < ApplicationController
   def update
     update_routine_from_params
     if @measurement.update(measurement_params)
-      flash[:notice] = 'Updated measurement'
       if @measurement.routine.previous_changes.has_key?(:name) && @routine
+        flash[:notice] = 'Updated measurement'
         render js: "window.location.pathname='#{readouts_measurement_routine_path(@routine)}'"
       else
+        flash.now[:notice] = 'Updated measurement'
         prepare_items
         render :index
       end
@@ -70,7 +71,7 @@ class MeasurementsController < ApplicationController
 
   def destroy
     if @measurement.destroy
-      flash[:notice] = 'Deleted measurement'
+      flash.now[:notice] = 'Deleted measurement'
     end
   end
 

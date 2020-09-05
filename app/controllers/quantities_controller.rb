@@ -24,7 +24,7 @@ class QuantitiesController < ApplicationController
   def create
     @quantity = @project.quantities.new(quantity_params)
     if @quantity.save
-      flash[:notice] = 'Created new quantity'
+      flash.now[:notice] = 'Created new quantity'
       prepare_quantities
     else
       render :new
@@ -37,7 +37,7 @@ class QuantitiesController < ApplicationController
 
   def update
     if @quantity.update(quantity_params)
-      flash[:notice] = 'Updated quantity'
+      flash.now[:notice] = 'Updated quantity'
       prepare_quantities
       render :index
     else
@@ -48,7 +48,7 @@ class QuantitiesController < ApplicationController
   def destroy
     @quantity_tree = @quantity.self_and_descendants.load
     if @quantity.destroy
-      flash[:notice] = 'Deleted quantity'
+      flash.now[:notice] = 'Deleted quantity'
     end
   end
 
@@ -95,7 +95,7 @@ class QuantitiesController < ApplicationController
       @parent_quantity = @quantity.parent
       render :new_child
     end
-    flash[:notice] = 'Created new quantity'
+    flash.now[:notice] = 'Created new quantity'
     prepare_quantities
   end
 

@@ -26,7 +26,7 @@ class FoodsController < ApplicationController
   def create
     @food = @project.foods.new(food_params)
     if @food.save
-      flash[:notice] = 'Created new food'
+      flash.now[:notice] = 'Created new food'
       prepare_items
     else
       @food.nutrients.new(unit: @food.ref_unit) if @food.nutrients.empty?
@@ -39,7 +39,7 @@ class FoodsController < ApplicationController
 
   def update
     if @food.update(food_params)
-      flash[:notice] = 'Updated food'
+      flash.now[:notice] = 'Updated food'
       prepare_items
       render :index
     else

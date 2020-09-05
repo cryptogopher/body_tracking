@@ -37,7 +37,7 @@ class TargetsController < ApplicationController
 
     # :save only after build, to re-display values in case records are invalid
     if @goal.save && Target.transaction { @targets.all?(&:save) }
-      flash[:notice] = 'Created new target(s)'
+      flash.now[:notice] = 'Created new target(s)'
       # create view should only refresh targets belonging to @goal
       # e.g. by rendering to div#goal-id-targets
       prepare_targets
