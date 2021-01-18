@@ -5,11 +5,9 @@
 <div id="new-measurement">
 </div>
 
-<h2>
-  <%= link_to t("measurements.index.heading"), project_measurements_path(@project) %>
-  >
-  <%= @routine.name %>
-</h2>
+<%= title t(:body_trackers_title),
+          [t("measurements.index.heading"), project_measurements_path(@project)],
+          @routine.name %>
 <div id='readouts'>
   <%= render partial: 'measurements/readouts' %>
 </div>

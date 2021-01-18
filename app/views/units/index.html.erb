@@ -19,7 +19,7 @@
   <hr>
 </div>
 
-<h2><%= t ".heading" %></h2>
+<%= title t(:body_trackers_title), t(".heading") %>
 <% if @units.any? { |u| u.persisted? } %>
   <table class="list">
     <thead>

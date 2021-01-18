@@ -2,3 +2,4 @@ $('div[id^=flash_]').remove();
 $('div[id=errorExplanation]').remove();
 $('#content').prepend('<%= j render_flash_messages %>');
 <%= yield %>
+//$(document).prop('title', '<%= html_title %>');
