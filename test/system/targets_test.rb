@@ -21,6 +21,17 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_selector 'div#targets', visible: :yes, exact_text: t(:label_no_data)
   end
 
+  def test_index_options_add_column
+    visit project_targets_path(@project1)
+    assert_no_selector 'table#targets thead th', text: quantities(:quantities_proteins).name
+    within 'fieldset#options' do
+      select quantities(:quantities_proteins).name
+      click_on t(:button_add)
+    end
+    assert_selector 'table#targets thead th', text: quantities(:quantities_proteins).name
+  end
+
+  # TODO: rename to test_new; move checking of default values here
   def test_index_show_and_hide_new_target_form
     visit project_targets_path(@project1)
     assert_no_selector 'form#new-target-form'
@@ -77,6 +88,11 @@ class TargetsTest < BodyTrackingSystemTestCase
   # * restoring user input
   # * removing empty targets
 
+  # TODO: test edit and update separately
   def test_update
+    visit project_targets_path(@project1)
+    within 'table#targets tbody tr' do
+      click_link t(:button_edit)
+    end
   end
 end

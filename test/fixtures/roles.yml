@@ -6,6 +6,7 @@ roles_body_trackers_manager:
   permissions: |
     - :manage_body_trackers
     - :view_body_trackers
+
 roles_body_trackers_viewer:
   name: View body trackers
   builtin: false

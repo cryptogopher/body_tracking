@@ -6,3 +6,12 @@ quantities_energy:
   rgt: 2
   name: Energy
   description: Total energy
+
+quantities_proteins:
+  project_id: 1
+  domain: diet
+  parent: null
+  lft: 3
+  rgt: 4
+  name: Proteins
+  description: Total amount of proteins
