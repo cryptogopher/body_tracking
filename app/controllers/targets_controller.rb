@@ -5,11 +5,13 @@ class TargetsController < ApplicationController
 
   include Concerns::Finders
 
-  before_action :find_goal_by_project_id, only: [:index, :new, :edit]
+  before_action :find_binding_goal_by_project_id, only: [:index, :new, :edit]
+  before_action :find_project_by_project_id, only: [:create]
+  before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
   #,  if: ->{ params[:project_id].present? }
   #before_action :find_goal, only: [:index, :new],
   #  unless: -> { @goal }
-  before_action :find_project_by_project_id, only: [:create]
+  before_action :find_goal, only: [:toggle_exposure]
   before_action :authorize
   #before_action :set_view_params
 

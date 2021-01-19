@@ -21,7 +21,7 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_selector 'div#targets', visible: :yes, exact_text: t(:label_no_data)
   end
 
-  def test_index_options_add_column
+  def test_index_options_add_exposure
     visit project_targets_path(@project1)
     assert_no_selector 'table#targets thead th', text: quantities(:quantities_proteins).name
     within 'fieldset#options' do

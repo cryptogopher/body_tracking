@@ -8,7 +8,7 @@ module Concerns::Finders
     render_404
   end
 
-  def find_goal_by_project_id
+  def find_binding_goal_by_project_id
     @project = Project.find(params[:project_id])
     @goal = @project.goals.binding
   rescue ActiveRecord::RecordNotFound

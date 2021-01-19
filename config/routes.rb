@@ -9,7 +9,7 @@ resources :projects, shallow: true do
   end
   resources :goals, only: [:show, :edit] do
     member do
-      post 'toggle_exposure', to: 'goals#toggle_exposure'
+      post 'toggle_exposure', to: 'targets#toggle_exposure'
     end
   end
   resources :targets, except: [:show, :edit] do
