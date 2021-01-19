@@ -1,17 +1,6 @@
-<ul>
-  <li><%= link_to t(".link_summary"), project_body_trackers_path(@project) %></li>
-  <li>
-    <%= link_to t(".link_targets"), project_targets_path(@project) %>
-    /
-    <%#= link_to t(".link_goals"), nutrients_project_foods_path(@project) %>
-    Goals
-  </li>
-</ul>
+<h3><%= link_to t(".link_summary"), project_body_trackers_path(@project) %></h3>
 
-<h3><%= t ".heading_measurements" %></h3>
-<ul>
-  <li><%= link_to t(".link_measurements"), project_measurements_path(@project) %></li>
-</ul>
+<h3><%= link_to t(".link_measurements"), project_measurements_path(@project) %></h3>
 
 <h3><%= t ".heading_diet" %></h3>
 <ul>
@@ -25,9 +14,15 @@
 
 <h3><%= t ".heading_common" %></h3>
 <ul>
-  <li><%= link_to t(".link_sources"), project_sources_path(@project) %></li>
+  <li>
+    <%= link_to t(".link_targets"), project_targets_path(@project) %>
+    /
+    <%#= link_to t(".link_goals"), nutrients_project_foods_path(@project) %>
+    Goals
+  </li>
   <li><%= link_to t(".link_quantities"), project_quantities_path(@project) %></li>
   <li><%= link_to t(".link_units"), project_units_path(@project) %></li>
+  <li><%= link_to t(".link_sources"), project_sources_path(@project) %></li>
   <% if User.current.allowed_to?(:manage_body_trackers, @project) %>
     <li>&nbsp</li>
     <li><p><%= link_to t(".link_defaults"), defaults_project_body_trackers_path(@project),

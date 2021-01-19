@@ -75,8 +75,6 @@ en:
       exposures_available: '--- available ---'
   layouts:
     sidebar:
-      heading_body_trackers: 'Body trackers'
-      heading_measurements: 'Measurements'
       heading_diet: 'Diet'
       heading_common: 'Common'
       link_summary: 'Summary'
