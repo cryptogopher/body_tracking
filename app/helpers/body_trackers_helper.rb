@@ -58,7 +58,7 @@ module BodyTrackersHelper
     # ordered the way they were added). Hash values determine cell property:
     # * int > 0 - quantity name-labelled cell with 'int' size colspan
     # * int < 0 - quantity name-labelled cell with 'int' size rowspan
-    # * nil - non-labelled cell without col-/rowspan
+    # * 0 - non-labelled cell without col-/rowspan
     spec = []
     default_row = Hash.new(0)
 
@@ -68,16 +68,16 @@ module BodyTrackersHelper
         spec[i] ||= default_row.dup
         spec[i][a] += 1
       end
-      spec[ancestors.length...spec.length].each { |row| row[ancestors.last] = nil }
-      default_row[ancestors.last] = nil
+      spec[ancestors.length...spec.length].each { |row| row[ancestors.last] = 0 }
+      default_row[ancestors.last] = 0
     end
 
     # ...then rowspans
     single_columns = []
     spec[1..-1].each_with_index do |row, i|
       row.each do |q, span|
-        # Current span is nil and previous span == 1
-        if span.nil? && (spec[i][q] == 1)
+        # Current span is 0 and previous span == 1
+        if (span == 0) && (spec[i][q] == 1)
           spec[i][q] = -(spec.length - i)
           single_columns << q
         end

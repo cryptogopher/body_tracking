@@ -21,14 +21,14 @@
 
           <% row.each do |q, span| %>
             <% row_classes = [] %>
-            <% row_classes << 'quantity' unless i == header.length-1 %>
-            <% row_classes << 'empty' unless span %>
+            <% row_classes << 'quantity' if (i < header.length-1) && (span >= 0) %>
+            <% row_classes << 'empty' if span == 0 %>
             <th <%= raw "class=\"#{row_classes.join(' ')}\"" unless row_classes.empty? %>
-                <%= "colspan=#{span}" if span && span > 0 %>
-                <%= "rowspan=#{-span}" if span && span < 0 %>
-                style="width: <%= (span && span > 0 ? span : 1) * 100/total_width %>%;"
+                <%= "colspan=#{span}" if span > 0 %>
+                <%= "rowspan=#{-span}" if span < 0 %>
+                style="width: <%= [span, 1].max * 100/total_width %>%;"
                 title="<%= q.description %>">
-              <%= q.name if span %>
+              <%= q.name unless span == 0 %>
             </th>
           <% end %>
 
