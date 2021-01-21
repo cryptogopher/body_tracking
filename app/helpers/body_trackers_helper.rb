@@ -59,7 +59,8 @@ module BodyTrackersHelper
     # * int > 0 - quantity name-labelled cell with 'int' size colspan
     # * int < 0 - quantity name-labelled cell with 'int' size rowspan
     # * 0 - non-labelled cell without col-/rowspan
-    spec = []
+    spec = [Hash.new(0)]
+    return spec if quantities.empty?
     default_row = Hash.new(0)
 
     # Determine colspans first...

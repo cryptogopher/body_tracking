@@ -15,8 +15,9 @@
       <% header.each_with_index do |row, i| %>
         <tr class="header">
           <% if i == 0 %>
-            <th rowspan="<%= header.length %>"
-                style="width:<%= 2 * 100/total_width %>%"><%= l(:field_effective_from) %></th>
+            <th rowspan="<%= header.length %>" style="width:<%= 2 * 100/total_width %>%">
+              <%= l(:field_effective_from) %>
+            </th>
           <% end %>
 
           <% row.each do |q, span| %>
@@ -83,9 +84,12 @@
               <%= q.name %><p class="value"><%= targets.delete(q) %></p>
             </td>
           <% end %>
-          <td rowspan="<%= rows %>" class="action unwrappable"><%= action_links(date) %></td>
+          <td rowspan="<%= rows %>" class="action unwrappable">
+            <%= action_links(date) %>
+          </td>
         </tr>
 
+        <% next if @quantities.empty? %>
         <% targets.each_slice(@quantities.length) do |extras| %>
           <tr class="extra <%= row_class %>" style="display:none">
             <% extras.each do |q, t| %>

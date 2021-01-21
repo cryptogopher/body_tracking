@@ -63,7 +63,7 @@
           </td>
         </tr>
 
-        <% next unless @quantities.length > 0 %>
+        <% next if @quantities.empty? %>
         <% extra_quantities.each_slice(@quantities.length) do |eqs| %>
           <tr class="extra <%= row_class %>" style="display:none">
             <% eqs.each do |q| %>

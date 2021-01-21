@@ -31,6 +31,15 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_selector 'table#targets thead th', text: quantities(:quantities_proteins).name
   end
 
+  def test_index_table_header_close_exposure
+    visit project_targets_path(@project1)
+    within 'table#targets thead th', text: quantities(:quantities_energy).name do
+      click_link class: 'icon-close'
+    end
+    assert_no_selector 'table#targets thead th', text: quantities(:quantities_energy).name
+    assert_selector 'table#targets thead th'
+  end
+
   # TODO: rename to test_new; move checking of default values here
   def test_index_show_and_hide_new_target_form
     visit project_targets_path(@project1)
