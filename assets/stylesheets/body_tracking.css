@@ -6,10 +6,10 @@ table.list .date,
 table.list .name,
 table.list td.quantity {text-align: left;}
 /* TODO: merge with .closable and/or remove .closable */
-/* TODO: replace .quantityhead(empty) with th.quantity/.empty */
+/* TODO: replace .quantity(head)(empty) with th.interim/.empty */
 table.list .quantityhead {border-bottom: none;}
 table.list .quantityheadempty {border-top: none; border-bottom: none;}
-table.list th.quantity {border-bottom: none;}
+table.list th.interim {border-bottom: none;}
 table.list th.empty {border-top: none;}
 
 table.list .action,

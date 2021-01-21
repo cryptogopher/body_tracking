@@ -21,14 +21,26 @@
 
           <% row.each do |q, span| %>
             <% row_classes = [] %>
-            <% row_classes << 'quantity' if (i < header.length-1) && (span >= 0) %>
-            <% row_classes << 'empty' if span == 0 %>
+            <% row_classes << 'interim' if (i < header.length-1) && (span >= 0) %>
+            <% row_classes << (span == 0 ? 'empty' : 'closable ellipsible') %>
             <th <%= raw "class=\"#{row_classes.join(' ')}\"" unless row_classes.empty? %>
                 <%= "colspan=#{span}" if span > 0 %>
                 <%= "rowspan=#{-span}" if span < 0 %>
                 style="width: <%= [span, 1].max * 100/total_width %>%;"
                 title="<%= q.description %>">
-              <%= q.name unless span == 0 %>
+              <% unless span == 0 %>
+                <div style="float:right;position:relative;">
+                  <% button_classes = 'icon' %>
+                  <% if (i == header.length-1) || header[i+1].has_key?(q) || (span < -1) %>
+                    <% button_classes += ' icon-close' %>
+                  <% else %>
+                    <% button_classes += ' icon-bullet-closed' %>
+                  <% end %>
+                  <%= link_to '', toggle_exposure_goal_path(@goal, quantity_id: q.id),
+                    {class: button_classes, method: :post, remote: true} %>
+                </div>
+                <%= q.name %>
+              <% end %>
             </th>
           <% end %>
 
