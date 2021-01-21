@@ -36,6 +36,7 @@
           <% end %>
         <% end %>
         <%= link_to t(".button_delete_target"), '#', class: 'icon icon-del',
+          style: (@targets.many? ? "" : "display:none"),
           onclick: "deleteTarget(); return false;" %>
       <% end %>
       </p>

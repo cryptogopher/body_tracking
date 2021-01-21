@@ -40,10 +40,20 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_selector 'table#targets thead th'
   end
 
-  # TODO: rename to test_new; move checking of default values here
-  def test_index_show_and_hide_new_target_form
+  def test_new
     visit project_targets_path(@project1)
     assert_no_selector 'form#new-target-form'
+    click_link t('targets.contextual.link_new_target')
+    assert_selector 'form#new-target-form', count: 1
+    within 'form#new-target-form' do
+      assert has_select?(t(:field_goal), selected: t('targets.form.binding_goal'))
+      assert has_field?(t(:field_effective_from), with: Date.current.strftime)
+      assert has_no_link?(t('targets.form.button_delete_target'))
+    end
+  end
+
+  def test_new_cancel
+    visit project_targets_path(@project1)
     click_link t('targets.contextual.link_new_target')
     assert_selector 'form#new-target-form', count: 1
     click_on t(:button_cancel)
@@ -56,8 +66,6 @@ class TargetsTest < BodyTrackingSystemTestCase
       visit project_targets_path(@project1)
       click_link t('targets.contextual.link_new_target')
       within 'form#new-target-form' do
-        assert has_select?(t(:field_goal), selected: t('targets.form.binding_goal'))
-        assert has_field?(t(:field_effective_from), with: Date.current.strftime)
         within 'p.target' do
           select quantities(:quantities_energy).name
           select '=='

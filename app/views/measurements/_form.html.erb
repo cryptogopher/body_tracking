@@ -35,9 +35,8 @@
         <%= ff.number_field :value, {size: 8, step: :any, label: ''} %>
         <%= ff.select :unit_id, unit_options, {label: ''} %>
         <%= ff.hidden_field :_destroy %>
-        <%= link_to t(".button_delete_readout"), '#',
-          class: 'icon icon-del',
-          style: (@measurement.readouts.length > 1 ? "" : "display:none"),
+        <%= link_to t(".button_delete_readout"), '#', class: 'icon icon-del',
+          style: (@measurement.readouts.many? ? "" : "display:none"),
           onclick: "deleteReadout(); return false;" %>
         </p>
       <% end %>
