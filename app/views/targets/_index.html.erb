@@ -57,7 +57,7 @@
     <tbody>
       <% @targets_by_date.each do |date, targets| %>
         <% row_class = "date #{cycle('odd', 'even')}" %>
-        <tr id="date-<%= date.strftime('%Y%m%d') %>" class="primary <%= row_class %>">
+        <tr id="date-<%= date %>" class="primary <%= row_class %>">
           <td class="date unwrappable" style="cursor: pointer;"
               onclick="$(this).closest('tr').toggle();
                        $(this).closest('tr').nextUntil('tr.primary', '.date').toggle();

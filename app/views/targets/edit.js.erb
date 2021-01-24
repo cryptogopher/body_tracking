@@ -1,0 +1,7 @@
+$('tr[id=date-<%= @effective_from %>]').nextUntil('tr.primary', ':not(.date)').remove();
+var columns = $('table > thead > tr > th').length;
+$('tr[id=date-<%= @effective_from %>]').nextUntil('tr.primary').addBack().last().after(
+  '<tr><td class="form" colspan="'+columns+'"><div id="edit-target">' +
+  '<%= j render partial: 'targets/edit_form' %>' +
+  '</div></td></tr>'
+);

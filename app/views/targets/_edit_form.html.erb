@@ -1,0 +1,15 @@
+<%= labelled_form_for @targets,
+  url: project_targets_path(@project, @view_params),
+  method: :patch, remote: true,
+  html: {id: 'edit-target-form', name: 'edit-target-form'} do |f| %>
+
+  <%= render partial: 'targets/form', locals: {f: f} %>
+
+  <div class="tabular">
+    <p>
+      <%= submit_tag l(:button_save) %>
+      <%= link_to l(:button_cancel), "#",
+        onclick: '$(this).closest("tr").remove(); return false;' %>
+    </p>
+  </div>
+<% end %>

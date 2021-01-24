@@ -53,7 +53,8 @@ class TargetsController < ApplicationController
   end
 
   def edit
-    @targets = @goal.targets.where(effective_from: params[:effective_from])
+    @targets = @goal.targets.where(effective_from: params[:date]).to_a
+    @effective_from = @targets.first&.effective_from
   end
 
   def update

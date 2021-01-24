@@ -12,9 +12,10 @@ resources :projects, shallow: true do
       post 'toggle_exposure', to: 'targets#toggle_exposure'
     end
   end
-  resources :targets, except: [:show, :edit] do
+  resources :targets, except: [:show, :edit, :update] do
     collection do
       get 'edit/:date', to: 'targets#edit', as: :edit
+      patch :update
       post 'reapply/:date', to: 'targets#reapply', as: :reapply
     end
   end

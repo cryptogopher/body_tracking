@@ -101,11 +101,36 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_equal @project1.goals.binding, Target.last.goal
   end
 
+  def test_create_multiple_targets
+  end
+
   # TODO: test_create_failure(s)
   # * restoring user input
   # * removing empty targets
 
-  # TODO: test edit and update separately
+  def test_edit
+    target = Target.offset(rand(Target.count)).take
+    visit project_targets_path(@project1)
+    within find('td', text: target.effective_from.strftime).ancestor('tr') do
+      assert_no_selector 'form#edit-target-form'
+      click_link t(:button_edit)
+
+      within find(:xpath, 'following-sibling::*//form[@id="edit-target-form"]') do
+        assert has_select?(t(:field_goal), selected: target.goal.name)
+        assert has_field?(t(:field_effective_from), with: target.effective_from.strftime)
+
+        threshold = target.thresholds.first
+        within find('select option[selected]', exact_text: threshold.quantity.name)
+                 .ancestor('p') do
+          assert has_select?(selected: target.condition)
+          assert has_field?(with: threshold.value)
+          assert has_select?(selected: threshold.unit.shortname)
+        end
+      end
+    end
+    assert_selector 'form#edit-target-form', count: 1
+  end
+
   def test_update
     visit project_targets_path(@project1)
     within 'table#targets tbody tr' do
