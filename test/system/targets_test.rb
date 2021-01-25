@@ -47,7 +47,7 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_selector 'form#new-target-form', count: 1
     within 'form#new-target-form' do
       assert has_select?(t(:field_goal), selected: t('targets.form.binding_goal'))
-      assert has_field?(t(:field_effective_from), with: Date.current.strftime)
+      assert has_field?(t(:field_effective_from), with: Date.current)
       assert has_no_link?(t('targets.form.button_delete_target'))
     end
   end
@@ -79,8 +79,8 @@ class TargetsTest < BodyTrackingSystemTestCase
     t = Target.last
     assert_equal @project1.goals.binding, t.goal
     assert_equal Date.current, t.effective_from
-    assert_equal '==', t.condition
     assert_equal quantities(:quantities_energy), t.thresholds.first.quantity
+    assert_equal '==', t.condition
     assert_equal 1750, t.thresholds.first.value
     assert_equal units(:units_kcal), t.thresholds.first.unit
 
@@ -117,32 +117,59 @@ class TargetsTest < BodyTrackingSystemTestCase
   # * removing empty targets
 
   def test_edit
-    target = Target.offset(rand(Target.count)).take
+    t = Target.offset(rand(Target.count)).take
     visit project_targets_path(@project1)
-    within find('td', text: target.effective_from.strftime).ancestor('tr') do
-      assert_no_selector 'form#edit-target-form'
+    assert_no_selector 'form#edit-target-form'
+
+    within find('td', text: t.effective_from).ancestor('tr') do
       click_link t(:button_edit)
 
       within find(:xpath, 'following-sibling::*//form[@id="edit-target-form"]') do
-        assert has_select?(t(:field_goal), selected: target.goal.name)
-        assert has_field?(t(:field_effective_from), with: target.effective_from.strftime)
+        assert has_select?(t(:field_goal), selected: t.goal.name)
+        assert has_field?(t(:field_effective_from), with: t.effective_from)
 
-        threshold = target.thresholds.first
+        threshold = t.thresholds.first
         within find('select option[selected]', exact_text: threshold.quantity.name)
                  .ancestor('p') do
-          assert has_select?(selected: target.condition)
+          assert has_select?(selected: t.condition)
           assert has_field?(with: threshold.value)
           assert has_select?(selected: threshold.unit.shortname)
         end
       end
     end
+
     assert_selector 'form#edit-target-form', count: 1
   end
 
   def test_update
+    t = Target.offset(rand(Target.count)).take
+    date = t.effective_from - 1.week
+    quantity = (quantities - [t.thresholds.first.quantity]).first
+    condition = (Target::CONDITIONS - [t.condition]).first
+    value = 3*t.thresholds.first.value
+    unit = (units - [t.thresholds.first.unit]).first
     visit project_targets_path(@project1)
-    within 'table#targets tbody tr' do
-      click_link t(:button_edit)
+
+    find('td', text: t.effective_from).ancestor('tr').click_link t(:button_edit)
+    assert_no_difference ['Goal.count', 'Target.count', 'Threshold.count'] do
+      within 'form#edit-target-form' do
+        # Assume binding Goal and don't change
+        fill_in t(:field_effective_from), with: date
+        within 'p.target:nth-child(1)' do
+          select quantity.name
+          select condition
+          fill_in with: value
+          select unit.shortname
+        end
+        click_on t(:button_save)
+      end
     end
+
+    t.reload
+    assert_equal date, t.effective_from
+    assert_equal quantity, t.thresholds.first.quantity
+    assert_equal condition, t.condition
+    assert_equal value, t.thresholds.first.value
+    assert_equal unit, t.thresholds.first.unit
   end
 end
