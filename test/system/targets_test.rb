@@ -75,7 +75,15 @@ class TargetsTest < BodyTrackingSystemTestCase
         click_on t(:button_create)
       end
     end
-    assert_equal @project1.goals.binding, Target.last.goal
+
+    t = Target.last
+    assert_equal @project1.goals.binding, t.goal
+    assert_equal Date.current, t.effective_from
+    assert_equal '==', t.condition
+    assert_equal quantities(:quantities_energy), t.thresholds.first.quantity
+    assert_equal 1750, t.thresholds.first.value
+    assert_equal units(:units_kcal), t.thresholds.first.unit
+
     assert_no_selector 'form#new-target-form'
     assert_selector 'table#targets tbody tr', count: @project1.targets.count
   end
