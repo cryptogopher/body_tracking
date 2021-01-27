@@ -58,8 +58,10 @@ class TargetsController < ApplicationController
   end
 
   def update
-    goal_id = params[:goal][:id]
-    goal = goal_id.present? ? @project.goals.find(goal_id) : @project.goals.binding
+    # TODO: DRY same code with #create
+    @goal = @project.goals.find(params[:goal_id]) if params[:goal_id].present?
+    @goal ||= @project.goals.new
+    @goal.attributes = goal_params unless @goal.is_binding?
   end
 
   def destroy
