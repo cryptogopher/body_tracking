@@ -168,6 +168,18 @@ b_ac     = Quantity.create name: "RM",                   domain: :measurement, p
 b_ad     = Quantity.create name: "VF",                   domain: :measurement, parent: b_a,
                              description: "Visceral fat"
 
+# -> Target conditions
+t_a  = Quantity.create name: "below", domain: :target, parent: nil,
+                        description: "Upper bound"
+t_b  = Quantity.create name: "above", domain: :target, parent: nil,
+                        description: "Lower bound"
+t_ba = Quantity.create name: "and below", domain: :target, parent: t_b,
+                        description: "Range"
+t_c  = Quantity.create name: "equal", domain: :target, parent: nil,
+                        description: "Exact value"
+t_ca = Quantity.create name: "with accuracy of", domain: :target, parent: t_c,
+                        description: "Point range"
+
 # Formulas go at the and to make sure dependencies exist
 e_aa.create_formula  zero_nil: true, unit: u_b,
                        code: "4*Proteins + 9*Fats + 4*Carbs + 2*Fibre"
@@ -188,6 +200,13 @@ e_aea.create_formula zero_nil: true, unit: u_c,
 
 b_aaa.create_formula zero_nil: true, unit: u_ac,
                        code: "'% fat' * Weight"
+
+t_a.create_formula  zero_nil: false, code: "value <= below"
+t_b.create_formula  zero_nil: false, code: "value >= above"
+t_ba.create_formula zero_nil: false, code: "(value >= above) && (value <= 'and below')"
+t_c.create_formula  zero_nil: false, code: "value == equal"
+t_ca.create_formula zero_nil: false, code: "(value >= (equal - 'with accuracy of')) && " \
+                      "(value <= (equal + 'with accuracy of'))"
 
 # Sources
 s_a = Source.create name: "nutrition label",

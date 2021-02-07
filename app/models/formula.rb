@@ -1,6 +1,7 @@
 class Formula < ActiveRecord::Base
   include BodyTracking::FormulaBuilder
 
+  # NOTE: check if model_deps used and merge with quantity_deps if not
   attr_reader :parts, :quantity_deps, :model_deps
 
   belongs_to :quantity, inverse_of: :formula, required: true
@@ -107,16 +108,21 @@ class Formula < ActiveRecord::Base
     end
 
     quantities = []
-    identifiers.reject! do |i|
-      if q_paths.has_key?(i)
-        q = q_paths[i]
-        q.nil? ? errors << [:ambiguous_dependency, {identifier: i}] : quantities << q
+    models = []
+    identifiers.each do |i|
+      case
+      when q_paths.has_key?(i)
+        if q_paths[i].nil?
+          errors << [:ambiguous_dependency, {identifier: i}]
+        else
+          quantities << q_paths[i]
+        end
+      when quantity.target? && (i.casecmp('Value') == 0)
+      when model = i.safe_constantize
+        models << model
+      else
+        errors << [:unknown_dependency, {identifier: i}]
       end
-    end
-
-    models = identifiers.map(&:safe_constantize).compact || []
-    (identifiers - models.map(&:class_name)).each do |i|
-      errors << [:unknown_dependency, {identifier: i}]
     end
 
     @parts, @quantity_deps, @model_deps = parts, quantities, models if errors.empty?

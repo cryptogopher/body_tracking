@@ -2,18 +2,21 @@ class Quantity < ActiveRecord::Base
   enum domain: {
     diet: 0,
     measurement: 1,
-    exercise: 2
+    exercise: 2,
+    target: 3
   }
 
   acts_as_nested_set dependent: :destroy, scope: :project
   belongs_to :project, inverse_of: :quantities, required: false
   has_many :nutrients, dependent: :restrict_with_error
   has_many :readouts, dependent: :restrict_with_error
+  has_many :targets, dependent: :restrict_with_error
   has_many :thresholds, dependent: :restrict_with_error
   has_many :values, class_name: 'QuantityValue', dependent: :restrict_with_error
   has_many :exposures, dependent: :destroy
 
   scope :defaults, -> { where(project: nil) }
+  scope :except_targets, -> { where.not(domain: :target) }
 
   has_one :formula, inverse_of: :quantity, dependent: :destroy, validate: true
   accepts_nested_attributes_for :formula, allow_destroy: true,

@@ -176,9 +176,10 @@ en:
       link_new_quantity: 'New quantity'
     form:
       domains:
+        diet: 'diet'
         measurement: 'measurement'
         exercise: 'exercise'
-        diet: 'diet'
+        target: 'target'
       null_parent: '- none -'
       formula_placeholder: 'provide if value of quantity has to be computed in terms of
         other quantities'

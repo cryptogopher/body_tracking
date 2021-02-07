@@ -5,8 +5,7 @@
     {autocomplete: 'off',
      data: {remote: true,
             url: parents_project_quantities_path(@project),
-            params: "form=#{f.options[:html][:id]}"}}
-  %></p>
+            params: "form=#{f.options[:html][:id]}"}} %></p>
   <p><%= f.select :parent_id, parent_options(@quantity.domain),
     {required: true, label: :field_parent_quantity, include_blank: t('.null_parent')} %></p>
   <p><%= f.text_field :name, size: 25, required: true %></p>

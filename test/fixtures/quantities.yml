@@ -1,17 +1,49 @@
-quantities_energy:
+DEFAULTS: &DEFAULTS
   project_id: 1
-  domain: diet
   parent: null
+
+quantities_energy:
+  <<: *DEFAULTS
+  domain: diet
   lft: 1
   rgt: 2
+  depth: 0
   name: Energy
   description: Total energy
 
 quantities_proteins:
-  project_id: 1
+  <<: *DEFAULTS
   domain: diet
-  parent: null
   lft: 3
   rgt: 4
+  depth: 0
   name: Proteins
   description: Total amount of proteins
+
+quantities_target_above:
+  <<: *DEFAULTS
+  domain: target
+  lft: 5
+  rgt: 8
+  depth: 0
+  name: above
+  description: Lower bound
+
+quantities_target_range:
+  <<: *DEFAULTS
+  parent: quantities_target_above
+  domain: target
+  lft: 6
+  rgt: 7
+  depth: 1
+  name: and below
+  description: Range
+
+quantities_target_equal:
+  <<: *DEFAULTS
+  domain: target
+  lft: 9
+  rgt: 10
+  depth: 0
+  name: equal
+  description: Exact value

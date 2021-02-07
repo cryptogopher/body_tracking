@@ -28,7 +28,8 @@ Redmine::Plugin.register :body_tracking do
     permission :manage_body_trackers, {
       body_trackers: [:defaults],
       goals: [:edit],
-      targets: [:new, :create, :edit, :update, :destroy, :reapply, :toggle_exposure],
+      targets: [:new, :create, :edit, :update, :destroy, :reapply, :toggle_exposure,
+                :subthresholds],
       meals: [:new, :create, :edit, :update, :destroy, :edit_notes, :update_notes,
               :toggle_eaten, :toggle_exposure, :adjust],
       measurement_routines: [:edit],
@@ -36,7 +37,8 @@ Redmine::Plugin.register :body_tracking do
       foods: [:new, :create, :edit, :update, :destroy, :toggle, :toggle_exposure,
                     :import],
       sources: [:create, :destroy],
-      quantities: [:new, :create, :edit, :update, :destroy, :move, :new_child, :create_child],
+      quantities: [:new, :create, :edit, :update, :destroy, :move, :new_child,
+                   :create_child],
       units: [:create, :destroy],
     }, require: :loggedin
   end

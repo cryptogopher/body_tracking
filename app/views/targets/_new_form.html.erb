@@ -1,11 +1,11 @@
 <h2><%= t ".heading_new_target" %></h2>
 
-<%= labelled_form_for @targets,
+<%= labelled_form_for @goal,
   url: project_targets_path(@project, @view_params),
   remote: true,
-  html: {id: 'new-target-form', name: 'new-target-form'} do |f| %>
+  html: {id: 'new-target-form', name: 'new-target-form'} do |goal_f| %>
 
-  <%= render partial: 'targets/form', locals: {f: f} %>
+  <%= render partial: 'targets/form', locals: {goal_f: goal_f} %>
 
   <div class="tabular">
     <p>

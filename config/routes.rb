@@ -9,18 +9,20 @@ resources :projects, shallow: true do
   end
   resources :goals, only: [:show, :edit] do
     member do
-      post 'toggle_exposure', to: 'targets#toggle_exposure'
+      post 'toggle_exposure', controller: :targets
     end
   end
   resources :targets, except: [:show, :edit, :update] do
     collection do
-      get 'edit/:date', to: 'targets#edit', as: :edit
+      get 'edit/:date', action: :edit, as: :edit
       patch :update
-      post 'reapply/:date', to: 'targets#reapply', as: :reapply
+      post 'reapply/:date', action: :reapply, as: :reapply
     end
   end
   resources :ingredients, only: [] do
-    post 'adjust/:adjustment', to: 'meals#adjust', as: :adjust, on: :member
+    member do
+      post 'adjust/:adjustment', controller: :meals, action: :adjust, as: :adjust
+    end
   end
   resources :meals, except: [:show] do
     member do
@@ -34,8 +36,8 @@ resources :projects, shallow: true do
   end
   resources :measurement_routines, only: [:show, :edit] do
     member do
-      get 'readouts', to: 'measurements#readouts'
-      post 'toggle_exposure', to: 'measurements#toggle_exposure'
+      get 'readouts', controller: :measurements
+      post 'toggle_exposure', controller: :measurements
     end
   end
   resources :measurements, except: [:show] do
@@ -47,7 +49,9 @@ resources :projects, shallow: true do
     end
   end
   resources :foods, except: [:show] do
-    post 'toggle', on: :member
+    member do
+      post 'toggle'
+    end
     collection do
       get 'nutrients'
       post 'toggle_exposure'
@@ -60,8 +64,9 @@ resources :projects, shallow: true do
   resources :quantities, except: [:show] do
     member do
       get 'new_child'
+      get 'subthresholds', controller: :targets
       post 'create_child'
-      post 'move/:direction', to: 'quantities#move', as: :move
+      post 'move/:direction', action: :move, as: :move
     end
     collection do
       get 'parents'

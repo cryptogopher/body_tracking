@@ -36,17 +36,18 @@ module BodyTrackersHelper
     options_for_select(options, disabled: 0)
   end
 
-  def quantity_options(domain = :all)
+  def quantity_options(domain = :except_targets)
     Quantity.each_with_ancestors(@project.quantities.send(domain)).map do |ancestors|
       quantity = ancestors.last
       [
-        raw("#{'&ensp;' * (ancestors.length-2)}#{quantity.name}"),
+        raw('&ensp;'*(ancestors.length-2) + quantity.name),
         quantity.id,
         {'data-path' => ancestors[1..-2].reduce('::') { |m, q| "#{m}#{q.try(:name)}::" }}
       ]
     end
   end
 
+  # TODO: replace with collection_select and remove
   def unit_options
     @project.units.map do |u|
       [u.shortname, u.id]

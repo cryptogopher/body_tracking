@@ -1,0 +1,14 @@
+formulas_01:
+  quantity: quantities_target_above
+  zero_nil: false
+  code: value >= above
+
+formulas_02:
+  quantity: quantities_target_range
+  zero_nil: false
+  code: (value >= above) && (value <= 'and below')
+
+formulas_03:
+  quantity: quantities_target_equal
+  zero_nil: false
+  code: value == equal

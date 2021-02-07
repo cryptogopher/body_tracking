@@ -28,19 +28,19 @@ class BodyTrackersController < ApplicationController
     quantities_count = available_quantities.length
     defaults = Quantity.defaults
     Quantity.each_with_path(defaults) do |q, path|
-      unless available_quantities.has_key?(path)
-        attrs = q.attributes.except('id', 'project_id', 'parent_id', 'lft', 'rgt',
-                                    'created_at', 'updated_at')
-        if q.parent
-          attrs['parent'] = available_quantities[path.rpartition('::').first]
-        end
-        if q.formula
-          attrs['formula_attributes'] = q.formula.attributes
-            .except('id', 'quantity_id', 'unit_id', 'created_at', 'updated_at')
-          attrs['formula_attributes']['unit_id'] = available_units[q.formula.unit.shortname]
-        end
-        available_quantities[path] = @project.quantities.build(attrs)
+      next if available_quantities.has_key?(path)
+
+      attrs = q.attributes.except('id', 'project_id', 'parent_id', 'lft', 'rgt', 'depth',
+                                  'created_at', 'updated_at')
+      if q.parent
+        attrs['parent'] = available_quantities[path.rpartition('::').first]
       end
+      if q.formula
+        attrs['formula_attributes'] = q.formula.attributes
+          .except('id', 'quantity_id', 'unit_id', 'created_at', 'updated_at')
+        attrs['formula_attributes']['unit_id'] = available_units[q.formula.unit&.shortname]
+      end
+      available_quantities[path] = @project.quantities.build(attrs)
     end
     Quantity.transaction do
       failed_objects += available_quantities.values.reject { |o| o.persisted? || o.save }

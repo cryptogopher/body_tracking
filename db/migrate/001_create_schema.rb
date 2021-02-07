@@ -10,6 +10,8 @@ class CreateSchema <
       t.references :parent
       t.integer :lft, null: false, index: true
       t.integer :rgt, null: false, index: true
+      # TODO: remove depth (seems to be replaceable by lft)
+      t.integer :depth, null: false, default: 0
       t.timestamps null: false
     end
 
@@ -105,8 +107,8 @@ class CreateSchema <
 
     create_table :targets do |t|
       t.references :goal
+      t.references :quantity
       t.references :item, polymorphic: true
-      t.string :condition
       t.string :scope
       t.date :effective_from
       t.timestamps null: false

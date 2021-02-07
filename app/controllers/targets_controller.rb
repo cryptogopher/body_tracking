@@ -6,6 +6,7 @@ class TargetsController < ApplicationController
   include Concerns::Finders
 
   before_action :find_binding_goal_by_project_id, only: [:index, :new, :edit]
+  before_action :find_project, only: [:subthresholds]
   before_action :find_project_by_project_id, only: [:create]
   before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
   #,  if: ->{ params[:project_id].present? }
@@ -21,8 +22,9 @@ class TargetsController < ApplicationController
 
   def new
     target = @goal.targets.new
-    target.arity.times { target.thresholds.new }
+    target.thresholds.new(quantity: Quantity.target.roots.last)
     @targets = [target]
+    @effective_from = target.effective_from
   end
 
   def create
@@ -73,6 +75,15 @@ class TargetsController < ApplicationController
   def toggle_exposure
     @goal.target_exposures.toggle!(@quantity)
     prepare_targets
+  end
+
+  def subthresholds
+    quantity_id = params[:goal][:targets_attributes]
+                    .last[:thresholds_attributes][:quantity_id]
+    return if quantity_id.blank?
+
+    quantity = @project.quantities.find(quantity_id)
+    @threshold = Threshold.new(quantity: quantity)
   end
 
   private

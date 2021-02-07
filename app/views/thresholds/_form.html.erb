@@ -1,0 +1,15 @@
+<% threshold_q = threshold_f.object.quantity %>
+<% parent_id = defined?(parent) ? parent.id : threshold_q.parent_id %>
+<%= threshold_f.collection_select :quantity_id,
+                                  @project.quantities.target.children_of(parent_id),
+                                  :id, :name,
+  {prompt: parent_id.nil? ? false : '.', required: true, no_label: true},
+  {autocomplete: 'off', data: {remote: true,
+                               url: subthresholds_quantity_path(@project)}} %>
+
+<% unless threshold_q.nil? %>
+  <%= threshold_f.hidden_field :_destroy %>
+  <%= threshold_f.number_field :value, {size: 8, step: :any, no_label: true} %>
+  <%= threshold_f.collection_select :unit_id, @project.units, :id, :shortname,
+                                    {no_label: true} %>
+<% end %>
