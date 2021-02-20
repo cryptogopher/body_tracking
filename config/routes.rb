@@ -15,6 +15,7 @@ resources :projects, shallow: true do
   resources :targets, except: [:show, :edit, :update] do
     collection do
       get 'edit/:date', action: :edit, as: :edit
+      get 'subthresholds/(:parent_id)', action: :subthresholds, as: :subthresholds
       patch :update
       post 'reapply/:date', action: :reapply, as: :reapply
     end
@@ -64,7 +65,6 @@ resources :projects, shallow: true do
   resources :quantities, except: [:show] do
     member do
       get 'new_child'
-      get 'subthresholds', controller: :targets
       post 'create_child'
       post 'move/:direction', action: :move, as: :move
     end

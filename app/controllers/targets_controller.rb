@@ -1,13 +1,12 @@
 class TargetsController < ApplicationController
-  layout 'body_tracking'
+  layout 'body_tracking', except: :subthresholds
   menu_item :body_trackers
   helper :body_trackers
 
   include Concerns::Finders
 
   before_action :find_binding_goal_by_project_id, only: [:index, :new, :edit]
-  before_action :find_project, only: [:subthresholds]
-  before_action :find_project_by_project_id, only: [:create]
+  before_action :find_project_by_project_id, only: [:create, :subthresholds]
   before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
   #,  if: ->{ params[:project_id].present? }
   #before_action :find_goal, only: [:index, :new],
@@ -78,12 +77,14 @@ class TargetsController < ApplicationController
   end
 
   def subthresholds
-    quantity_id = params[:goal][:targets_attributes]
-                    .last[:thresholds_attributes][:quantity_id]
-    return if quantity_id.blank?
-
-    quantity = @project.quantities.find(quantity_id)
-    @threshold = Threshold.new(quantity: quantity)
+    @target = @project.goals.binding.targets.new
+    quantity = @project.quantities.target.find_by(id: params['quantity_id'])
+    if quantity.nil?
+      @last_quantity = @project.quantities.target.find(params[:parent_id])
+    else
+      @last_quantity = quantity
+      @target.thresholds.new(quantity: quantity)
+    end
   end
 
   private

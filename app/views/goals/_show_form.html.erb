@@ -1,3 +1,4 @@
+<%# FIXME: nie trzeba ustawiac goal_id, data-remote samo wysle %>
 <%= goal_f.collection_select :id, @project.goals, :id, :name,
   {include_blank: false, required: true, label: :field_goal},
   autocomplete: 'off',

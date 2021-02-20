@@ -1,0 +1,28 @@
+<% target_f.object.thresholds.new unless last_quantity.leaf? %>
+<%= target_f.fields_for :thresholds, child_index: '' do |threshold_f| %>
+  <% threshold_q = threshold_f.object.quantity %>
+  <% parent_id = threshold_q.nil? ? last_quantity.id : threshold_q.parent_id  %>
+  <%= threshold_f.collection_select :quantity_id,
+                                    @project.quantities.target.children_of(parent_id),
+                                    :id, :name,
+    {prompt: parent_id.nil? ? false : '.', required: true, no_label: true},
+    {autocomplete: 'off',
+     onchange: "$.ajax({
+                 url: '#{subthresholds_project_targets_path(parent_id: parent_id)}',
+                 data: 'quantity_id=' + $(this).val(),
+                 dataType: 'html',
+                 success: function(data) {
+                   $(event.target).nextAll().addBack().last().after(data).end().remove();
+                 }
+               });
+               return false;"} %>
+  <%#  {autocomplete: 'off',
+     data: {remote: true, url: subthresholds_project_targets_path(parent_id: parent_id)}} %>
+
+  <% unless threshold_q.nil? %>
+    <%= threshold_f.hidden_field :_destroy %>
+    <%= threshold_f.number_field :value, {size: 8, step: :any, no_label: true} %>
+    <%= threshold_f.collection_select :unit_id, @project.units, :id, :shortname,
+                                      {no_label: true} %>
+  <% end %>
+<% end %>

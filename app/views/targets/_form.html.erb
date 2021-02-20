@@ -22,16 +22,9 @@
         {include_blank: true, required: true, label: :field_target},
         onchange: "showQuantityPath(event);" %>
 
-      <%= target_f.fields_for :thresholds do |threshold_f| %>
-        <%= render partial: 'thresholds/form', locals: {threshold_f: threshold_f} %>
-      <% end %>
-      <% last_quantity = target_f.object.thresholds.last.quantity %>
-      <% unless last_quantity.leaf? %>
-        <%= target_f.fields_for 'thresholds_attributes', Threshold.new do |threshold_f| %>
-          <%= render partial: 'thresholds/form',
-                     locals: {threshold_f: threshold_f, parent: last_quantity} %>
-        <% end %>
-      <% end %>
+      <%= render partial: 'targets/thresholds_form',
+        locals: {target_f: target_f,
+                 last_quantity: target_f.object.thresholds.last.quantity} %>
 
       <%= link_to t(".button_delete_target"), '#', class: 'icon icon-del',
         style: (@targets.many? ? "" : "display:none"),
