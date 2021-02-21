@@ -1,4 +1,6 @@
 class Threshold < QuantityValue
+  DOMAIN = :target
+
   # Need to specify polymorphic association so :registry_type gets written (see
   # QuantityValue for explanation why it's needed)
   belongs_to :target, inverse_of: :thresholds, polymorphic: true, required: true,

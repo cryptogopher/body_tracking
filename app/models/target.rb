@@ -1,6 +1,7 @@
 class Target < ActiveRecord::Base
   belongs_to :goal, inverse_of: :targets, required: true
-  belongs_to :quantity, inverse_of: :targets, required: true
+  belongs_to :quantity, -> { where.not(domain: :target) }, inverse_of: :targets,
+    required: true
   belongs_to :item, polymorphic: true, inverse_of: :targets
   has_many :thresholds, -> { joins(:quantity).order(:lft) },
     as: :registry, inverse_of: :target, dependent: :destroy, validate: true

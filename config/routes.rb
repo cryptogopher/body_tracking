@@ -12,11 +12,10 @@ resources :projects, shallow: true do
       post 'toggle_exposure', controller: :targets
     end
   end
-  resources :targets, except: [:show, :edit, :update] do
+  resources :targets, except: [:show, :edit] do
     collection do
       get 'edit/:date', action: :edit, as: :edit
       get 'subthresholds/(:parent_id)', action: :subthresholds, as: :subthresholds
-      patch :update
       post 'reapply/:date', action: :reapply, as: :reapply
     end
   end

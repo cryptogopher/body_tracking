@@ -27,28 +27,24 @@ class TargetsController < ApplicationController
   end
 
   def create
-    @goal = @project.goals.find(params[:goal_id]) if params[:goal_id].present?
-    @goal ||= @project.goals.new
-    @goal.attributes = goal_params unless @goal.is_binding?
-
-    @targets = @goal.targets.build(targets_params[:targets]) do |target|
+    @goal = @project.goals.find_by(id: params[:goal][:id]) || @project.goals.new
+    @goal.attributes = goal_params
+    @targets = @goal.targets.build(targets_params[:targets_attributes]) do |target|
       target.effective_from = params[:target][:effective_from]
     end
+
     if @goal.target_exposures.empty?
-      @goal.quantities << @targets.map { |t| t.thresholds.first.quantity }.first(6)
+      @goal.quantities << @targets.map(&:quantity)[0..5]
     end
 
     # :save only after build, to re-display values in case records are invalid
-    if @goal.save && Target.transaction { @targets.all?(&:save) }
+    if @goal.save
       flash.now[:notice] = 'Created new target(s)'
       # create view should only refresh targets belonging to @goal
       # e.g. by rendering to div#goal-id-targets
       prepare_targets
     else
-      @targets.each do |target|
-        (target.thresholds.length...target.arity).each { target.thresholds.new }
-        target.thresholds[target.arity..-1].map(&:destroy)
-      end
+      @targets.each { |t| t.thresholds.new unless t.thresholds.present? }
       render :new
     end
   end
@@ -90,22 +86,28 @@ class TargetsController < ApplicationController
   private
 
   def goal_params
-    params.require(:goal).permit(:name, :description)
+    params.require(:goal).permit(
+      :name,
+      :description
+    )
   end
 
   def targets_params
-    params.require(:target).permit(
-      targets: [
-        :id,
-        :condition,
-        :scope,
-        thresholds_attributes: [
+    params.require(:goal).permit(
+      targets_attributes:
+        [
           :id,
           :quantity_id,
-          :value,
-          :unit_id
+          :scope,
+          :destroy,
+          thresholds_attributes: [
+            :id,
+            :quantity_id,
+            :value,
+            :unit_id,
+            :_destroy
+          ]
         ]
-      ]
     )
   end
 

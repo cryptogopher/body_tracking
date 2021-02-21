@@ -68,7 +68,7 @@ class TargetsTest < BodyTrackingSystemTestCase
       within 'form#new-target-form' do
         within 'p.target' do
           select quantities(:quantities_energy).name
-          select '=='
+          select quantities(:quantities_target_equal).name
           fill_in with: '1750'
           select units(:units_kcal).shortname
         end
@@ -79,8 +79,8 @@ class TargetsTest < BodyTrackingSystemTestCase
     t = Target.last
     assert_equal @project1.goals.binding, t.goal
     assert_equal Date.current, t.effective_from
-    assert_equal quantities(:quantities_energy), t.thresholds.first.quantity
-    assert_equal '==', t.condition
+    assert_equal quantities(:quantities_energy), t.quantity
+    assert_equal quantities(:quantities_target_equal), t.thresholds.first.quantity
     assert_equal 1750, t.thresholds.first.value
     assert_equal units(:units_kcal), t.thresholds.first.unit
 
