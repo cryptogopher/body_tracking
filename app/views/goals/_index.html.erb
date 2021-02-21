@@ -12,7 +12,7 @@
         <tr id="goal-<%= g.id %>" class="primary goal">
           <td class="name unwrappable">
             <div style="float:left;">
-              <%= checked_image g.is_binding %><%= link_to g.name, g %>
+              <%= checked_image g.is_binding %><%= link_to g.name, targets_goal_path(g) %>
             </div>
             <div style="float:right;">
               <%# TODO: display # of active targets/targeted quantities %>

@@ -5,7 +5,7 @@
 <div id="new-target">
 </div>
 
-<%= title t(:body_trackers_title), t(".heading") %>
+<%= title [t("goals.index.heading"), project_goals_path(@project)], @goal.name %>
 <div id='targets'>
   <%= render partial: 'targets/index' %>
 </div>

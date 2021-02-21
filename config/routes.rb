@@ -9,6 +9,7 @@ resources :projects, shallow: true do
   end
   resources :goals do
     member do
+      get 'targets', controller: :targets, action: :index, as: :targets
       post 'toggle_exposure', controller: :targets
     end
   end

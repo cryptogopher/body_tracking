@@ -14,7 +14,7 @@ class Goal < ActiveRecord::Base
   after_initialize do
     if new_record?
       self.is_binding = false if self.is_binding.nil?
-      self.targets.new if self.targets.empty?
+      self.targets.new if !self.is_binding && self.targets.empty?
     end
   end
 

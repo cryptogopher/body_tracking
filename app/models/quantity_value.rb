@@ -5,7 +5,10 @@ class QuantityValue < ActiveRecord::Base
   # to allow for accessing registry item without knowing QuantityValue (subitem)
   # type, e.g. qv.registry.completed_at
   belongs_to :registry, polymorphic: true
-  belongs_to :quantity, ->(qv) { where(domain: qv.class::DOMAIN) }, required: true
+  belongs_to :quantity, required: true
+  validate do
+    errors.add(:quantity, :domain_mismatch) unless self.class::DOMAIN == quantity.domain
+  end
   belongs_to :unit, required: true
 
   # Uniqueness is checked exclusively on the other end of association level.

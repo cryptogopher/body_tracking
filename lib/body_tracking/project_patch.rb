@@ -31,7 +31,7 @@ module BodyTracking::ProjectPatch
 
     has_many :goals, dependent: :destroy do
       def binding
-        find_or_create_by(is_binding: true) do |goal|
+        find_or_create_by!(is_binding: true) do |goal|
           goal.name = I18n.t('goals.binding.name')
           goal.description = I18n.t('goals.binding.description')
         end

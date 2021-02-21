@@ -1,7 +1,6 @@
 # English strings go here for Rails i18n
 en:
   body_trackers_menu_caption: 'Body trackers'
-  body_trackers_title: 'Body trackers'
   field_goal: 'Goal'
   field_target: 'Target'
   field_effective_from: 'Effective from'
@@ -50,6 +49,10 @@ en:
           attributes:
             nutrients:
               duplicated_quantity: 'you can define each nutrient quantity only once per food'
+        threshold:
+          attributes:
+            quantity:
+              domain_mismatch: 'domain has to match model domain'
         quantity:
           attributes:
             parent:

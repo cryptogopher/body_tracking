@@ -5,8 +5,7 @@
 <div id="new-measurement">
 </div>
 
-<%= title t(:body_trackers_title),
-          [t("measurements.index.heading"), project_measurements_path(@project)],
+<%= title [t("measurements.index.heading"), project_measurements_path(@project)],
           @routine.name %>
 <div id='readouts'>
   <%= render partial: 'measurements/readouts' %>

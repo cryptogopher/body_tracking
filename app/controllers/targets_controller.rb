@@ -5,13 +5,13 @@ class TargetsController < ApplicationController
 
   include Concerns::Finders
 
-  before_action :find_binding_goal_by_project_id, only: [:index, :new, :edit]
+  before_action :find_binding_goal_by_project_id, only: [:new, :edit]
   before_action :find_project_by_project_id, only: [:create, :subthresholds]
   before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
   #,  if: ->{ params[:project_id].present? }
   #before_action :find_goal, only: [:index, :new],
   #  unless: -> { @goal }
-  before_action :find_goal, only: [:toggle_exposure]
+  before_action :find_goal, only: [:index, :toggle_exposure]
   before_action :authorize
   #before_action :set_view_params
 
@@ -104,7 +104,7 @@ class TargetsController < ApplicationController
     @quantities = @goal.quantities.includes(:formula)
 
     @targets_by_date = Hash.new { |h,k| h[k] = {} }
-    @project.targets.includes(:item, thresholds: [:quantity]).reject(&:new_record?)
+    @goal.targets.includes(:item, thresholds: [:quantity]).reject(&:new_record?)
       .each { |t| @targets_by_date[t.effective_from][t.thresholds.first.quantity] = t }
   end
 
