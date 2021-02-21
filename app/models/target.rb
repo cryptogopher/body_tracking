@@ -11,17 +11,20 @@ class Target < ActiveRecord::Base
     reject_if: proc { |attrs| attrs['quantity_id'].blank? && attrs['value'].blank? }
   validate do
     quantities = thresholds.map(&:quantity)
-    ancestors = quantities.max_by(:lft).self_and_ancestors
+    ancestors = quantities.max_by(&:lft).self_and_ancestors
     errors.add(:thresholds, :count_mismatch) unless quantities.length == ancestors.length
     errors.add(:thresholds, :quantity_mismatch) unless quantities == ancestors
   end
-  validates :scope, inclusion: {in: [:ingredient, :meal, :day], if: -> { quantity.diet? }}
+  #validates :scope, inclusion: {in: [:ingredient, :meal, :day], if: -> { quantity&.diet? }}
   validates :effective_from, presence: {if: :is_binding?}, absence: {unless: :is_binding?}
 
   after_initialize do
     if new_record?
       # Target should be only instantiated through Goal, so :is_binding? will be available
       self.effective_from ||= Date.current if is_binding?
+      if self.thresholds.empty?
+        self.thresholds.new(quantity: self.goal.project.quantities.target.first)
+      end
     end
   end
 

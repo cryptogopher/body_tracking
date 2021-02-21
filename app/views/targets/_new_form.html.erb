@@ -4,7 +4,10 @@
 <%= labelled_form_for [@project, @goal], remote: true,
   html: {id: 'new-target-form', name: 'new-target-form'} do |goal_f| %>
 
-  <%= render partial: 'targets/form', locals: {goal_f: goal_f} %>
+  <%= error_messages_for *@targets %>
+  <div class="box tabular">
+    <%= render partial: 'targets/form', locals: {goal_f: goal_f} %>
+  </div>
 
   <div class="tabular">
     <p>

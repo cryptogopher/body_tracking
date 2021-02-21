@@ -1,0 +1,13 @@
+<div class="contextual">
+  <%= link_to_if User.current.allowed_to?(:manage_body_trackers, @project),
+    t(".link_new_goal"), new_project_goal_path(@project),
+    {remote: true, class: 'icon icon-add'} %>
+</div>
+
+<div id="new-goal">
+</div>
+
+<%= title t(:body_trackers_title), t(".heading") %>
+<div id='goals'>
+  <%= render partial: 'goals/index' %>
+</div>

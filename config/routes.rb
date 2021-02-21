@@ -7,7 +7,7 @@ resources :projects, shallow: true do
       post 'defaults'
     end
   end
-  resources :goals, only: [:show, :edit] do
+  resources :goals do
     member do
       post 'toggle_exposure', controller: :targets
     end

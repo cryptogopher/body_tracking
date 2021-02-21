@@ -1,42 +1,30 @@
-<%= error_messages_for *@targets %>
+<% if goal_f.object.is_binding? %>
+  <p>
+  <%= date_field :effective_from, value: @effective_from %>
+  </p>
+<% end %>
 
-<div class="box">
-  <div id='goal-form' class="tabular">
-    <% if goal_f.object.persisted? %>
-      <p><%= render partial: 'goals/show_form', locals: {goal_f: goal_f} %></p>
-      <p><%= goal_f.date_field :effective_from, value: @effective_from,
-        disabled: !goal_f.object.is_binding? %></p>
-    <% else %>
-      <%= render partial: 'goals/form' %>
-    <% end %>
-  </div>
+<%= goal_f.fields_for :targets, @targets, child_index: '' do |target_f| %>
+  <p class="target">
+  <%= target_f.hidden_field :_destroy %>
+  <em class="info"><%= t ".choose_quantity" %></em>
+  <%= target_f.select :quantity_id, quantity_options,
+    {include_blank: true, required: true, label: :field_target},
+    onchange: "showQuantityPath(event);" %>
 
-  <hr style="width: 95%;">
+  <%= render partial: 'targets/thresholds_form',
+    locals: {target_f: target_f,
+             last_quantity: target_f.object.thresholds.last.quantity} %>
 
-  <div class="tabular">
-    <p class="target">
-    <%= goal_f.fields_for :targets, @targets, child_index: '' do |target_f| %>
-      <%= target_f.hidden_field :_destroy %>
-      <em class="info"><%= t ".choose_quantity" %></em>
-      <%= target_f.select :quantity_id, quantity_options,
-        {include_blank: true, required: true, label: :field_target},
-        onchange: "showQuantityPath(event);" %>
-
-      <%= render partial: 'targets/thresholds_form',
-        locals: {target_f: target_f,
-                 last_quantity: target_f.object.thresholds.last.quantity} %>
-
-      <%= link_to t(".button_delete_target"), '#', class: 'icon icon-del',
-        style: (@targets.many? ? "" : "display:none"),
-        onclick: "deleteTarget(); return false;" %>
-    <% end %>
-    </p>
-    <p>
-    <%= link_to t(".button_new_target"), '#', class: 'icon icon-add',
-      onclick: 'newTarget(); return false;' %>
-    </p>
-  </div>
-</div>
+  <%= link_to t(".button_delete_target"), '#', class: 'icon icon-del',
+    style: (@targets.many? ? "" : "display:none"),
+    onclick: "deleteTarget(); return false;" %>
+  </p>
+<% end %>
+<p>
+<%= link_to t(".button_new_target"), '#', class: 'icon icon-add',
+  onclick: 'newTarget(); return false;' %>
+</p>
 
 <%= javascript_tag do %>
   function showQuantityPath(event) {

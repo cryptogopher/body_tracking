@@ -33,10 +33,6 @@ class TargetsController < ApplicationController
       target.effective_from = params[:target][:effective_from]
     end
 
-    if @goal.target_exposures.empty?
-      @goal.quantities << @targets.map(&:quantity)[0..5]
-    end
-
     # :save only after build, to re-display values in case records are invalid
     if @goal.save
       flash.now[:notice] = 'Created new target(s)'
@@ -84,13 +80,6 @@ class TargetsController < ApplicationController
   end
 
   private
-
-  def goal_params
-    params.require(:goal).permit(
-      :name,
-      :description
-    )
-  end
 
   def targets_params
     params.require(:goal).permit(

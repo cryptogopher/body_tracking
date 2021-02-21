@@ -89,11 +89,20 @@ en:
       link_units: 'Units'
       link_defaults: 'Load defaults'
       confirm_defaults: 'This will load default data sources, quantities and units. Continue?'
+  goals:
+    binding:
+      name: 'Binding goal'
+      description: 'Targets from this goal are applied throughout application'
+    form:
+    new_form:
+      heading_new_goal: 'New goal'
+    index:
+      heading: 'Goals'
+      link_new_goal: 'New goal'
   targets:
     contextual:
       link_new_target: 'New target'
     form:
-      binding_goal: '- binding -'
       choose_quantity: 'Choose quantity'
       button_new_target: 'Add target'
       button_delete_target: 'Delete'

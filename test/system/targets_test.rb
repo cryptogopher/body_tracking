@@ -46,7 +46,7 @@ class TargetsTest < BodyTrackingSystemTestCase
     click_link t('targets.contextual.link_new_target')
     assert_selector 'form#new-target-form', count: 1
     within 'form#new-target-form' do
-      assert has_select?(t(:field_goal), selected: t('targets.form.binding_goal'))
+      assert has_select?(t(:field_goal), selected: t('goals.binding.name'))
       assert has_field?(t(:field_effective_from), with: Date.current)
       assert has_no_link?(t('targets.form.button_delete_target'))
     end

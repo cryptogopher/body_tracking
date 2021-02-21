@@ -1,0 +1,16 @@
+<h2><%= t ".heading_new_goal" %></h2>
+
+<%= labelled_form_for [@project, @goal], remote: true,
+  html: {id: 'new-goal-form', name: 'new-goal-form'} do |goal_f| %>
+
+  <%= render partial: 'goals/form', locals: {goal_f: goal_f} %>
+
+  <div class="tabular">
+    <p>
+      <%= submit_tag l(:button_create) %>
+      <%= link_to l(:button_cancel), "#",
+        onclick: "$('#new-goal').empty(); return false;" %>
+    </p>
+  </div>
+<% end %>
+<hr>

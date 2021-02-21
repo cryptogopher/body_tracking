@@ -17,8 +17,7 @@
   <li>
     <%= link_to t(".link_targets"), project_targets_path(@project) %>
     /
-    <%#= link_to t(".link_goals"), nutrients_project_foods_path(@project) %>
-    Goals
+    <%= link_to t(".link_goals"), project_goals_path(@project) %>
   </li>
   <li><%= link_to t(".link_quantities"), project_quantities_path(@project) %></li>
   <li><%= link_to t(".link_units"), project_units_path(@project) %></li>

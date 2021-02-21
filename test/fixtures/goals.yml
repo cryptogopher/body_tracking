@@ -1,7 +1,8 @@
 goals_binding:
   project_id: 1
   is_binding: true
-  name: "<%= I18n.t 'targets.form.binding_goal' %>"
+  name: "<%= I18n.t 'goals.binding.name' %>"
+  description: "<%= I18n.t 'goals.binding.description' %>"
 
 goals_non_binding:
   project_id: 1

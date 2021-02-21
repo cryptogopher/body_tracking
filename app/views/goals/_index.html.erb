@@ -1,0 +1,32 @@
+<% if @goals.any? %>
+  <table id="goals" class="list odd-even">
+    <thead>
+      <tr>
+        <th><%= l(:field_name) %></th>
+        <th><%= l(:field_description) %></th>
+        <th style="width:5%"><%= l(:field_action) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @goals.each do |g| %>
+        <tr id="goal-<%= g.id %>" class="primary goal">
+          <td class="name unwrappable">
+            <div style="float:left;">
+              <%= checked_image g.is_binding %><%= link_to g.name, g %>
+            </div>
+            <div style="float:right;">
+              <%# TODO: display # of active targets/targeted quantities %>
+              <small><%#= " (#{pluralize(m.readouts.size, 'readout')})" %></small>
+            </div>
+          </td>
+          <td class="description ellipsible"><%= g.description %></td>
+          <td class="action unwrappable">
+            <%= delete_link(g, {remote: true, data: {}}) unless g.is_binding %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>

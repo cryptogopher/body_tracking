@@ -1,13 +1,10 @@
-<div class="tabular">
-  <%= fields_for 'measurement[routine_attributes]', routine do |ff| %>
-    <%= ff.hidden_field :id %>
-    <p>
-    <label><%= l(:field_name) %><span class="required"> *</span></label>
-    <%= ff.text_field :name, required: true, style: "width: 95%;" %>
-    </p>
-    <p>
-    <label><%= l(:field_description) %></label>
-    <%= ff.text_area :description, cols: 40, rows: 3, style: "width: 95%;" %>
-    </p>
-  <% end %>
+<%= error_messages_for @goal %>
+
+<div class="box tabular">
+  <p><%= goal_f.text_field :name, required: true, style: "width: 95%;" %></p>
+  <p><%= goal_f.text_area :description, rows: 3, style: "width: 95%;" %></p>
+
+  <hr style="width: 95%;">
+
+  <%= render partial: 'targets/form', locals: {goal_f: goal_f} %>
 </div>
