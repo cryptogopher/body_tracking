@@ -5,10 +5,10 @@
   <%= threshold_f.collection_select :quantity_id,
                                     @project.quantities.target.children_of(parent_id),
                                     :id, :name,
-    {prompt: parent_id.nil? ? false : '.', required: true, no_label: true},
+    {include_blank: parent_id.nil? ? false : '.', required: true, no_label: true},
     {autocomplete: 'off',
      onchange: "$.ajax({
-                 url: '#{subthresholds_project_targets_path(parent_id: parent_id)}',
+                 url: '#{subthresholds_goal_targets_path(@goal, parent_id: parent_id)}',
                  data: 'quantity_id=' + $(this).val(),
                  dataType: 'html',
                  success: function(data) {

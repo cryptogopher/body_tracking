@@ -1,6 +1,6 @@
 <% if goal_f.object.is_binding? %>
   <p>
-  <%= date_field :effective_from, value: @effective_from %>
+  <%= goal_f.date_field :effective_from, value: @effective_from, required: true %>
   </p>
 <% end %>
 

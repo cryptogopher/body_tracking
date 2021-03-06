@@ -104,7 +104,7 @@ en:
       link_new_goal: 'New goal'
   targets:
     contextual:
-      link_new_target: 'New target'
+      link_new_target: 'New target(s)'
     form:
       choose_quantity: 'Choose quantity'
       button_new_target: 'Add target'

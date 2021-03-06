@@ -2,7 +2,7 @@
   <table id="goals" class="list odd-even">
     <thead>
       <tr>
-        <th><%= l(:field_name) %></th>
+        <th style="width:20%"><%= l(:field_name) %></th>
         <th><%= l(:field_description) %></th>
         <th style="width:5%"><%= l(:field_action) %></th>
       </tr>
@@ -12,7 +12,7 @@
         <tr id="goal-<%= g.id %>" class="primary goal">
           <td class="name unwrappable">
             <div style="float:left;">
-              <%= checked_image g.is_binding %><%= link_to g.name, targets_goal_path(g) %>
+              <%= checked_image g.is_binding %><%= link_to g.name, goal_targets_path(g) %>
             </div>
             <div style="float:right;">
               <%# TODO: display # of active targets/targeted quantities %>

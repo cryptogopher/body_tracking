@@ -9,14 +9,18 @@ resources :projects, shallow: true do
   end
   resources :goals do
     member do
-      get 'targets', controller: :targets, action: :index, as: :targets
+      #get 'targets', controller: :targets, action: :index, as: :targets
       post 'toggle_exposure', controller: :targets
+    end
+    resources :targets, only: [:index] do
+      collection do
+        get 'subthresholds/(:parent_id)', action: :subthresholds, as: :subthresholds
+      end
     end
   end
   resources :targets, except: [:show, :edit] do
     collection do
       get 'edit/:date', action: :edit, as: :edit
-      get 'subthresholds/(:parent_id)', action: :subthresholds, as: :subthresholds
       post 'reapply/:date', action: :reapply, as: :reapply
     end
   end

@@ -6,6 +6,9 @@
 </div>
 
 <%= title [t("goals.index.heading"), project_goals_path(@project)], @goal.name %>
+<% if @goal.description? %>
+  <p class="subtitle" style='white-space: pre-wrap;'><%= @goal.description %></p>
+<% end %>
 <div id='targets'>
   <%= render partial: 'targets/index' %>
 </div>

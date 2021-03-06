@@ -6,12 +6,13 @@ class TargetsController < ApplicationController
   include Concerns::Finders
 
   before_action :find_binding_goal_by_project_id, only: [:new, :edit]
-  before_action :find_project_by_project_id, only: [:create, :subthresholds]
+  before_action :find_project_by_project_id, only: [:create]
   before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
   #,  if: ->{ params[:project_id].present? }
   #before_action :find_goal, only: [:index, :new],
   #  unless: -> { @goal }
-  before_action :find_goal, only: [:index, :toggle_exposure]
+  before_action :find_goal_by_goal_id, only: [:index, :subthresholds]
+  before_action :find_goal, only: [:toggle_exposure]
   before_action :authorize
   #before_action :set_view_params
 
@@ -21,7 +22,6 @@ class TargetsController < ApplicationController
 
   def new
     target = @goal.targets.new
-    target.thresholds.new(quantity: Quantity.target.roots.last)
     @targets = [target]
     @effective_from = target.effective_from
   end
@@ -69,13 +69,14 @@ class TargetsController < ApplicationController
   end
 
   def subthresholds
-    @target = @project.goals.binding.targets.new
-    quantity = @project.quantities.target.find_by(id: params['quantity_id'])
+    @target = @goal.targets.new
+    quantity = @project.quantities.target.find_by(id: params[:quantity_id])
     if quantity.nil?
       @last_quantity = @project.quantities.target.find(params[:parent_id])
+      @target.thresholds.clear
     else
       @last_quantity = quantity
-      @target.thresholds.new(quantity: quantity)
+      @target.thresholds.first.quantity = quantity
     end
   end
 
