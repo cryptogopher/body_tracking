@@ -7,10 +7,11 @@ class TargetsTest < BodyTrackingSystemTestCase
     log_user 'jsmith', 'jsmith'
   end
 
-  def test_index
-    assert_not_equal 0, @project1.targets.count
-    visit project_targets_path(@project1)
-    assert_selector 'table#targets tbody tr', count: @project1.targets.count
+  def test_index_binding_targets
+    goal = @project1.goals.binding
+    assert_not_equal 0, goal.targets.count
+    visit goal_targets_path(goal)
+    assert_selector 'table#targets tbody tr', count: goal.targets.count
   end
 
   def test_index_without_targets
