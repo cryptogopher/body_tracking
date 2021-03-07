@@ -12,4 +12,12 @@ class GoalsTest < BodyTrackingSystemTestCase
     visit project_goals_path(@project1)
     assert_selector 'table#goals tbody tr', count: @project1.goals.count
   end
+
+  def test_index_without_goals
+    @project1.goals.delete_all
+    assert_equal 0, @project1.goals.count
+    visit project_goals_path(@project1)
+    assert_current_path project_goals_path(@project1)
+    assert_selector 'div#goals', visible: :yes, exact_text: t(:label_no_data)
+  end
 end
