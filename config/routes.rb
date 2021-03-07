@@ -7,23 +7,19 @@ resources :projects, shallow: true do
       post 'defaults'
     end
   end
-  resources :goals do
+  resources :goals, except: [:show] do
     member do
-      #get 'targets', controller: :targets, action: :index, as: :targets
       post 'toggle_exposure', controller: :targets
     end
-    resources :targets, only: [:index] do
+    resources :targets, shallow: true, except: [:show, :edit, :update] do
       collection do
-        get 'subthresholds/(:parent_id)', action: :subthresholds, as: :subthresholds
+        get 'edit/:date', action: :edit, as: :edit
+        post 'reapply/:date', action: :reapply, as: :reapply
       end
     end
   end
-  resources :targets, except: [:show, :edit] do
-    collection do
-      get 'edit/:date', action: :edit, as: :edit
-      post 'reapply/:date', action: :reapply, as: :reapply
-    end
-  end
+  get 'subthresholds/(:parent_id)', controller: :targets, action: :subthresholds,
+    as: :subthresholds
   resources :ingredients, only: [] do
     member do
       post 'adjust/:adjustment', controller: :meals, action: :adjust, as: :adjust

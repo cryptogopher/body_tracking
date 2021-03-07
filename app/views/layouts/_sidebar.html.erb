@@ -15,7 +15,7 @@
 <h3><%= t ".heading_common" %></h3>
 <ul>
   <li>
-    <%= link_to t(".link_targets"), project_targets_path(@project) %>
+    <%= link_to t(".link_targets"), goal_targets_path(@project.goals.binding) %>
     /
     <%= link_to t(".link_goals"), project_goals_path(@project) %>
   </li>

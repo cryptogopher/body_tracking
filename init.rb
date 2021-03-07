@@ -15,7 +15,7 @@ Redmine::Plugin.register :body_tracking do
   project_module :body_tracking do
     permission :view_body_trackers, {
       body_trackers: [:index],
-      goals: [:index, :show],
+      goals: [:index],
       targets: [:index],
       meals: [:index],
       measurement_routines: [:show],
@@ -27,7 +27,7 @@ Redmine::Plugin.register :body_tracking do
     }, read: true
     permission :manage_body_trackers, {
       body_trackers: [:defaults],
-      goals: [:new, :create, :edit],
+      goals: [:new, :create, :edit, :update],
       targets: [:new, :create, :edit, :update, :destroy, :reapply, :toggle_exposure,
                 :subthresholds],
       meals: [:new, :create, :edit, :update, :destroy, :edit_notes, :update_notes,

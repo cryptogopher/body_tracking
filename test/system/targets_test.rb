@@ -63,7 +63,7 @@ class TargetsTest < BodyTrackingSystemTestCase
   def test_create_binding_target
     assert_difference 'Goal.count' => 0, 'Target.count' => 1,
                       '@project1.targets.reload.count' => 1, 'Threshold.count' => 1 do
-      visit project_targets_path(@project1)
+      visit goal_targets_path(@project1.goals.binding)
       click_link t('targets.contextual.link_new_target')
       within 'form#new-target-form' do
         within 'p.target' do

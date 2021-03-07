@@ -1,5 +1,5 @@
 class Threshold < QuantityValue
-  DOMAIN = :target
+  DOMAIN = "target"
 
   # Need to specify polymorphic association so :registry_type gets written (see
   # QuantityValue for explanation why it's needed)

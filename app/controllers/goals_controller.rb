@@ -6,7 +6,7 @@ class GoalsController < ApplicationController
   include Concerns::Finders
 
   before_action :find_project_by_project_id, only: [:index, :new, :create]
-  before_action :find_goal, only: [:show, :edit]
+  before_action :find_goal, only: [:edit, :update]
   before_action :authorize
 
   def index
@@ -29,10 +29,16 @@ class GoalsController < ApplicationController
     end
   end
 
-  def show
+  def edit
   end
 
-  def edit
+  def update
+    if @goal.update(params.require(:goal).permit(:name, :description))
+      flash.now[:notice] = 'Updated goal'
+      @goals = @project.goals
+    else
+      render :new
+    end
   end
 
   private

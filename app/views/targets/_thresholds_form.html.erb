@@ -8,7 +8,7 @@
     {include_blank: parent_id.nil? ? false : '.', required: true, no_label: true},
     {autocomplete: 'off',
      onchange: "$.ajax({
-                 url: '#{subthresholds_goal_targets_path(@goal, parent_id: parent_id)}',
+                 url: '#{project_subthresholds_path(@project, parent_id: parent_id)}',
                  data: 'quantity_id=' + $(this).val(),
                  dataType: 'html',
                  success: function(data) {

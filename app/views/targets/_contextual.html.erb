@@ -1,5 +1,4 @@
 <% if User.current.allowed_to?(:manage_body_trackers, @project) %>
-  <%= link_to t(".link_new_target"),
-    new_project_target_path(@project, @view_params),
+  <%= link_to t(".link_new_target"), new_goal_target_path(@goal, @view_params),
     {remote: true, class: 'icon icon-add'} %>
 <% end %>

@@ -5,13 +5,10 @@ class TargetsController < ApplicationController
 
   include Concerns::Finders
 
-  before_action :find_binding_goal_by_project_id, only: [:new, :edit]
-  before_action :find_project_by_project_id, only: [:create]
+  before_action :find_binding_goal_by_project_id, only: [:edit]
+  before_action :find_project_by_project_id, only: [:subthresholds]
   before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
-  #,  if: ->{ params[:project_id].present? }
-  #before_action :find_goal, only: [:index, :new],
-  #  unless: -> { @goal }
-  before_action :find_goal_by_goal_id, only: [:index, :subthresholds]
+  before_action :find_goal_by_goal_id, only: [:index, :new, :create]
   before_action :find_goal, only: [:toggle_exposure]
   before_action :authorize
   #before_action :set_view_params
@@ -27,19 +24,14 @@ class TargetsController < ApplicationController
   end
 
   def create
-    @goal = @project.goals.find_by(id: params[:goal][:id]) || @project.goals.new
-    @goal.attributes = goal_params
-    @targets = @goal.targets.build(targets_params[:targets_attributes]) do |target|
-      target.effective_from = params[:target][:effective_from]
-    end
+    @effective_from = params[:goal].delete(:effective_from)
+    params[:goal][:targets_attributes].each { |ta| ta[:effective_from] = @effective_from }
 
-    # :save only after build, to re-display values in case records are invalid
-    if @goal.save
+    if @goal.update(targets_params)
       flash.now[:notice] = 'Created new target(s)'
-      # create view should only refresh targets belonging to @goal
-      # e.g. by rendering to div#goal-id-targets
       prepare_targets
     else
+      @targets = @goal.targets.select(&:changed_for_autosave?)
       @targets.each { |t| t.thresholds.new unless t.thresholds.present? }
       render :new
     end
@@ -69,7 +61,7 @@ class TargetsController < ApplicationController
   end
 
   def subthresholds
-    @target = @goal.targets.new
+    @target = @project.goals.binding.targets.new
     quantity = @project.quantities.target.find_by(id: params[:quantity_id])
     if quantity.nil?
       @last_quantity = @project.quantities.target.find(params[:parent_id])
