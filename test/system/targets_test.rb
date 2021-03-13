@@ -7,18 +7,19 @@ class TargetsTest < BodyTrackingSystemTestCase
     log_user 'jsmith', 'jsmith'
   end
 
-  def test_index_binding_targets
+  def test_index_binding_goal
     goal = @project1.goals.binding
     assert_not_equal 0, goal.targets.count
     visit goal_targets_path(goal)
     assert_selector 'table#targets tbody tr', count: goal.targets.count
   end
 
-  def test_index_without_targets
-    @project1.goals.delete_all
-    assert_equal 0, @project1.targets.count
-    visit project_targets_path(@project1)
-    assert_current_path project_targets_path(@project1)
+  def test_index_binding_goal_without_targets
+    goal = @project1.goals.binding
+    goal.targets.delete_all
+    assert_equal 0, goal.targets.count
+    visit goal_targets_path(goal)
+    assert_current_path goal_targets_path(goal)
     assert_selector 'div#targets', visible: :yes, exact_text: t(:label_no_data)
   end
 

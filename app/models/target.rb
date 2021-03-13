@@ -1,5 +1,6 @@
 class Target < ActiveRecord::Base
   belongs_to :goal, inverse_of: :targets, required: true
+  has_one :project, through: :goal, inverse_of: :targets
   belongs_to :quantity, -> { where.not(domain: :target) }, inverse_of: :targets,
     required: true
   belongs_to :item, polymorphic: true, inverse_of: :targets

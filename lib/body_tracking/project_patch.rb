@@ -29,7 +29,7 @@ module BodyTracking::ProjectPatch
     has_many :meal_quantities, -> { order "lft" }, through: :meal_exposures,
       source: 'quantity'
 
-    has_many :goals, dependent: :destroy do
+    has_many :goals, inverse_of: :project, dependent: :destroy do
       def binding
         find_or_create_by!(is_binding: true) do |goal|
           goal.name = I18n.t('goals.binding.name')
@@ -37,6 +37,6 @@ module BodyTracking::ProjectPatch
         end
       end
     end
-    has_many :targets, through: :goals
+    has_many :targets, through: :goals, inverse_of: :project
   end
 end
