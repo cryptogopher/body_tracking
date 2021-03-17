@@ -24,7 +24,7 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_index_options_add_exposure
-    visit project_targets_path(@project1)
+    visit goal_targets_path(@project1.goals.binding)
     assert_no_selector 'table#targets thead th', text: quantities(:quantities_proteins).name
     within 'fieldset#options' do
       select quantities(:quantities_proteins).name
@@ -34,7 +34,7 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_index_table_header_close_exposure
-    visit project_targets_path(@project1)
+    visit goal_targets_path(@project1.goals.binding)
     within 'table#targets thead th', text: quantities(:quantities_energy).name do
       click_link class: 'icon-close'
     end
@@ -42,20 +42,20 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_selector 'table#targets thead th'
   end
 
-  def test_new
-    visit project_targets_path(@project1)
+  def test_new_binding_target
+    visit goal_targets_path(@project1.goals.binding)
     assert_no_selector 'form#new-target-form'
     click_link t('targets.contextual.link_new_target')
     assert_selector 'form#new-target-form', count: 1
     within 'form#new-target-form' do
-      assert has_select?(t(:field_goal), selected: t('goals.binding.name'))
-      assert has_field?(t(:field_effective_from), with: Date.current)
+      assert has_field?(t(:field_effective_from), with: Date.current, count: 1)
       assert has_no_link?(t('targets.form.button_delete_target'))
     end
+    assert has_link?(t('targets.form.button_new_target'), count: 1)
   end
 
   def test_new_cancel
-    visit project_targets_path(@project1)
+    visit goal_targets_path(@project1.goals.binding)
     click_link t('targets.contextual.link_new_target')
     assert_selector 'form#new-target-form', count: 1
     click_on t(:button_cancel)

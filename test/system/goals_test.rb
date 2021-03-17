@@ -20,4 +20,15 @@ class GoalsTest < BodyTrackingSystemTestCase
     assert_current_path project_goals_path(@project1)
     assert_selector 'div#goals', visible: :yes, exact_text: t(:label_no_data)
   end
+
+  def test_new
+    # Only non-binding goals can be created
+  end
+
+  def test_new_cancel
+  end
+
+  def test_create
+    # Only non-binding goals can be created
+  end
 end
