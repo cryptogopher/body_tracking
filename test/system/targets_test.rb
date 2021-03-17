@@ -95,13 +95,12 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_equal 0, @project1.goals.count(&:is_binding?)
     assert_difference ['Goal.count', '@project1.goals.reload.count(&:is_binding?)',
                        '@project1.targets.reload.count'], 1 do
-      visit project_targets_path(@project1)
+      visit goal_targets_path(@project1.goals.binding)
       click_link t('targets.contextual.link_new_target')
       within 'form#new-target-form' do
-        # Assume binding Goal is selected by default
         within 'p.target' do
           select quantities(:quantities_energy).name
-          select '=='
+          select quantities(:quantities_target_equal).name
           fill_in with: '1750'
           select units(:units_kcal).shortname
         end
