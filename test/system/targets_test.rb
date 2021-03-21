@@ -45,11 +45,13 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_index_table_header_close_exposure
+    quantity = @project.goals.binding.exposures.sample.quantity
+
     visit goal_targets_path(@project.goals.binding)
-    within 'table#targets thead th', text: quantities(:quantities_energy).name do
+    within 'table#targets thead th', text: quantity.name do
       click_link class: 'icon-close'
     end
-    assert_no_selector 'table#targets thead th', text: quantities(:quantities_energy).name
+    assert_no_selector 'table#targets thead th', text: quantity.name
     assert_selector 'table#targets thead th'
   end
 

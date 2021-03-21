@@ -56,7 +56,7 @@ class TargetsController < ApplicationController
   end
 
   def toggle_exposure
-    @goal.target_exposures.toggle!(@quantity)
+    @goal.exposures.toggle!(@quantity)
     prepare_targets
   end
 

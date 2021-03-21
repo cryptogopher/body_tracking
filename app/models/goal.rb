@@ -2,9 +2,9 @@ class Goal < ActiveRecord::Base
   belongs_to :project, required: true
   has_many :targets, -> { order effective_from: :desc }, inverse_of: :goal,
     dependent: :destroy, extend: BodyTracking::ItemsWithQuantities
-  has_many :target_exposures, as: :view, dependent: :destroy,
+  has_many :exposures, as: :view, dependent: :destroy,
     class_name: 'Exposure', extend: BodyTracking::TogglableExposures
-  has_many :quantities, -> { order "lft" }, through: :target_exposures
+  has_many :quantities, -> { order "lft" }, through: :exposures
 
   accepts_nested_attributes_for :targets, allow_destroy: true
   validates :is_binding, uniqueness: {scope: :project_id}, if: :is_binding?
@@ -19,7 +19,7 @@ class Goal < ActiveRecord::Base
   end
 
   before_save do
-    quantities << targets.map(&:quantity)[0..5] if target_exposures.empty?
+    quantities << targets.map(&:quantity)[0..5] if exposures.empty?
   end
 
   before_destroy prepend: true do
