@@ -76,16 +76,21 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_create_binding_target
+    quantity = @project.quantities.except_targets.sample
+    target = @project.quantities.target.roots.sample
+    target_value = rand(-2000.0..2000.0).to_d(4)
+    target_unit = @project.units.sample
+
     assert_difference 'Goal.count' => 0, 'Target.count' => 1,
                       '@project.targets.reload.count' => 1, 'Threshold.count' => 1 do
       visit goal_targets_path(@project.goals.binding)
       click_link t('targets.contextual.link_new_target')
       within 'form#new-target-form' do
         within 'p.target' do
-          select quantities(:quantities_energy).name
-          select quantities(:quantities_target_equal).name
-          fill_in with: '1750'
-          select units(:units_kcal).shortname
+          select quantity.name
+          select target.name
+          fill_in with: target_value
+          select target_unit.shortname
         end
         click_on t(:button_create)
       end
@@ -94,10 +99,10 @@ class TargetsTest < BodyTrackingSystemTestCase
     t = Target.last
     assert_equal @project.goals.binding, t.goal
     assert_equal Date.current, t.effective_from
-    assert_equal quantities(:quantities_energy), t.quantity
-    assert_equal quantities(:quantities_target_equal), t.thresholds.first.quantity
-    assert_equal 1750, t.thresholds.first.value
-    assert_equal units(:units_kcal), t.thresholds.first.unit
+    assert_equal quantity, t.quantity
+    assert_equal target, t.thresholds.first.quantity
+    assert_equal target_value, t.thresholds.first.value
+    assert_equal target_unit, t.thresholds.first.unit
 
     assert_no_selector 'form#new-target-form'
     assert_selector 'table#targets tbody tr', count: @project.targets.count
