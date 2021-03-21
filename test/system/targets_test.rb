@@ -3,19 +3,22 @@ require File.expand_path('../../application_system_test_case', __FILE__)
 class TargetsTest < BodyTrackingSystemTestCase
   def setup
     super
-    @project1 = projects(:projects_001)
+    @project = projects(:projects_001)
     log_user 'jsmith', 'jsmith'
   end
 
+  # TODO: add binding_and_nonbinding method to run same test for 2 target types
+  # TODO: set values taken randomly from fixtures, not hardcoded
+
   def test_index_binding_goal
-    goal = @project1.goals.binding
+    goal = @project.goals.binding
     assert_not_equal 0, goal.targets.count
     visit goal_targets_path(goal)
     assert_selector 'table#targets tbody tr', count: goal.targets.count
   end
 
   def test_index_binding_goal_without_targets
-    goal = @project1.goals.binding
+    goal = @project.goals.binding
     goal.targets.delete_all
     assert_equal 0, goal.targets.count
     visit goal_targets_path(goal)
@@ -24,17 +27,25 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_index_options_add_exposure
-    visit goal_targets_path(@project1.goals.binding)
-    assert_no_selector 'table#targets thead th', text: quantities(:quantities_proteins).name
+    # Select random unexposed quantity
+    quantity = @project.quantities.except_targets
+      .joins("LEFT OUTER JOIN exposures ON exposures.quantity_id = quantities.id \
+                AND exposures.view_type = 'Goal' \
+                AND exposures.view_id = #{Project.first.goals.binding.id}")
+      .where(exposures: {view: nil}).sample
+    assert quantity
+
+    visit goal_targets_path(@project.goals.binding)
+    assert_no_selector 'table#targets thead th', text: quantity.name
     within 'fieldset#options' do
-      select quantities(:quantities_proteins).name
+      select quantity.name
       click_on t(:button_add)
     end
-    assert_selector 'table#targets thead th', text: quantities(:quantities_proteins).name
+    assert_selector 'table#targets thead th', text: quantity.name
   end
 
   def test_index_table_header_close_exposure
-    visit goal_targets_path(@project1.goals.binding)
+    visit goal_targets_path(@project.goals.binding)
     within 'table#targets thead th', text: quantities(:quantities_energy).name do
       click_link class: 'icon-close'
     end
@@ -43,7 +54,7 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_new_binding_target
-    visit goal_targets_path(@project1.goals.binding)
+    visit goal_targets_path(@project.goals.binding)
     assert_no_selector 'form#new-target-form'
     click_link t('targets.contextual.link_new_target')
     assert_selector 'form#new-target-form', count: 1
@@ -55,7 +66,7 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_new_cancel
-    visit goal_targets_path(@project1.goals.binding)
+    visit goal_targets_path(@project.goals.binding)
     click_link t('targets.contextual.link_new_target')
     assert_selector 'form#new-target-form', count: 1
     click_on t(:button_cancel)
@@ -64,8 +75,8 @@ class TargetsTest < BodyTrackingSystemTestCase
 
   def test_create_binding_target
     assert_difference 'Goal.count' => 0, 'Target.count' => 1,
-                      '@project1.targets.reload.count' => 1, 'Threshold.count' => 1 do
-      visit goal_targets_path(@project1.goals.binding)
+                      '@project.targets.reload.count' => 1, 'Threshold.count' => 1 do
+      visit goal_targets_path(@project.goals.binding)
       click_link t('targets.contextual.link_new_target')
       within 'form#new-target-form' do
         within 'p.target' do
@@ -79,7 +90,7 @@ class TargetsTest < BodyTrackingSystemTestCase
     end
 
     t = Target.last
-    assert_equal @project1.goals.binding, t.goal
+    assert_equal @project.goals.binding, t.goal
     assert_equal Date.current, t.effective_from
     assert_equal quantities(:quantities_energy), t.quantity
     assert_equal quantities(:quantities_target_equal), t.thresholds.first.quantity
@@ -87,15 +98,15 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_equal units(:units_kcal), t.thresholds.first.unit
 
     assert_no_selector 'form#new-target-form'
-    assert_selector 'table#targets tbody tr', count: @project1.targets.count
+    assert_selector 'table#targets tbody tr', count: @project.targets.count
   end
 
   def test_create_binding_target_when_binding_goal_does_not_exist
-    @project1.goals.where(is_binding: true).delete_all
-    assert_equal 0, @project1.goals.count(&:is_binding?)
-    assert_difference ['Goal.count', '@project1.goals.reload.count(&:is_binding?)',
-                       '@project1.targets.reload.count'], 1 do
-      visit goal_targets_path(@project1.goals.binding)
+    @project.goals.where(is_binding: true).delete_all
+    assert_equal 0, @project.goals.count(&:is_binding?)
+    assert_difference ['Goal.count', '@project.goals.reload.count(&:is_binding?)',
+                       '@project.targets.reload.count'], 1 do
+      visit goal_targets_path(@project.goals.binding)
       click_link t('targets.contextual.link_new_target')
       within 'form#new-target-form' do
         within 'p.target' do
@@ -107,19 +118,23 @@ class TargetsTest < BodyTrackingSystemTestCase
         click_on t(:button_create)
       end
     end
-    assert_equal @project1.goals.binding, Target.last.goal
+    assert_equal @project.goals.binding, Target.last.goal
+  end
+
+  def test_create_with_multiple_thresholds
+    # TODO
   end
 
   def test_create_multiple_targets
   end
 
   # TODO: test_create_failure(s)
-  # * restoring user input
+  # * restoring non-empty targets values
   # * removing empty targets
 
-  def test_edit
+  def test_edit_binding_target
     t = Target.offset(rand(Target.count)).take
-    visit project_targets_path(@project1)
+    visit project_targets_path(@project)
     assert_no_selector 'form#edit-target-form'
 
     within find('td', text: t.effective_from).ancestor('tr') do
@@ -149,7 +164,7 @@ class TargetsTest < BodyTrackingSystemTestCase
     condition = (Target::CONDITIONS - [t.condition]).first
     value = 3*t.thresholds.first.value
     unit = (units - [t.thresholds.first.unit]).first
-    visit project_targets_path(@project1)
+    visit project_targets_path(@project)
 
     find('td', text: t.effective_from).ancestor('tr').click_link t(:button_edit)
     assert_no_difference ['Goal.count', 'Target.count', 'Threshold.count'] do
