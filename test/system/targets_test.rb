@@ -117,10 +117,10 @@ class TargetsTest < BodyTrackingSystemTestCase
       click_link t('targets.contextual.link_new_target')
       within 'form#new-target-form' do
         within 'p.target' do
-          select quantities(:quantities_energy).name
-          select quantities(:quantities_target_equal).name
-          fill_in with: '1750'
-          select units(:units_kcal).shortname
+          select @project.quantities.except_targets.sample.name
+          select @project.quantities.target.roots.sample.name
+          fill_in with: rand(-2000.0..2000.0).to_d(4)
+          select @project.units.sample.shortname
         end
         click_on t(:button_create)
       end
