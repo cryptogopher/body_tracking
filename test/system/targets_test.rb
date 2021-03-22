@@ -76,21 +76,23 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_create_binding_target
+    date = Date.current + rand(-100..100).days
     quantity = @project.quantities.except_targets.sample
-    target = @project.quantities.target.roots.sample
-    target_value = rand(-2000.0..2000.0).to_d(4)
-    target_unit = @project.units.sample
+    threshold_quantity = @project.quantities.target.roots.sample
+    threshold_value = rand(-2000.0..2000.0).to_d(4)
+    threshold_unit = @project.units.sample
 
     assert_difference 'Goal.count' => 0, 'Target.count' => 1,
                       '@project.targets.reload.count' => 1, 'Threshold.count' => 1 do
       visit goal_targets_path(@project.goals.binding)
       click_link t('targets.contextual.link_new_target')
       within 'form#new-target-form' do
+        fill_in t(:field_effective_from), with: date
         within 'p.target' do
           select quantity.name
-          select target.name
-          fill_in with: target_value
-          select target_unit.shortname
+          select threshold_quantity.name
+          fill_in with: threshold_value
+          select threshold_unit.shortname
         end
         click_on t(:button_create)
       end
@@ -98,11 +100,11 @@ class TargetsTest < BodyTrackingSystemTestCase
 
     t = Target.last
     assert_equal @project.goals.binding, t.goal
-    assert_equal Date.current, t.effective_from
+    assert_equal date, t.effective_from
     assert_equal quantity, t.quantity
-    assert_equal target, t.thresholds.first.quantity
-    assert_equal target_value, t.thresholds.first.value
-    assert_equal target_unit, t.thresholds.first.unit
+    assert_equal threshold_quantity, t.thresholds.first.quantity
+    assert_equal threshold_value, t.thresholds.first.value
+    assert_equal threshold_unit, t.thresholds.first.unit
 
     assert_no_selector 'form#new-target-form'
     assert_selector 'table#targets tbody tr', count: @project.targets.count
@@ -128,8 +130,40 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_equal @project.goals.binding, Target.last.goal
   end
 
-  def test_create_with_multiple_thresholds
-    # TODO
+  def test_create_with_subthresholds
+    quantity = @project.quantities.except_targets.sample
+    thresholds =
+      @project.quantities.target.where.not(parent: nil).sample.self_and_ancestors.map do |q|
+        [q, rand(-2000.0..2000.0).to_d(4), @project.units.sample]
+      end
+
+    assert_difference 'Goal.count' => 0, 'Target.count' => 1,
+                      '@project.targets.reload.count' => 1,
+                      'Threshold.count' => thresholds.length do
+      visit goal_targets_path(@project.goals.binding)
+      click_link t('targets.contextual.link_new_target')
+      within 'form#new-target-form' do
+        within 'p.target' do
+          select quantity.name
+          thresholds.each do |t_quantity, t_value, t_unit|
+            within select(t_quantity.name).ancestor('select') do
+              find(:xpath, 'following-sibling::input').set(t_value)
+              find(:xpath, 'following-sibling::select[1]').select(t_unit.shortname)
+            end
+          end
+        end
+        click_on t(:button_create)
+      end
+    end
+
+    t = Target.last
+    assert_equal thresholds.length, t.thresholds.length
+    thresholds.each_with_index do |threshold, index|
+      t_quantity, t_value, t_unit = threshold
+      assert_equal t_quantity, t.thresholds[index].quantity
+      assert_equal t_value, t.thresholds[index].value
+      assert_equal t_unit, t.thresholds[index].unit
+    end
   end
 
   def test_create_multiple_targets
@@ -147,6 +181,7 @@ class TargetsTest < BodyTrackingSystemTestCase
     within find('td', text: t.effective_from).ancestor('tr') do
       click_link t(:button_edit)
 
+      # FIXME: should look for any form (w/o ID) in first following TR
       within find(:xpath, 'following-sibling::*//form[@id="edit-target-form"]') do
         assert has_select?(t(:field_goal), selected: t.goal.name)
         assert has_field?(t(:field_effective_from), with: t.effective_from)
