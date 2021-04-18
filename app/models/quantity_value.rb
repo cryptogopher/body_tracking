@@ -11,12 +11,14 @@ class QuantityValue < ActiveRecord::Base
   end
   belongs_to :unit, required: true
 
-  # Uniqueness is checked exclusively on the other end of association level.
-  # Otherwise validation may not pass when multiple Values are updated at once
-  # and some quantity_id is moved from one Value to the other (without duplication).
-  # For the same reason Value quantity_id uniqueness has to be checked on the
-  # other end when multiple Values are first created. Relying on local check
-  # only would make all newly added records pass as valid despite duplications.
-  #validates :quantity, uniqueness: {scope: [:measurement_id, :unit_id]}
-  #validates :quantity, uniqueness: {scope: :food_id}
+  # Uniqueness is checked exclusively in the model accepting nested attributes.
+  # Otherwise validation may give invalid results for batch create/update actions,
+  # because either:
+  # * in-memory records in batch are not unique but validates_uniqueness_of only
+  #   validates every single in-memory record against database content (and so
+  #   misses non-uniqueness inside batch)
+  # or
+  # * batch update action may include swapping of unique values of 2 or more
+  #   records and checking in-memory records for uniqueness one-by-one against
+  #   database will falsely signal uniqueness violation
 end

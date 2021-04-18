@@ -76,7 +76,7 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_create_binding_target
-    date = Date.current + rand(-100..100).days
+    date = Date.current + rand(-10..10).days
     quantity = @project.quantities.except_targets.sample
     threshold_quantity = @project.quantities.target.roots.sample
     threshold_value = rand(-2000.0..2000.0).to_d(4)
@@ -169,23 +169,53 @@ class TargetsTest < BodyTrackingSystemTestCase
   def test_create_multiple_targets
   end
 
+  def test_create_duplicate_for_persisted_target_should_fail
+    # TODO: extend with item + scope
+    source = @project.targets.sample
+    threshold_quantity = @project.quantities.target.roots.sample
+    threshold_value = rand(-2000.0..2000.0).to_d(4)
+    threshold_unit = @project.units.sample
+
+    assert_no_difference 'Target.count' do
+      visit goal_targets_path(source.goal)
+      click_link t('targets.contextual.link_new_target')
+      within 'form#new-target-form' do
+        fill_in t(:field_effective_from), with: source.effective_from
+        within 'p.target' do
+          select source.quantity.name
+          select threshold_quantity.name
+          fill_in with: threshold_value
+          select threshold_unit.shortname
+        end
+        click_on t(:button_create)
+      end
+    end
+    msg = I18n.t('activerecord.errors.models.target.attributes.base.duplicated_record')
+    assert_selector :xpath, '//form//p[@class="target"]//preceding-sibling::div', text: msg
+  end
+
+  def test_create_duplicated_targets_should_fail
+  end
+
+  def test_create_and_simultaneously_remove_persisted_duplicate
+  end
+
   # TODO: test_create_failure(s)
   # * restoring non-empty targets values
   # * removing empty targets
 
   def test_edit_binding_target
-    t = Target.offset(rand(Target.count)).take
-    visit project_targets_path(@project)
+    target = @project.goals.binding.targets.sample
+    visit goal_targets_path(@project.goals.binding)
     assert_no_selector 'form#edit-target-form'
 
-    within find('td', text: t.effective_from).ancestor('tr') do
+    within find('td', text: target.effective_from).ancestor('tr') do
       click_link t(:button_edit)
 
-      # FIXME: should look for any form (w/o ID) in first following TR
-      within find(:xpath, 'following-sibling::*//form[@id="edit-target-form"]') do
-        assert has_select?(t(:field_goal), selected: t.goal.name)
-        assert has_field?(t(:field_effective_from), with: t.effective_from)
+      within find(:xpath, 'following-sibling::tr//form') do
+        assert has_field?(t(:field_effective_from), with: target.effective_from)
 
+        # NOTE: this assumes target.quantity is unique which is not enforced now
         threshold = t.thresholds.first
         within find('select option[selected]', exact_text: threshold.quantity.name)
                  .ancestor('p') do
@@ -229,5 +259,8 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_equal condition, t.condition
     assert_equal value, t.thresholds.first.value
     assert_equal unit, t.thresholds.first.unit
+  end
+
+  def test_update_swap_targets
   end
 end

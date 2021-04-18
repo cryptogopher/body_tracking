@@ -17,8 +17,7 @@ class Measurement < ActiveRecord::Base
   validates :readouts, presence: true
   accepts_nested_attributes_for :readouts, allow_destroy: true,
     reject_if: proc { |attrs| attrs['quantity_id'].blank? && attrs['value'].blank? }
-  # Readout quantity_id + unit_id uniqueness validation. Cannot be effectively
-  # checked on Readout model level.
+  # Readout uniqueness validation
   validate do
     quantities = self.readouts.reject { |r| r.marked_for_destruction? }
       .map { |r| [r.quantity_id, r.unit_id] }

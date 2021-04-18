@@ -33,6 +33,8 @@ en:
       models:
         target:
           attributes:
+            base:
+              duplicated_record: 'target for this quantity, item and scope already exists'
             thresholds:
               count_mismatch: 'count invalid for given condition'
               quantity_mismatch: 'should refer to the same quantity'

@@ -5,6 +5,8 @@
 <% end %>
 
 <%= goal_f.fields_for :targets, @targets, child_index: '' do |target_f| %>
+  <%= error_messages_for target_f.object %>
+
   <p class="target">
   <%= target_f.hidden_field :_destroy %>
   <em class="info"><%= t ".choose_quantity" %></em>

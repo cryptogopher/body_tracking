@@ -7,6 +7,11 @@ class Goal < ActiveRecord::Base
   has_many :quantities, -> { order "lft" }, through: :exposures
 
   accepts_nested_attributes_for :targets, allow_destroy: true
+  include Validations::NestedUniqueness
+  validates_nested_uniqueness_for :targets,
+    :effective_from, :quantity_id, :item_type, :item_id, :scope,
+    scope: [:effective_from]
+
   validates :is_binding, uniqueness: {scope: :project_id}, if: :is_binding?
   validates :name, presence: true, uniqueness: {scope: :project_id},
     exclusion: {in: [I18n.t('goals.binding.name')], unless: :is_binding?}

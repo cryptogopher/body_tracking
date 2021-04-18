@@ -81,7 +81,8 @@ class TargetsController < ApplicationController
           :id,
           :quantity_id,
           :scope,
-          :destroy,
+          :effective_from,
+          :_destroy,
           thresholds_attributes: [
             :id,
             :quantity_id,
