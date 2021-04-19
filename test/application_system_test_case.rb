@@ -6,6 +6,8 @@ ENV["RACK_ENV"] = "test"
 require File.expand_path('../../../../test/application_system_test_case', __FILE__)
 
 class BodyTrackingSystemTestCase < ApplicationSystemTestCase
+  #Selenium::WebDriver.logger.level = :debug
+
   profile = Selenium::WebDriver::Firefox::Profile.new
   profile['browser.download.dir'] = DOWNLOADS_PATH
   profile['browser.download.folderList'] = 2

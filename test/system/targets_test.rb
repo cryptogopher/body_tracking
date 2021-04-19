@@ -169,12 +169,13 @@ class TargetsTest < BodyTrackingSystemTestCase
   def test_create_multiple_targets
   end
 
+  def test_create_form_retains_data_on_failure
+  end
+
   def test_create_duplicate_for_persisted_target_should_fail
     # TODO: extend with item + scope
     source = @project.targets.sample
-    threshold_quantity = @project.quantities.target.roots.sample
-    threshold_value = rand(-2000.0..2000.0).to_d(4)
-    threshold_unit = @project.units.sample
+    msg = t('activerecord.errors.models.target.attributes.base.duplicated_record')
 
     assert_no_difference 'Target.count' do
       visit goal_targets_path(source.goal)
@@ -183,18 +184,48 @@ class TargetsTest < BodyTrackingSystemTestCase
         fill_in t(:field_effective_from), with: source.effective_from
         within 'p.target' do
           select source.quantity.name
-          select threshold_quantity.name
-          fill_in with: threshold_value
-          select threshold_unit.shortname
+          select @project.quantities.target.roots.sample.name
+          fill_in with: rand(-2000.0..2000.0).to_d(4)
+          select @project.units.sample.shortname
         end
         click_on t(:button_create)
+        assert_selector :xpath, '//p[@class="target"]//preceding-sibling::div', text: msg
       end
     end
-    msg = I18n.t('activerecord.errors.models.target.attributes.base.duplicated_record')
-    assert_selector :xpath, '//form//p[@class="target"]//preceding-sibling::div', text: msg
   end
 
   def test_create_duplicated_targets_should_fail
+    date = Date.current + rand(-10..10).days
+    quantity = @project.quantities.except_targets
+      .joins("LEFT OUTER JOIN targets ON targets.quantity_id = quantities.id \
+                AND targets.effective_from = #{date}")
+      .where(targets: {id: nil}).sample
+    assert quantity
+    msg = t('activerecord.errors.models.target.attributes.base.duplicated_record')
+
+    assert_no_difference 'Target.count' do
+      visit goal_targets_path(@project.goals.binding)
+      click_link t('targets.contextual.link_new_target')
+      within 'form#new-target-form' do
+        fill_in t(:field_effective_from), with: date
+        within :xpath, '//p[@class="target"][1]' do
+          select quantity.name
+          select @project.quantities.target.roots.sample.name
+          fill_in with: rand(-2000.0..2000.0).to_d(4)
+          select @project.units.sample.shortname
+        end
+        click_link t('targets.form.button_new_target')
+        within :xpath, '//p[@class="target"][2]' do
+          select quantity.name
+          select @project.quantities.target.roots.sample.name
+          fill_in with: rand(-2000.0..2000.0).to_d(4)
+          select @project.units.sample.shortname
+        end
+        click_on t(:button_create)
+        assert_selector :xpath, '//p[@class="target"][last()]//preceding-sibling::div',
+          text: msg
+      end
+    end
   end
 
   def test_create_and_simultaneously_remove_persisted_duplicate
@@ -212,7 +243,7 @@ class TargetsTest < BodyTrackingSystemTestCase
     within find('td', text: target.effective_from).ancestor('tr') do
       click_link t(:button_edit)
 
-      within find(:xpath, 'following-sibling::tr//form') do
+      within :xpath, 'following-sibling::tr//form' do
         assert has_field?(t(:field_effective_from), with: target.effective_from)
 
         # NOTE: this assumes target.quantity is unique which is not enforced now

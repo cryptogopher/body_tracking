@@ -20,12 +20,12 @@
 
   <%= link_to t(".button_delete_target"), '#', class: 'icon icon-del',
     style: (@targets.many? ? "" : "display:none"),
-    onclick: "deleteTarget(); return false;" %>
+    onclick: "deleteTarget(event); return false;" %>
   </p>
 <% end %>
 <p>
 <%= link_to t(".button_new_target"), '#', class: 'icon icon-add',
-  onclick: 'newTarget(); return false;' %>
+  onclick: 'newTarget(event); return false;' %>
 </p>
 
 <%= javascript_tag do %>
@@ -37,7 +37,7 @@
     $('p.target select:first-child[id$=__quantity_id]').trigger(jQuery.Event('change'));
   })
 
-  function newTarget() {
+  function newTarget(event) {
     var form = $(event.target).closest('form');
     var row = form.find('p.target:visible:last');
     var new_row = row.clone().insertAfter(row);
@@ -48,7 +48,7 @@
     form.find('p.target:visible a.icon-del').show();
   }
 
-  function deleteTarget() {
+  function deleteTarget(event) {
     var form = $(event.target).closest('form');
     var row = $(event.target).closest('p.target');
     if (row.find('input[id$=__id]').val()) {
