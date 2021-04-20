@@ -6,7 +6,11 @@ class Goal < ActiveRecord::Base
     class_name: 'Exposure', extend: BodyTracking::TogglableExposures
   has_many :quantities, -> { order "lft" }, through: :exposures
 
-  accepts_nested_attributes_for :targets, allow_destroy: true
+  accepts_nested_attributes_for :targets, allow_destroy: true,
+    reject_if: proc { |attrs|
+      attrs[:quantity_id].blank? &&
+        attrs[:thresholds_attributes].all? { |t| t[:value].blank? }
+    }
   include Validations::NestedUniqueness
   validates_nested_uniqueness_for :targets,
     :effective_from, :quantity_id, :item_type, :item_id, :scope,

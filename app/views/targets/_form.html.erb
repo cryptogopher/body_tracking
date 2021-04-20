@@ -42,8 +42,7 @@
     var row = form.find('p.target:visible:last');
     var new_row = row.clone().insertAfter(row);
     new_row.find('em').text('<%= t ".choose_quantity" %>');
-    new_row.find('input, select').val('');
-    new_row.find('select[id$=__unit_id]').val(row.find('select[id$=__unit_id]').val());
+    new_row.find('input, select:first').val('');
     new_row.find('label:first').hide();
     form.find('p.target:visible a.icon-del').show();
   }

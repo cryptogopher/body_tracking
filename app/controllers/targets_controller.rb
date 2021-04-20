@@ -28,8 +28,15 @@ class TargetsController < ApplicationController
     params[:goal][:targets_attributes].each { |ta| ta[:effective_from] = @effective_from }
 
     if @goal.update(targets_params)
-      flash.now[:notice] = 'Created new target(s)'
-      prepare_targets
+      count = @goal.targets.target.length
+      if count > 0
+        flash.now[:notice] = t('.success', count: count)
+        prepare_targets
+      else
+        flash.now[:warning] = t('.success', count: 0)
+        @targets = [@goal.targets.new]
+        render :new
+      end
     else
       @targets = @goal.targets.select(&:changed_for_autosave?)
       @targets.each { |t| t.thresholds.new unless t.thresholds.present? }
