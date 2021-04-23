@@ -44,10 +44,10 @@ module Validations::NestedUniqueness
   def before_validation_nested_uniqueness
     nested_uniqueness_options.each do |association_name, options|
       collection = send(association_name)
-      was_loaded = collection.loaded?
-      records = collection.target.select(&:changed?)
+      records = collection.target.dup unless collection.loaded?
 
-      preserved_records = records.reject(&:marked_for_destruction?)
+      preserved_records = records.select(&:changed?).reject(&:marked_for_destruction?)
+      # TODO: do scoping on options[:attributes] and remove options[:scope]
       scope = options[:scope]&.map { |attr| [attr, preserved_records.map(&attr).uniq] }.to_h
 
       seen = {}
@@ -62,7 +62,7 @@ module Validations::NestedUniqueness
           end
         end
       end
-      unless was_loaded
+      if records
         collection.proxy_association.reset
         records.each { |r| collection.proxy_association.add_to_target(r) }
       end

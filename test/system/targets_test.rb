@@ -86,6 +86,7 @@ class TargetsTest < BodyTrackingSystemTestCase
                       '@project.targets.reload.count' => 1, 'Threshold.count' => 1 do
       visit goal_targets_path(@project.goals.binding)
       click_link t('targets.contextual.link_new_target')
+
       within 'form#new-target-form' do
         fill_in t(:field_effective_from), with: date
         within 'p.target' do
@@ -142,6 +143,7 @@ class TargetsTest < BodyTrackingSystemTestCase
                       'Threshold.count' => thresholds.length do
       visit goal_targets_path(@project.goals.binding)
       click_link t('targets.contextual.link_new_target')
+
       within 'form#new-target-form' do
         within 'p.target' do
           select quantity.name
@@ -167,9 +169,13 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_create_multiple_targets
+    # TODO
   end
 
-  def test_create_form_retains_data_on_failure
+  def test_create_properly_handles_data_on_failure
+    # TODO
+    # * restoring non-empty targets values
+    # * removing empty targets
   end
 
   def test_create_duplicate_for_persisted_target_should_fail
@@ -206,8 +212,10 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_no_difference 'Target.count' do
       visit goal_targets_path(@project.goals.binding)
       click_link t('targets.contextual.link_new_target')
+
       within 'form#new-target-form' do
         fill_in t(:field_effective_from), with: date
+
         within :xpath, '//p[@class="target"][1]' do
           select quantity.name
           select @project.quantities.target.roots.sample.name
@@ -215,6 +223,7 @@ class TargetsTest < BodyTrackingSystemTestCase
           select @project.units.sample.shortname
         end
         click_link t('targets.form.button_new_target')
+
         within :xpath, '//p[@class="target"][2]' do
           select quantity.name
           select @project.quantities.target.roots.sample.name
@@ -222,42 +231,67 @@ class TargetsTest < BodyTrackingSystemTestCase
           select @project.units.sample.shortname
         end
         click_on t(:button_create)
+
         assert_selector :xpath, '//p[@class="target"][last()]//preceding-sibling::div',
           text: msg
       end
     end
   end
 
-  def test_create_and_simultaneously_remove_persisted_duplicate
-  end
-
-  # TODO: test_create_failure(s)
-  # * restoring non-empty targets values
-  # * removing empty targets
-
   def test_edit_binding_target
+    # TODO: extend with item + scope
     target = @project.goals.binding.targets.sample
+    date = Date.current + rand(-10..10).days
+    quantity = @project.quantities.except_targets.where.not(id: target.quantity.id).sample
+    thresholds =
+      @project.quantities.target.where.not(parent: nil).sample.self_and_ancestors.map do |q|
+        [q, rand(-2000.0..2000.0).to_d(4), @project.units.sample]
+      end
+
     visit goal_targets_path(@project.goals.binding)
     assert_no_selector 'form#edit-target-form'
 
     within find('td', text: target.effective_from).ancestor('tr') do
       click_link t(:button_edit)
+      assert_selector :xpath, 'following-sibling::tr//form[@id="edit-target-form"]'
+    end
 
-      within :xpath, 'following-sibling::tr//form' do
+    assert_no_difference 'Target.count' do
+      within 'form#edit-target-form' do
         assert has_field?(t(:field_effective_from), with: target.effective_from)
+        fill_in t(:field_effective_from), with: date
 
-        # NOTE: this assumes target.quantity is unique which is not enforced now
-        threshold = t.thresholds.first
-        within find('select option[selected]', exact_text: threshold.quantity.name)
-                 .ancestor('p') do
-          assert has_select?(selected: t.condition)
-          assert has_field?(with: threshold.value)
-          assert has_select?(selected: threshold.unit.shortname)
+        within find('select option[selected]', exact_text: target.quantity.name)
+          .ancestor('p.target') do
+          target.thresholds.each do |threshold|
+            assert has_select?(selected: threshold.quantity.name)
+            assert has_field?(with: threshold.value)
+            assert has_select?(selected: threshold.unit.shortname)
+          end
+
+          select quantity.name
+          thresholds.each do |t_quantity, t_value, t_unit|
+            within select(t_quantity.name).ancestor('select') do
+              find(:xpath, 'following-sibling::input').set(t_value)
+              find(:xpath, 'following-sibling::select[1]').select(t_unit.shortname)
+            end
+          end
         end
+
+        click_on t(:button_save)
       end
     end
 
-    assert_selector 'form#edit-target-form', count: 1
+    target.reload
+    assert_equal date, target.effective_from
+    assert_equal quantity, target.quantity
+    assert_equal thresholds.length, target.thresholds.length
+    thresholds.each_with_index do |threshold, index|
+      t_quantity, t_value, t_unit = threshold
+      assert_equal t_quantity, target.thresholds[index].quantity
+      assert_equal t_value, target.thresholds[index].value
+      assert_equal t_unit, target.thresholds[index].unit
+    end
   end
 
   def test_update
@@ -293,5 +327,10 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_update_swap_targets
+    # TODO
+  end
+
+  def test_update_add_and_simultaneously_remove_persisted_duplicate
+    # TODO
   end
 end

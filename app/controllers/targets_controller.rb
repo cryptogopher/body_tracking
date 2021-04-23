@@ -5,10 +5,9 @@ class TargetsController < ApplicationController
 
   include Concerns::Finders
 
-  before_action :find_binding_goal_by_project_id, only: [:edit]
   before_action :find_project_by_project_id, only: [:subthresholds]
   before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
-  before_action :find_goal_by_goal_id, only: [:index, :new, :create]
+  before_action :find_goal_by_goal_id, only: [:index, :new, :create, :edit, :update]
   before_action :find_goal, only: [:toggle_exposure]
   before_action :authorize
   #before_action :set_view_params
@@ -39,21 +38,32 @@ class TargetsController < ApplicationController
       end
     else
       @targets = @goal.targets.select(&:changed_for_autosave?)
-      @targets.each { |t| t.thresholds.new unless t.thresholds.present? }
+        .each { |t| t.thresholds.new unless t.thresholds.present? }
       render :new
     end
   end
 
   def edit
-    @targets = @goal.targets.where(effective_from: params[:date]).to_a
+    @targets = @goal.targets.joins(:quantity).where(effective_from: params[:date])
+      .order('quantities.lft' => :asc).to_a
     @effective_from = @targets.first&.effective_from
   end
 
   def update
     # TODO: DRY same code with #create
-    @goal = @project.goals.find(params[:goal_id]) if params[:goal_id].present?
-    @goal ||= @project.goals.new
-    @goal.attributes = goal_params unless @goal.is_binding?
+    @effective_from = params[:goal].delete(:effective_from)
+    params[:goal][:targets_attributes].each { |ta| ta[:effective_from] = @effective_from }
+
+    byebug
+    if @goal.update(targets_params)
+      flash.now[:notice] = t('.success')
+      prepare_targets
+    else
+      @targets = @goal.targets.where(id: targets_params[:targets_attributes].pluck(:id))
+      @targets += @goal.targets.select(&:changed_for_autosave?)
+        .each { |t| t.thresholds.new unless t.thresholds.present? }
+      render :edit
+    end
   end
 
   def destroy

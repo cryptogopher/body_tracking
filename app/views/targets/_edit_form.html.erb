@@ -1,9 +1,9 @@
-<%= labelled_form_for @targets,
-  url: project_targets_path(@project, @view_params),
-  method: :patch, remote: true,
-  html: {id: 'edit-target-form', name: 'edit-target-form'} do |f| %>
+<%= labelled_form_for @goal, url: goal_targets_path(@goal), method: :patch, remote: true,
+  html: {id: 'edit-target-form', name: 'edit-target-form'} do |goal_f| %>
 
-  <%= render partial: 'targets/form', locals: {f: f} %>
+  <div class="box tabular">
+    <%= render partial: 'targets/form', locals: {goal_f: goal_f} %>
+  </div>
 
   <div class="tabular">
     <p>

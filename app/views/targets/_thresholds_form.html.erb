@@ -1,5 +1,5 @@
 <% target_f.object.thresholds.new unless last_quantity.leaf? %>
-<%= target_f.fields_for :thresholds, child_index: '' do |threshold_f| %>
+<%= target_f.fields_for :thresholds, index: '', child_index: '' do |threshold_f| %>
   <% threshold_q = threshold_f.object.quantity %>
   <% parent_id = threshold_q.nil? ? last_quantity.id : threshold_q.parent_id  %>
   <%= threshold_f.collection_select :quantity_id,
@@ -16,6 +16,7 @@
                  }
                });
                return false;"} %>
+  <%# TODO: update above ajax with -1/no change/+1 logic based on copying existing threshold and proper ID/destroy handling %>
   <%#  {autocomplete: 'off',
      data: {remote: true, url: subthresholds_project_targets_path(parent_id: parent_id)}} %>
 

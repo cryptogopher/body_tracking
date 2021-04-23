@@ -17,6 +17,7 @@ class Target < ActiveRecord::Base
     errors.add(:thresholds, :quantity_mismatch) unless quantities == ancestors
   end
   #validates :scope, inclusion: {in: [:ingredient, :meal, :day], if: -> { quantity&.diet? }}
+  # FIXME: does not seem to work
   validates :effective_from, presence: {if: :is_binding?}, absence: {unless: :is_binding?}
 
   after_initialize do
