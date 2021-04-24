@@ -5,8 +5,7 @@ class TargetsController < ApplicationController
 
   include Concerns::Finders
 
-  before_action :find_project_by_project_id, only: [:subthresholds]
-  before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
+  before_action :find_quantity_by_quantity_id, only: [:toggle_exposure, :subthresholds]
   before_action :find_goal_by_goal_id, only: [:index, :new, :create, :edit, :update]
   before_action :find_goal, only: [:toggle_exposure]
   before_action :authorize
@@ -54,7 +53,6 @@ class TargetsController < ApplicationController
     @effective_from = params[:goal].delete(:effective_from)
     params[:goal][:targets_attributes].each { |ta| ta[:effective_from] = @effective_from }
 
-    byebug
     if @goal.update(targets_params)
       flash.now[:notice] = t('.success')
       prepare_targets
@@ -78,15 +76,7 @@ class TargetsController < ApplicationController
   end
 
   def subthresholds
-    @target = @project.goals.binding.targets.new
-    quantity = @project.quantities.target.find_by(id: params[:quantity_id])
-    if quantity.nil?
-      @last_quantity = @project.quantities.target.find(params[:parent_id])
-      @target.thresholds.clear
-    else
-      @last_quantity = quantity
-      @target.thresholds.first.quantity = quantity
-    end
+    @quantities = @quantity.children
   end
 
   private

@@ -1,4 +1,2 @@
-<%= fields_for 'goal[targets_attributes][]', @target do |target_f| %>
-  <%= render partial: 'targets/thresholds_form',
-    locals: {target_f: target_f, last_quantity: @last_quantity} %>
-<% end %>
+<%= options_for_select [['.', nil]] unless @quantities.empty? -%>
+<%= options_from_collection_for_select(@quantities, :id, :name) -%>

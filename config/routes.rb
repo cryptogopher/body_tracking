@@ -19,8 +19,6 @@ resources :projects, shallow: true do
       end
     end
   end
-  get 'subthresholds/(:parent_id)', controller: :targets, action: :subthresholds,
-    as: :subthresholds
   resources :ingredients, only: [] do
     member do
       post 'adjust/:adjustment', controller: :meals, action: :adjust, as: :adjust
@@ -76,3 +74,5 @@ resources :projects, shallow: true do
   end
   resources :units, only: [:index, :create, :destroy]
 end
+
+get 'subthresholds', controller: :targets, action: :subthresholds, as: :subthresholds

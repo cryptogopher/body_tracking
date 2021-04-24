@@ -31,35 +31,68 @@
 
 <%= javascript_tag do %>
   function showQuantityPath(event) {
-    $(event.target).prevAll('em').text($('option:selected', event.target)
-      .attr('data-path'));
+    $(event.target).prevAll('em')
+      .text($('option:selected', event.target).attr('data-path'));
   }
   $(document).ajaxComplete(function() {
-    $('p.target select:first-child[id$=__quantity_id]').trigger(jQuery.Event('change'));
+    $('p.target').find('select:first').change();
   })
 
   function newTarget(event) {
     var form = $(event.target).closest('form');
-    var row = form.find('p.target:visible:last');
-    var new_row = row.clone().insertAfter(row);
-    new_row.find('em').text('<%= t ".choose_quantity" %>');
-    new_row.find('input, select:first').val('');
-    new_row.find('label:first').hide();
+    var target = form.find('p.target:visible:last');
+    var new_target = target.clone().insertAfter(target);
+    new_target.find('em').text('<%= t ".choose_quantity" %>');
+    new_target.find('label:first').hide();
+    new_target.find('input, select:first').val('');
+    new_target.find('input, select.threshold:first').change();
     form.find('p.target:visible a.icon-del').show();
   }
 
   function deleteTarget(event) {
     var form = $(event.target).closest('form');
-    var row = $(event.target).closest('p.target');
-    if (row.find('input[id$=__id]').val()) {
-      row.hide();
-      row.find('input[id$=__destroy]').val('1');
+    var target = $(event.target).closest('p.target');
+    if (target.find('input[id$=__id]').val()) {
+      target.hide();
+      target.find('input[id$=__destroy]').val('1');
     } else {
-      row.remove();
+      target.remove();
     }
     form.find('p.target:visible:first label:first').show();
     if (form.find('p.target:visible').length <= 1) {
       form.find('p.target:visible a.icon-del').hide();
+    }
+  }
+
+  function subthresholds(event) {
+    $(event.target).nextUntil('a').hide();
+    $(event.target).nextAll('input[id$=__destroy]').val('true');
+
+    if ($(event.target).val() != "") {
+      var threshold_value = $(event.target).nextUntil('select.threshold, a');
+      if (threshold_value.length == 0) {
+        template = $(event.target).closest('p.target').find('select.threshold:first')
+          .nextUntil('select.threshold, a').not('input[type=hidden]');
+        threshold_value = template.clone().insertAfter($(event.target)).before(" ");
+      }
+      threshold_value.show();
+      threshold_value.filter('input[id$=__destroy]').val('false');
+
+      $.ajax({
+        url: '<%= subthresholds_path %>',
+        data: {'quantity_id' : $(event.target).val()},
+        dataType: 'html',
+        success: function(data) {
+          if (data) {
+            var threshold_quantity = $(event.target).nextAll('select.threshold:first');
+            if (threshold_quantity.length == 0) {
+              threshold_quantity = $(event.target).clone()
+                .insertAfter(threshold_value.last()).before(" ");
+            }
+            threshold_quantity.show().empty().append(data);
+          }
+        }
+      });
     }
   }
 <% end %>

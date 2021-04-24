@@ -6,21 +6,11 @@
                                     @project.quantities.target.children_of(parent_id),
                                     :id, :name,
     {include_blank: parent_id.nil? ? false : '.', required: true, no_label: true},
-    {autocomplete: 'off',
-     onchange: "$.ajax({
-                 url: '#{project_subthresholds_path(@project, parent_id: parent_id)}',
-                 data: 'quantity_id=' + $(this).val(),
-                 dataType: 'html',
-                 success: function(data) {
-                   $(event.target).nextAll().addBack().last().after(data).end().remove();
-                 }
-               });
-               return false;"} %>
-  <%# TODO: update above ajax with -1/no change/+1 logic based on copying existing threshold and proper ID/destroy handling %>
-  <%#  {autocomplete: 'off',
-     data: {remote: true, url: subthresholds_project_targets_path(parent_id: parent_id)}} %>
+    {autocomplete: 'off', onchange: 'subthresholds(event); return false;',
+     class: 'threshold'} %>
 
   <% unless threshold_q.nil? %>
+    <%= threshold_f.hidden_field :id %>
     <%= threshold_f.hidden_field :_destroy %>
     <%= threshold_f.number_field :value, {size: 8, step: :any, no_label: true} %>
     <%= threshold_f.collection_select :unit_id, @project.units, :id, :shortname,
