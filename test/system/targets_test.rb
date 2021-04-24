@@ -58,8 +58,8 @@ class TargetsTest < BodyTrackingSystemTestCase
   def test_new_binding_target
     visit goal_targets_path(@project.goals.binding)
     assert_no_selector 'form#new-target-form'
+
     click_link t('targets.contextual.link_new_target')
-    assert_selector 'form#new-target-form', count: 1
     within 'form#new-target-form' do
       assert has_field?(t(:field_effective_from), with: Date.current, count: 1)
       assert has_no_link?(t('targets.form.button_delete_target'))
@@ -239,6 +239,51 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_edit_binding_target
+    date = @project.goals.binding.targets.distinct.pluck(:effective_from).sample
+
+    visit goal_targets_path(@project.goals.binding)
+    assert_no_selector 'form#edit-target-form'
+
+    within find('td', text: date).ancestor('tr') do
+      click_link t(:button_edit)
+      # Form count check is done implicitly by [within 'form#edit-target-form'] below
+      assert_selector :xpath, 'following-sibling::tr//form[@id="edit-target-form"]'
+    end
+
+    within 'form#edit-target-form' do
+      assert has_field?(t(:field_effective_from), with: date, count: 1)
+
+      targets = @project.goals.binding.targets.where(effective_from: date)
+      assert_selector 'p.target', count: targets.length
+
+      targets.each do |target|
+        within find('select option[selected]', exact_text: target.quantity.name)
+                 .ancestor('p.target') do
+          assert_selector 'input, select', count: 1 + 3*target.thresholds.length
+
+          target.thresholds.each do |threshold|
+            within find('select option[selected]', exact_text: threshold.quantity.name)
+                     .ancestor('select') do
+              assert has_selector?(:xpath, 'following-sibling::input',
+                                   exact_text: threshold.value)
+              assert has_selector?(:xpath, 'following-sibling::select//option[@selected]',
+                                   exact_text: threshold.unit.shortname)
+            end
+          end
+
+          if target.thresholds.length == 1
+            assert has_no_link?(t('targets.form.button_delete_target'))
+          else
+            assert has_link?(t('targets.form.button_delete_target'))
+          end
+        end
+      end
+
+      assert has_link?(t('targets.form.button_new_target'), count: 1)
+    end
+  end
+
+  def test_update_binding_target
     # TODO: extend with item + scope
     target = @project.goals.binding.targets.sample
     date = Date.current + rand(-10..10).days
@@ -249,26 +294,15 @@ class TargetsTest < BodyTrackingSystemTestCase
       end
 
     visit goal_targets_path(@project.goals.binding)
-    assert_no_selector 'form#edit-target-form'
+    find('td', text: target.effective_from).ancestor('tr').click_link t(:button_edit)
 
-    within find('td', text: target.effective_from).ancestor('tr') do
-      click_link t(:button_edit)
-      assert_selector :xpath, 'following-sibling::tr//form[@id="edit-target-form"]'
-    end
-
-    assert_no_difference 'Target.count' do
+    assert_difference 'Goal.count' => 0, 'Target.count' => 0,
+                      'Threshold.count' => thresholds.length - target.thresholds.length do
       within 'form#edit-target-form' do
-        assert has_field?(t(:field_effective_from), with: target.effective_from)
         fill_in t(:field_effective_from), with: date
 
         within find('select option[selected]', exact_text: target.quantity.name)
-          .ancestor('p.target') do
-          target.thresholds.each do |threshold|
-            assert has_select?(selected: threshold.quantity.name)
-            assert has_field?(with: threshold.value)
-            assert has_select?(selected: threshold.unit.shortname)
-          end
-
+                 .ancestor('p.target') do
           select quantity.name
           thresholds.each do |t_quantity, t_value, t_unit|
             within select(t_quantity.name).ancestor('select') do
@@ -292,38 +326,6 @@ class TargetsTest < BodyTrackingSystemTestCase
       assert_equal t_value, target.thresholds[index].value
       assert_equal t_unit, target.thresholds[index].unit
     end
-  end
-
-  def test_update
-    t = Target.offset(rand(Target.count)).take
-    date = t.effective_from - 1.week
-    quantity = (quantities - [t.thresholds.first.quantity]).first
-    condition = (Target::CONDITIONS - [t.condition]).first
-    value = 3*t.thresholds.first.value
-    unit = (units - [t.thresholds.first.unit]).first
-    visit project_targets_path(@project)
-
-    find('td', text: t.effective_from).ancestor('tr').click_link t(:button_edit)
-    assert_no_difference ['Goal.count', 'Target.count', 'Threshold.count'] do
-      within 'form#edit-target-form' do
-        # Assume binding Goal and don't change
-        fill_in t(:field_effective_from), with: date
-        within 'p.target:nth-child(1)' do
-          select quantity.name
-          select condition
-          fill_in with: value
-          select unit.shortname
-        end
-        click_on t(:button_save)
-      end
-    end
-
-    t.reload
-    assert_equal date, t.effective_from
-    assert_equal quantity, t.thresholds.first.quantity
-    assert_equal condition, t.condition
-    assert_equal value, t.thresholds.first.value
-    assert_equal unit, t.thresholds.first.unit
   end
 
   def test_update_swap_targets
