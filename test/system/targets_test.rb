@@ -14,7 +14,8 @@ class TargetsTest < BodyTrackingSystemTestCase
     goal = @project.goals.binding
     assert_not_equal 0, goal.targets.count
     visit goal_targets_path(goal)
-    assert_selector 'table#targets tbody tr', count: goal.targets.count
+    assert_selector 'table#targets tbody tr',
+      count: goal.targets.distinct.pluck(:effective_from).count
   end
 
   def test_index_binding_goal_without_targets
@@ -108,7 +109,8 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_equal threshold_unit, t.thresholds.first.unit
 
     assert_no_selector 'form#new-target-form'
-    assert_selector 'table#targets tbody tr', count: @project.targets.count
+    assert_selector 'table#targets tbody tr',
+      count: @project.goals.binding.targets.distinct.pluck(:effective_from).count
   end
 
   def test_create_binding_target_when_binding_goal_does_not_exist
@@ -149,7 +151,7 @@ class TargetsTest < BodyTrackingSystemTestCase
           select quantity.name
           thresholds.each do |t_quantity, t_value, t_unit|
             within select(t_quantity.name).ancestor('select') do
-              find(:xpath, 'following-sibling::input').set(t_value)
+              find(:xpath, 'following-sibling::input[not(@type="hidden")][1]').set(t_value)
               find(:xpath, 'following-sibling::select[1]').select(t_unit.shortname)
             end
           end
@@ -183,10 +185,10 @@ class TargetsTest < BodyTrackingSystemTestCase
     source = @project.targets.sample
     msg = t('activerecord.errors.models.target.attributes.base.duplicated_record')
 
-    assert_no_difference 'Target.count' do
-      visit goal_targets_path(source.goal)
-      click_link t('targets.contextual.link_new_target')
+    visit goal_targets_path(source.goal)
+    click_link t('targets.contextual.link_new_target')
 
+    assert_no_difference 'Target.count' do
       within 'form#new-target-form' do
         fill_in t(:field_effective_from), with: source.effective_from
 
@@ -212,10 +214,10 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert quantity
     msg = t('activerecord.errors.models.target.attributes.base.duplicated_record')
 
-    assert_no_difference 'Target.count' do
-      visit goal_targets_path(@project.goals.binding)
-      click_link t('targets.contextual.link_new_target')
+    visit goal_targets_path(@project.goals.binding)
+    click_link t('targets.contextual.link_new_target')
 
+    assert_no_difference 'Target.count' do
       within 'form#new-target-form' do
         fill_in t(:field_effective_from), with: date
 
@@ -260,21 +262,22 @@ class TargetsTest < BodyTrackingSystemTestCase
       assert_selector 'p.target', count: targets.length
 
       targets.each do |target|
-        within find('select option[selected]', exact_text: target.quantity.name)
+        within find('option[selected]', exact_text: target.quantity.name)
                  .ancestor('p.target') do
           assert_selector 'input, select', count: 1 + 3*target.thresholds.length
 
           target.thresholds.each do |threshold|
-            within find('select option[selected]', exact_text: threshold.quantity.name)
+            within find('option[selected]', exact_text: threshold.quantity.name)
                      .ancestor('select') do
-              assert has_selector?(:xpath, 'following-sibling::input',
+              assert has_selector?(:xpath,
+                                   'following-sibling::input[not(@type="hidden")][1]',
                                    exact_text: threshold.value)
               assert has_selector?(:xpath, 'following-sibling::select//option[@selected]',
                                    exact_text: threshold.unit.shortname)
             end
           end
 
-          if target.thresholds.length == 1
+          if targets.length == 1
             assert has_no_link?(t('targets.form.button_delete_target'))
           else
             assert has_link?(t('targets.form.button_delete_target'))
@@ -289,8 +292,11 @@ class TargetsTest < BodyTrackingSystemTestCase
   def test_update_binding_target
     # TODO: extend with item + scope
     target = @project.goals.binding.targets.sample
+    existing_quantities = @project.goals.binding.targets.joins(:quantity)
+      .where(effective_from: target.effective_from).pluck(:quantity_id)
     date = Date.current + rand(-10..10).days
-    quantity = @project.quantities.except_targets.where.not(id: target.quantity.id).sample
+    quantity = @project.quantities.except_targets.where.not(id: existing_quantities).sample
+    assert quantity
     thresholds =
       @project.quantities.target.where.not(parent: nil).sample.self_and_ancestors.map do |q|
         [q, rand(-2000.0..2000.0).to_d(4), @project.units.sample]
@@ -304,12 +310,12 @@ class TargetsTest < BodyTrackingSystemTestCase
       within 'form#edit-target-form' do
         fill_in t(:field_effective_from), with: date
 
-        within find('select option[selected]', exact_text: target.quantity.name)
+        within find('option[selected]', exact_text: target.quantity.name)
                  .ancestor('p.target') do
           select quantity.name
           thresholds.each do |t_quantity, t_value, t_unit|
             within select(t_quantity.name).ancestor('select') do
-              find(:xpath, 'following-sibling::input').set(t_value)
+              find(:xpath, 'following-sibling::input[not(@type="hidden")][1]').set(t_value)
               find(:xpath, 'following-sibling::select[1]').select(t_unit.shortname)
             end
           end
@@ -332,7 +338,34 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_update_swap_targets
-    # TODO
+    # TODO: extend with item + scope
+    date, goal_id = Target.joins(:goal).group(:effective_from, :goal_id).count
+      .select { |k,v| v > 1 }.keys.sample
+    assert date
+    goal = Goal.find(goal_id)
+    target1, target2 = goal.targets.where(effective_from: date).sample(2)
+    quantity1, quantity2 = target1.quantity.name, target2.quantity.name
+
+    visit goal_targets_path(goal)
+    find('td', text: date).ancestor('tr').click_link t(:button_edit)
+
+    assert_no_difference 'Target.count' do
+      within 'form#edit-target-form' do
+        select1 = find('option[selected]', exact_text: quantity1).ancestor('select')
+        select2 = find('option[selected]', exact_text: quantity2).ancestor('select')
+
+        select1.select quantity2
+        select2.select quantity1
+
+        click_on t(:button_save)
+        assert_no_selector 'div#errorExplanation'
+      end
+    end
+
+    target1.reload
+    target2.reload
+    assert quantity2, target1.quantity.name
+    assert quantity1, target2.quantity.name
   end
 
   def test_update_add_and_simultaneously_remove_persisted_duplicate

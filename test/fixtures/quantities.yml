@@ -20,11 +20,20 @@ quantities_proteins:
   name: Proteins
   description: Total amount of proteins
 
+quantities_fats:
+  <<: *DEFAULTS
+  domain: diet
+  lft: 5
+  rgt: 6
+  depth: 0
+  name: Fats
+  description: Total amount of fats
+
 quantities_target_above:
   <<: *DEFAULTS
   domain: target
-  lft: 5
-  rgt: 8
+  lft: 7
+  rgt: 10
   depth: 0
   name: above
   description: Lower bound
@@ -33,8 +42,8 @@ quantities_target_range:
   <<: *DEFAULTS
   parent: quantities_target_above
   domain: target
-  lft: 6
-  rgt: 7
+  lft: 8
+  rgt: 9
   depth: 1
   name: and below
   description: Range
@@ -42,8 +51,8 @@ quantities_target_range:
 quantities_target_equal:
   <<: *DEFAULTS
   domain: target
-  lft: 9
-  rgt: 10
+  lft: 11
+  rgt: 12
   depth: 0
   name: equal
   description: Exact value

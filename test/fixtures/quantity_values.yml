@@ -5,3 +5,27 @@ quantity_values_001:
   quantity: quantities_target_equal
   value: 2500
   unit: units_kcal
+
+quantity_values_002:
+  type: Threshold
+  registry_type: Target
+  registry: targets_02
+  quantity: quantities_target_above
+  value: 20
+  unit: units_gram
+
+quantity_values_003:
+  type: Threshold
+  registry_type: Target
+  registry: targets_02
+  quantity: quantities_target_range
+  value: 30
+  unit: units_gram
+
+quantity_values_004:
+  type: Threshold
+  registry_type: Target
+  registry: targets_03
+  quantity: quantities_target_above
+  value: 1900
+  unit: units_kcal

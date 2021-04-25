@@ -2,3 +2,13 @@ targets_01:
   goal: goals_binding
   quantity: quantities_energy
   effective_from: <%= 1.week.ago.to_s(:db) %>
+
+targets_02:
+  goal: goals_binding
+  quantity: quantities_proteins
+  effective_from: <%= 1.week.ago.to_s(:db) %>
+
+targets_03:
+  goal: goals_binding
+  quantity: quantities_energy
+  effective_from: <%= 2.days.ago.to_s(:db) %>
