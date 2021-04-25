@@ -28,6 +28,7 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_index_options_add_exposure
+    goal = @project.goals.binding
     # Select random unexposed quantity
     quantity = @project.quantities.except_targets
       .joins("LEFT OUTER JOIN exposures ON exposures.quantity_id = quantities.id \
@@ -36,7 +37,7 @@ class TargetsTest < BodyTrackingSystemTestCase
       .where(exposures: {view: nil}).sample
     assert quantity
 
-    visit goal_targets_path(@project.goals.binding)
+    visit goal_targets_path(goal)
     assert_no_selector 'table#targets thead th', text: quantity.name
     within 'fieldset#options' do
       select quantity.name
@@ -46,9 +47,10 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_index_table_header_close_exposure
-    quantity = @project.goals.binding.exposures.sample.quantity
+    goal = @project.goals.binding
+    quantity = goal.exposures.sample.quantity
 
-    visit goal_targets_path(@project.goals.binding)
+    visit goal_targets_path(goal)
     within 'table#targets thead th', text: quantity.name do
       click_link class: 'icon-close'
     end
@@ -77,17 +79,18 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_create_binding_target
+    goal = @project.goals.binding
     date = Date.current + rand(-10..10).days
     quantity = @project.quantities.except_targets.sample
     threshold_quantity = @project.quantities.target.roots.sample
     threshold_value = rand(-2000.0..2000.0).to_d(4)
     threshold_unit = @project.units.sample
 
+    visit goal_targets_path(goal)
+    click_link t('targets.contextual.link_new_target')
+
     assert_difference 'Goal.count' => 0, 'Target.count' => 1,
                       '@project.targets.reload.count' => 1, 'Threshold.count' => 1 do
-      visit goal_targets_path(@project.goals.binding)
-      click_link t('targets.contextual.link_new_target')
-
       within 'form#new-target-form' do
         fill_in t(:field_effective_from), with: date
         within 'p.target' do
@@ -101,7 +104,7 @@ class TargetsTest < BodyTrackingSystemTestCase
     end
 
     t = Target.last
-    assert_equal @project.goals.binding, t.goal
+    assert_equal goal, t.goal
     assert_equal date, t.effective_from
     assert_equal quantity, t.quantity
     assert_equal threshold_quantity, t.thresholds.first.quantity
@@ -110,16 +113,18 @@ class TargetsTest < BodyTrackingSystemTestCase
 
     assert_no_selector 'form#new-target-form'
     assert_selector 'table#targets tbody tr',
-      count: @project.goals.binding.targets.distinct.pluck(:effective_from).count
+      count: goal.targets.distinct.pluck(:effective_from).count
   end
 
   def test_create_binding_target_when_binding_goal_does_not_exist
     @project.goals.where(is_binding: true).delete_all
     assert_equal 0, @project.goals.count(&:is_binding?)
+
     assert_difference ['Goal.count', '@project.goals.reload.count(&:is_binding?)',
                        '@project.targets.reload.count'], 1 do
       visit goal_targets_path(@project.goals.binding)
       click_link t('targets.contextual.link_new_target')
+
       within 'form#new-target-form' do
         within 'p.target' do
           select @project.quantities.except_targets.sample.name
@@ -140,12 +145,12 @@ class TargetsTest < BodyTrackingSystemTestCase
         [q, rand(-2000.0..2000.0).to_d(4), @project.units.sample]
       end
 
+    visit goal_targets_path(@project.goals.binding)
+    click_link t('targets.contextual.link_new_target')
+
     assert_difference 'Goal.count' => 0, 'Target.count' => 1,
                       '@project.targets.reload.count' => 1,
                       'Threshold.count' => thresholds.length do
-      visit goal_targets_path(@project.goals.binding)
-      click_link t('targets.contextual.link_new_target')
-
       within 'form#new-target-form' do
         within 'p.target' do
           select quantity.name
@@ -244,9 +249,10 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_edit_binding_target
-    date = @project.goals.binding.targets.distinct.pluck(:effective_from).sample
+    goal = @project.goals.binding
+    date = goal.targets.distinct.pluck(:effective_from).sample
 
-    visit goal_targets_path(@project.goals.binding)
+    visit goal_targets_path(goal)
     assert_no_selector 'form#edit-target-form'
 
     within find('td', text: date).ancestor('tr') do
@@ -258,7 +264,7 @@ class TargetsTest < BodyTrackingSystemTestCase
     within 'form#edit-target-form' do
       assert has_field?(t(:field_effective_from), with: date, count: 1)
 
-      targets = @project.goals.binding.targets.where(effective_from: date)
+      targets = goal.targets.where(effective_from: date)
       assert_selector 'p.target', count: targets.length
 
       targets.each do |target|
@@ -291,18 +297,27 @@ class TargetsTest < BodyTrackingSystemTestCase
 
   def test_update_binding_target
     # TODO: extend with item + scope
-    target = @project.goals.binding.targets.sample
-    existing_quantities = @project.goals.binding.targets.joins(:quantity)
-      .where(effective_from: target.effective_from).pluck(:quantity_id)
-    date = Date.current + rand(-10..10).days
-    quantity = @project.quantities.except_targets.where.not(id: existing_quantities).sample
-    assert quantity
-    thresholds =
-      @project.quantities.target.where.not(parent: nil).sample.self_and_ancestors.map do |q|
-        [q, rand(-2000.0..2000.0).to_d(4), @project.units.sample]
-      end
+    goal = @project.goals.binding
 
-    visit goal_targets_path(@project.goals.binding)
+    quantity_count = @project.quantities.except_targets.count
+    target_date, * = goal.targets.group(:effective_from, :goal_id).count
+      .reject { |key, count| count == quantity_count }.keys.sample
+    assert target_date, "All dates have all possible targets defined"
+    target = goal.targets.where(effective_from: target_date).sample
+
+    existing_dates = goal.targets.distinct.pluck(:effective_from)
+    date = ([*-10..10].map!{ |offset| Date.current + offset } - existing_dates).sample
+    assert date, "Date without targets defined does not exist in given period"
+
+    existing_quantities = goal.targets.joins(:quantity)
+      .where(effective_from: target.effective_from).pluck(:quantity_id)
+    quantity = @project.quantities.except_targets.where.not(id: existing_quantities).sample
+
+    thresholds = @project.quantities.target.sample.self_and_ancestors.map do |q|
+      [q, rand(-2000.0..2000.0).to_d(4), @project.units.sample]
+    end
+
+    visit goal_targets_path(goal)
     find('td', text: target.effective_from).ancestor('tr').click_link t(:button_edit)
 
     assert_difference 'Goal.count' => 0, 'Target.count' => 0,
@@ -322,6 +337,7 @@ class TargetsTest < BodyTrackingSystemTestCase
         end
 
         click_on t(:button_save)
+        assert_no_selector 'div#errorExplanation'
       end
     end
 
@@ -340,7 +356,7 @@ class TargetsTest < BodyTrackingSystemTestCase
   def test_update_swap_targets
     # TODO: extend with item + scope
     date, goal_id = Target.joins(:goal).group(:effective_from, :goal_id).count
-      .select { |k,v| v > 1 }.keys.sample
+      .select { |key, count| count > 1 }.keys.sample
     assert date
     goal = Goal.find(goal_id)
     target1, target2 = goal.targets.where(effective_from: date).sample(2)
