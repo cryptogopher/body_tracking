@@ -8,16 +8,6 @@ resources :projects, shallow: true do
     end
   end
   resources :goals, except: [:show] do
-    member do
-      post 'toggle_exposure', controller: :targets
-    end
-    resources :targets, except: [:show, :edit, :update] do
-      collection do
-        get 'edit/:date', action: :edit, as: :edit
-        patch '', action: :update
-        post 'reapply/:date', action: :reapply, as: :reapply
-      end
-    end
   end
   resources :ingredients, only: [] do
     member do
@@ -75,4 +65,13 @@ resources :projects, shallow: true do
   resources :units, only: [:index, :create, :destroy]
 end
 
+resources :goals, only: [] do
+  resources :targets, param: :date, except: [:update] do
+    member do
+      post 'reapply'
+    end
+  end
+  resource :targets, only: [:update]
+  post 'toggle_exposure', controller: :targets
+end
 get 'subthresholds', controller: :targets, action: :subthresholds, as: :subthresholds

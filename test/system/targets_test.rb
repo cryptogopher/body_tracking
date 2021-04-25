@@ -186,14 +186,17 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_no_difference 'Target.count' do
       visit goal_targets_path(source.goal)
       click_link t('targets.contextual.link_new_target')
+
       within 'form#new-target-form' do
         fill_in t(:field_effective_from), with: source.effective_from
+
         within 'p.target' do
           select source.quantity.name
           select @project.quantities.target.roots.sample.name
           fill_in with: rand(-2000.0..2000.0).to_d(4)
           select @project.units.sample.shortname
         end
+
         click_on t(:button_create)
         assert_selector :xpath, '//p[@class="target"]//preceding-sibling::div', text: msg
       end

@@ -37,7 +37,7 @@
                   <% else %>
                     <% button_classes += ' icon-bullet-closed' %>
                   <% end %>
-                  <%= link_to '', toggle_exposure_goal_path(@goal, quantity_id: q.id),
+                  <%= link_to '', goal_toggle_exposure_path(@goal, quantity_id: q.id),
                     {class: button_classes, method: :post, remote: true} %>
                 </div>
                 <%= q.name %>

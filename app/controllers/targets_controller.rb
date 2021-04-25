@@ -5,9 +5,9 @@ class TargetsController < ApplicationController
 
   include Concerns::Finders
 
+  before_action :find_goal_by_goal_id,
+    only: [:index, :new, :create, :edit, :update, :toggle_exposure]
   before_action :find_quantity_by_quantity_id, only: [:toggle_exposure, :subthresholds]
-  before_action :find_goal_by_goal_id, only: [:index, :new, :create, :edit, :update]
-  before_action :find_goal, only: [:toggle_exposure]
   before_action :authorize
   #before_action :set_view_params
 
