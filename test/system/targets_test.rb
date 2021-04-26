@@ -272,7 +272,9 @@ class TargetsTest < BodyTrackingSystemTestCase
       targets.each do |target|
         within find('option:checked', exact_text: target.quantity.name)
                  .ancestor('p.target') do
-          assert_selector 'input, select', count: 1 + 3*target.thresholds.length
+          field_count = 1 + 3*target.thresholds.length
+          field_count += (target.thresholds.last.quantity.leaf? ? 0 : 1)
+          assert_selector 'input, select', count: field_count
 
           target.thresholds.each do |threshold|
             within find('option:checked', exact_text: threshold.quantity.name)
