@@ -35,7 +35,7 @@ class TargetsTest < BodyTrackingSystemTestCase
                 AND exposures.view_type = 'Goal' \
                 AND exposures.view_id = #{Project.first.goals.binding.id}")
       .where(exposures: {view: nil}).sample
-    assert quantity
+    assert quantity, "All quantities have already been exposed for goal"
 
     visit goal_targets_path(goal)
     assert_no_selector 'table#targets thead th', text: quantity.name
@@ -211,12 +211,19 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_create_duplicated_targets_should_fail
-    date = Date.current + rand(-10..10).days
+    goal = @project.goals.binding
+
+    quantity_count = @project.quantities.except_targets.count
+    unusable_dates = goal.targets.group(:effective_from).count
+      .select { |date, count| count == quantity_count }.keys
+    date = ([*-10..10].map!{ |offset| Date.current + offset } - unusable_dates).sample
+    assert date, "Date with at least one target undefined does not exist in given period"
+
     quantity = @project.quantities.except_targets
       .joins("LEFT OUTER JOIN targets ON targets.quantity_id = quantities.id \
                 AND targets.effective_from = #{date}")
       .where(targets: {id: nil}).sample
-    assert quantity
+
     msg = t('activerecord.errors.models.target.attributes.base.duplicated_record')
 
     visit goal_targets_path(@project.goals.binding)
@@ -300,8 +307,8 @@ class TargetsTest < BodyTrackingSystemTestCase
     goal = @project.goals.binding
 
     quantity_count = @project.quantities.except_targets.count
-    target_date, * = goal.targets.group(:effective_from, :goal_id).count
-      .reject { |key, count| count == quantity_count }.keys.sample
+    target_date = goal.targets.group(:effective_from).count
+      .reject { |date, count| count == quantity_count }.keys.sample
     assert target_date, "All dates have all possible targets defined"
     target = goal.targets.where(effective_from: target_date).sample
 
@@ -357,7 +364,7 @@ class TargetsTest < BodyTrackingSystemTestCase
     # TODO: extend with item + scope
     date, goal_id = Target.joins(:goal).group(:effective_from, :goal_id).count
       .select { |key, count| count > 1 }.keys.sample
-    assert date
+    assert date, "No date with more than 1 target defined"
     goal = Goal.find(goal_id)
     target1, target2 = goal.targets.where(effective_from: date).sample(2)
     quantity1, quantity2 = target1.quantity.name, target2.quantity.name
