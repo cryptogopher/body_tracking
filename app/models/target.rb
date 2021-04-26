@@ -9,9 +9,9 @@ class Target < ActiveRecord::Base
 
   validates :thresholds, presence: true
   accepts_nested_attributes_for :thresholds, allow_destroy: true,
-    reject_if: proc { |attrs| attrs['quantity_id'].blank? && attrs['value'].blank? }
+    reject_if: proc { |attrs| attrs['quantity_id'].blank? && attrs['id'].blank? }
   validate do
-    quantities = thresholds.map(&:quantity)
+    quantities = thresholds.reject(&:marked_for_destruction?).map(&:quantity)
     ancestors = quantities.max_by(&:lft).self_and_ancestors
     errors.add(:thresholds, :count_mismatch) unless quantities.length == ancestors.length
     errors.add(:thresholds, :quantity_mismatch) unless quantities == ancestors

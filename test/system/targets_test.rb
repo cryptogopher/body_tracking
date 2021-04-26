@@ -7,7 +7,7 @@ class TargetsTest < BodyTrackingSystemTestCase
     log_user 'jsmith', 'jsmith'
   end
 
-  # TODO: add binding_and_nonbinding method to run same test for 2 target types
+  # TODO: add binding_and_nonbinding method to run same test for 2 goal/target types
   # TODO: set values taken randomly from fixtures, not hardcoded
 
   def test_index_binding_goal
@@ -154,12 +154,7 @@ class TargetsTest < BodyTrackingSystemTestCase
       within 'form#new-target-form' do
         within 'p.target' do
           select quantity.name
-          thresholds.each do |t_quantity, t_value, t_unit|
-            within select(t_quantity.name).ancestor('select') do
-              find(:xpath, 'following-sibling::input[not(@type="hidden")][1]').set(t_value)
-              find(:xpath, 'following-sibling::select[1]').select(t_unit.shortname)
-            end
-          end
+          fill_thresholds thresholds
         end
         click_on t(:button_create)
       end
@@ -275,12 +270,12 @@ class TargetsTest < BodyTrackingSystemTestCase
       assert_selector 'p.target', count: targets.length
 
       targets.each do |target|
-        within find('option[selected]', exact_text: target.quantity.name)
+        within find('option:checked', exact_text: target.quantity.name)
                  .ancestor('p.target') do
           assert_selector 'input, select', count: 1 + 3*target.thresholds.length
 
           target.thresholds.each do |threshold|
-            within find('option[selected]', exact_text: threshold.quantity.name)
+            within find('option:checked', exact_text: threshold.quantity.name)
                      .ancestor('select') do
               assert has_selector?(:xpath,
                                    'following-sibling::input[not(@type="hidden")][1]',
@@ -332,15 +327,10 @@ class TargetsTest < BodyTrackingSystemTestCase
       within 'form#edit-target-form' do
         fill_in t(:field_effective_from), with: date
 
-        within find('option[selected]', exact_text: target.quantity.name)
+        within find('option:checked', exact_text: target.quantity.name)
                  .ancestor('p.target') do
           select quantity.name
-          thresholds.each do |t_quantity, t_value, t_unit|
-            within select(t_quantity.name).ancestor('select') do
-              find(:xpath, 'following-sibling::input[not(@type="hidden")][1]').set(t_value)
-              find(:xpath, 'following-sibling::select[1]').select(t_unit.shortname)
-            end
-          end
+          fill_thresholds thresholds
         end
 
         click_on t(:button_save)
@@ -374,8 +364,8 @@ class TargetsTest < BodyTrackingSystemTestCase
 
     assert_no_difference 'Target.count' do
       within 'form#edit-target-form' do
-        select1 = find('option[selected]', exact_text: quantity1).ancestor('select')
-        select2 = find('option[selected]', exact_text: quantity2).ancestor('select')
+        select1 = find('option:checked', exact_text: quantity1).ancestor('select')
+        select2 = find('option:checked', exact_text: quantity2).ancestor('select')
 
         select1.select quantity2
         select2.select quantity1
@@ -392,6 +382,46 @@ class TargetsTest < BodyTrackingSystemTestCase
   end
 
   def test_update_add_and_simultaneously_remove_persisted_duplicate
-    # TODO
+    target = @project.targets.sample
+    thresholds = @project.quantities.target.sample.self_and_ancestors.map do |q|
+      [q, rand(-2000.0..2000.0).to_d(4), @project.units.sample]
+    end
+
+    visit goal_targets_path(target.goal)
+    find('td', text: target.effective_from).ancestor('tr').click_link t(:button_edit)
+
+    assert_no_difference 'Target.count' do
+      within 'form#edit-target-form' do
+        click_link t('targets.form.button_new_target')
+
+        find('option:checked', exact_text: target.quantity.name).ancestor('p.target')
+          .click_link t('targets.form.button_delete_target')
+
+        within :xpath, '//p[@class="target"][last()]' do
+          select target.quantity.name
+          fill_thresholds thresholds
+        end
+
+        click_on t(:button_save)
+        assert_no_selector 'div#errorExplanation'
+      end
+    end
+
+    new_target = Target.last
+    assert new_target.quantity, target.quantity
+    assert_raises(ActiveRecord::RecordNotFound) { target.reload }
+  end
+
+  def fill_thresholds(thresholds)
+    thresholds.each do |threshold|
+      t_quantity, t_value, t_unit = threshold
+      within select(t_quantity.name).ancestor('select') do
+        find(:xpath, 'following-sibling::input[not(@type="hidden")][1]').set(t_value)
+        find(:xpath, 'following-sibling::select[1]').select(t_unit.shortname)
+        if threshold == thresholds.last && !t_quantity.leaf?
+          find(:xpath, 'following-sibling::select[2]').select('.')
+        end
+      end
+    end
   end
 end
