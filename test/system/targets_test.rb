@@ -13,15 +13,22 @@ class TargetsTest < BodyTrackingSystemTestCase
   def test_index_binding_goal
     goal = @project.goals.binding
     assert_not_equal 0, goal.targets.count
+
     visit goal_targets_path(goal)
-    assert_selector 'table#targets tbody tr',
-      count: goal.targets.distinct.pluck(:effective_from).count
+    within 'table#targets tbody' do
+      dates = goal.targets.distinct.pluck(:effective_from)
+      assert_selector 'tr', count: dates.count
+      dates.each do |date|
+        assert_selector 'td', text: date
+      end
+    end
   end
 
   def test_index_binding_goal_without_targets
     goal = @project.goals.binding
     goal.targets.delete_all
     assert_equal 0, goal.targets.count
+
     visit goal_targets_path(goal)
     assert_current_path goal_targets_path(goal)
     assert_selector 'div#targets', visible: :yes, exact_text: t(:label_no_data)
@@ -56,6 +63,10 @@ class TargetsTest < BodyTrackingSystemTestCase
     end
     assert_no_selector 'table#targets thead th', text: quantity.name
     assert_selector 'table#targets thead th'
+  end
+
+  def test_show
+    # TODO
   end
 
   def test_new_binding_target
@@ -112,8 +123,11 @@ class TargetsTest < BodyTrackingSystemTestCase
     assert_equal threshold_unit, t.thresholds.first.unit
 
     assert_no_selector 'form#new-target-form'
-    assert_selector 'table#targets tbody tr',
-      count: goal.targets.distinct.pluck(:effective_from).count
+    assert_selector 'div.flash.notice'
+    within 'table#targets tbody' do
+      assert_selector 'tr', count: goal.targets.distinct.pluck(:effective_from).count
+      assert_selector 'td', text: date
+    end
   end
 
   def test_create_binding_target_when_binding_goal_does_not_exist
@@ -336,9 +350,9 @@ class TargetsTest < BodyTrackingSystemTestCase
         end
 
         click_on t(:button_save)
-        assert_no_selector 'div#errorExplanation'
       end
     end
+    assert_no_selector 'div#errorExplanation'
 
     target.reload
     assert_equal date, target.effective_from
@@ -349,6 +363,12 @@ class TargetsTest < BodyTrackingSystemTestCase
       assert_equal t_quantity, target.thresholds[index].quantity
       assert_equal t_value, target.thresholds[index].value
       assert_equal t_unit, target.thresholds[index].unit
+    end
+
+    assert_selector 'div.flash.notice'
+    within 'table#targets tbody' do
+      assert_no_selector 'td', text: target_date
+      assert_selector 'td', text: date
     end
   end
 
@@ -373,9 +393,9 @@ class TargetsTest < BodyTrackingSystemTestCase
         select2.select quantity1
 
         click_on t(:button_save)
-        assert_no_selector 'div#errorExplanation'
       end
     end
+    assert_no_selector 'div#errorExplanation'
 
     target1.reload
     target2.reload
@@ -405,13 +425,36 @@ class TargetsTest < BodyTrackingSystemTestCase
         end
 
         click_on t(:button_save)
-        assert_no_selector 'div#errorExplanation'
       end
     end
+    assert_no_selector 'div#errorExplanation'
 
     new_target = Target.last
     assert new_target.quantity, target.quantity
     assert_raises(ActiveRecord::RecordNotFound) { target.reload }
+  end
+
+  def test_destroy
+    goal = @project.goals.binding
+    date = goal.targets.distinct.pluck(:effective_from).sample
+    targets = goal.targets.where(effective_from: date)
+
+    visit goal_targets_path(goal)
+    assert_difference 'Goal.count' => 0, 'Target.count' => - targets.length,
+                      'Threshold.count' => - targets.sum { |t| t.thresholds.length } do
+      find('td', text: date).ancestor('tr').click_link t(:button_delete)
+    end
+    assert_empty goal.targets.reload.where(effective_from: date)
+
+    assert_selector 'div.flash.notice'
+    within 'table#targets tbody' do
+      assert_selector 'tr', count: goal.targets.distinct.pluck(:effective_from).count
+      assert_no_selector 'td', text: date
+    end
+  end
+
+  def test_reapply
+    # TODO
   end
 
   def fill_thresholds(thresholds)

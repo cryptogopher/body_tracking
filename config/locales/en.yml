@@ -122,6 +122,15 @@ en:
         zero: "No targets specified"
         one: "Created 1 target"
         other: "Created %{count} targets"
+    update:
+      success:
+        one: "Successfully updated target"
+        other: "Successfully updated targets"
+    destroy:
+      success:
+        one: "Deleted 1 target"
+        other: "Deleted %{count} targets"
+      failure: "Some targets have not been deleted"
   meals:
     contextual:
       link_new_meal: 'New meal'

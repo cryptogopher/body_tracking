@@ -1,0 +1,3 @@
+<% if @targets.all?(&:destroyed?) %>
+  $('tr[id=date-<%= @effective_from %>]').nextUntil('tr.primary').addBack().remove();
+<% end %>

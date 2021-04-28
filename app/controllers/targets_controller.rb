@@ -6,7 +6,7 @@ class TargetsController < ApplicationController
   include Concerns::Finders
 
   before_action :find_goal_by_goal_id,
-    only: [:index, :new, :create, :edit, :update, :toggle_exposure]
+    only: [:index, :new, :create, :edit, :update, :destroy, :toggle_exposure]
   before_action :find_quantity_by_quantity_id, only: [:toggle_exposure, :subthresholds]
   before_action :authorize
   #before_action :set_view_params
@@ -54,17 +54,27 @@ class TargetsController < ApplicationController
     params[:goal][:targets_attributes].each { |ta| ta[:effective_from] = @effective_from }
 
     if @goal.update(targets_params)
-      flash.now[:notice] = t('.success')
+      count = @goal.targets.target.count { |t| t.previous_changes.present? }
+      flash.now[:notice] = t('.success', count: count)
       prepare_targets
+      render :index
     else
       @targets = @goal.targets.where(id: targets_params[:targets_attributes].pluck(:id))
-      @targets += @goal.targets.select(&:changed_for_autosave?)
+      @targets += @goal.targets.target.select(&:changed_for_autosave?)
         .each { |t| t.thresholds.new unless t.thresholds.present? }
       render :edit
     end
   end
 
   def destroy
+    @effective_from = params[:date]
+    @targets = @goal.targets.where(effective_from: @effective_from)
+    count = @targets.destroy_all.length
+    if @targets.all?(&:destroyed?)
+      flash.now[:notice] = t('.success', count: count)
+    else
+      flash.now[:error] = t('.failure')
+    end
   end
 
   def reapply

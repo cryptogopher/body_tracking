@@ -63,6 +63,7 @@ module Validations::NestedUniqueness
         end
       end
       if records
+        # TODO: reset collction, not proxy
         collection.proxy_association.reset
         records.each { |r| collection.proxy_association.add_to_target(r) }
       end
