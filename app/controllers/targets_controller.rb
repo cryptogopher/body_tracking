@@ -6,7 +6,7 @@ class TargetsController < ApplicationController
   include Concerns::Finders
 
   before_action :find_goal_by_goal_id,
-    only: [:index, :new, :create, :edit, :update, :destroy, :toggle_exposure]
+    only: [:index, :new, :create, :edit, :update, :destroy, :reapply, :toggle_exposure]
   before_action :find_quantity_by_quantity_id, only: [:toggle_exposure, :subthresholds]
   before_action :authorize
   #before_action :set_view_params
@@ -22,7 +22,7 @@ class TargetsController < ApplicationController
   end
 
   def create
-    @effective_from = params[:goal].delete(:effective_from)
+    @effective_from = params[:goal].delete(:effective_from).to_date
     params[:goal][:targets_attributes].each { |ta| ta[:effective_from] = @effective_from }
 
     if @goal.update(targets_params)
@@ -43,14 +43,13 @@ class TargetsController < ApplicationController
   end
 
   def edit
-    @targets = @goal.targets.joins(:quantity).where(effective_from: params[:date])
+    @effective_from = params[:date].to_date
+    @targets = @goal.targets.joins(:quantity).where(effective_from: @effective_from)
       .order('quantities.lft' => :asc).to_a
-    @effective_from = @targets.first&.effective_from
   end
 
   def update
-    # TODO: DRY same code with #create
-    @effective_from = params[:goal].delete(:effective_from)
+    @effective_from = params[:goal].delete(:effective_from).to_date
     params[:goal][:targets_attributes].each { |ta| ta[:effective_from] = @effective_from }
 
     if @goal.update(targets_params)
@@ -67,7 +66,7 @@ class TargetsController < ApplicationController
   end
 
   def destroy
-    @effective_from = params[:date]
+    @effective_from = params[:date].to_date
     @targets = @goal.targets.where(effective_from: @effective_from)
     count = @targets.destroy_all.length
     if @targets.all?(&:destroyed?)
@@ -78,6 +77,14 @@ class TargetsController < ApplicationController
   end
 
   def reapply
+    @effective_from = ''
+    targets = @goal.targets.where(effective_from: params[:date].to_date)
+    @targets = targets.map do |t|
+      duplicate = t.dup
+      duplicate.thresholds = t.thresholds.map(&:dup)
+      duplicate
+    end
+    render :new
   end
 
   def toggle_exposure

@@ -68,7 +68,7 @@ end
 resources :goals, only: [] do
   resources :targets, param: :date, except: [:update] do
     member do
-      post 'reapply'
+      get 'reapply'
     end
   end
   resource :targets, only: [:update]

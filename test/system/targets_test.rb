@@ -267,6 +267,7 @@ class TargetsTest < BodyTrackingSystemTestCase
   def test_edit_binding_target
     goal = @project.goals.binding
     date = goal.targets.distinct.pluck(:effective_from).sample
+    targets = goal.targets.where(effective_from: date)
 
     visit goal_targets_path(goal)
     assert_no_selector 'form#edit-target-form'
@@ -277,40 +278,7 @@ class TargetsTest < BodyTrackingSystemTestCase
       assert_selector :xpath, 'following-sibling::tr//form[@id="edit-target-form"]'
     end
 
-    within 'form#edit-target-form' do
-      assert has_field?(t(:field_effective_from), with: date, count: 1)
-
-      targets = goal.targets.where(effective_from: date)
-      assert_selector 'p.target', count: targets.length
-
-      targets.each do |target|
-        within find('option:checked', exact_text: target.quantity.name)
-                 .ancestor('p.target') do
-          field_count = 1 + 3*target.thresholds.length
-          field_count += (target.thresholds.last.quantity.leaf? ? 0 : 1)
-          assert_selector 'input, select', count: field_count
-
-          target.thresholds.each do |threshold|
-            within find('option:checked', exact_text: threshold.quantity.name)
-                     .ancestor('select') do
-              assert has_selector?(:xpath,
-                                   'following-sibling::input[not(@type="hidden")][1]',
-                                   exact_text: threshold.value)
-              assert has_selector?(:xpath, 'following-sibling::select//option[@selected]',
-                                   exact_text: threshold.unit.shortname)
-            end
-          end
-
-          if targets.length == 1
-            assert has_no_link?(t('targets.form.button_delete_target'))
-          else
-            assert has_link?(t('targets.form.button_delete_target'))
-          end
-        end
-      end
-
-      assert has_link?(t('targets.form.button_new_target'), count: 1)
-    end
+    assert_form_content 'form#edit-target-form', date, targets
   end
 
   def test_update_binding_target
@@ -453,8 +421,18 @@ class TargetsTest < BodyTrackingSystemTestCase
     end
   end
 
-  def test_reapply
-    # TODO
+  def test_reapply_binding_target
+    goal = @project.goals.binding
+    date = goal.targets.distinct.pluck(:effective_from).sample
+    targets = goal.targets.where(effective_from: date)
+
+    visit goal_targets_path(goal)
+    assert_no_selector 'form#new-target-form'
+
+    assert_no_difference 'Target.count', 'Threshold.count' do
+      find('td', text: date).ancestor('tr').click_link t(:button_reapply)
+    end
+    assert_form_content 'form#new-target-form', '', targets
   end
 
   def fill_thresholds(thresholds)
@@ -467,6 +445,42 @@ class TargetsTest < BodyTrackingSystemTestCase
           find(:xpath, 'following-sibling::select[2]').select('.')
         end
       end
+    end
+  end
+
+  def assert_form_content(location, date, targets)
+    within location do
+      assert has_field?(t(:field_effective_from), with: date, count: 1)
+
+      assert_selector 'p.target', count: targets.length
+
+      targets.each do |target|
+        within find('option:checked', exact_text: target.quantity.name)
+                 .ancestor('p.target') do
+          field_count = 1 + 3*target.thresholds.length
+          field_count += (target.thresholds.last.quantity.leaf? ? 0 : 1)
+          assert_selector 'input, select', count: field_count
+
+          target.thresholds.each do |threshold|
+            within find('option:checked', exact_text: threshold.quantity.name)
+                     .ancestor('select') do
+              assert has_selector?(:xpath,
+                                   'following-sibling::input[not(@type="hidden")][1]',
+                                   exact_text: threshold.value)
+              assert has_selector?(:xpath, 'following-sibling::select//option[@selected]',
+                                   exact_text: threshold.unit.shortname)
+            end
+          end
+
+          if targets.length == 1
+            assert has_no_link?(t('targets.form.button_delete_target'))
+          else
+            assert has_link?(t('targets.form.button_delete_target'))
+          end
+        end
+      end
+
+      assert has_link?(t('targets.form.button_new_target'), count: 1)
     end
   end
 end
