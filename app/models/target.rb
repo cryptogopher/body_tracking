@@ -37,7 +37,8 @@ class Target < ActiveRecord::Base
   end
 
   def to_s
-    thresholds.last.quantity.description %
-      thresholds.map { |t| [t.quantity.name, "#{t.value} [#{t.unit.shortname}]"] }.to_h
+    thresholds.last.quantity.description % thresholds.map do |t|
+      [t.quantity.name.to_sym, "#{t.value} [#{t.unit.shortname}]"]
+    end.to_h
   end
 end

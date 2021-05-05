@@ -18,9 +18,8 @@
     <tbody>
       <% @foods.each do |f| %>
         <% next if f.new_record? %>
-        <tr id="food-<%= f.id %>"
-            class="food primary<%= ' hidden' if f.hidden %>">
-          <td class="name ellipsible">
+        <tr id="food-<%= f.id %>" class="food primary<%= ' dimmed' if f.hidden %>">
+          <td class="topleft ellipsible">
             <%= link_to '', toggle_food_path(f), {
                   remote: true,
                   method: :post,
@@ -29,13 +28,13 @@
             <%= f.name %>
           </td>
           <td class="notes ellipsible"><%= f.notes %></td>
-          <td class="reference value"><%= f.ref_amount %> [<%= f.ref_unit.shortname %>]</td>
+          <td class="reference right"><%= f.ref_amount %> [<%= f.ref_unit.shortname %>]</td>
           <td class="group"><%= f.group %></td>
           <td class="source">
             <%= f.source.name if f.source.present? %>
             <%= ", #{f.source_ident}" if f.source_ident.present? %>
           </td>
-          <td class="action unwrappable"><%= action_links(f, :index) %></td>
+          <td class="right shrunk unwrappable"><%= action_links(f, :index) %></td>
         </tr>
       <% end %>
     </tbody>

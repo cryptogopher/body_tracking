@@ -18,8 +18,8 @@
       <% @measurements.each do |m| %>
         <% next if m.new_record? %>
         <tr id="measurement-<%= m.id %>" class="primary measurement">
-          <td class="date unwrappable"><%= format_datetime(m) %></td>
-          <td class="name">
+          <td class="topleft unwrappable"><%= format_datetime(m) %></td>
+          <td class="topleft">
             <div style="float:left;">
               <%= link_to m.routine.name, readouts_measurement_routine_path(m.routine) %>
             </div>
@@ -29,7 +29,7 @@
           </td>
           <td class="notes ellipsible"><%= m.notes %></td>
           <td class="source"><%= m.source.name if m.source.present? %></td>
-          <td class="action unwrappable"><%= action_links(m) %></td>
+          <td class="right shrunk unwrappable"><%= action_links(m) %></td>
         </tr>
       <% end %>
     </tbody>

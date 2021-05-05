@@ -34,19 +34,19 @@
     <tbody>
       <% extra_quantities = @foods.values.first.keys - @quantities %>
       <% @foods.each do |food, nutrients| %>
-        <% row_class = "food#{' hidden' if food.hidden} #{cycle('odd', 'even')}" %>
+        <% row_class = "food#{' dimmed' if food.hidden} #{cycle('odd', 'even')}" %>
         <tr id="food-<%= food.id %>" class="primary <%= row_class %>">
-          <td class="name ellipsible" style="cursor: pointer;"
+          <td class="topleft ellipsible" style="cursor: pointer;"
               onclick="$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', '.food').toggle(); return false;">
             <span class="icon icon-bullet-closed"><%= food.name %></span>
           </td>
           <% @quantities.each do |q| %>
-            <td class="primary value ellipsible">
+            <td class="primary right ellipsible">
               <%= format_value(nutrients[q], @food_summary[:precision][q],
                                @food_summary[:mfu_unit][q]) %>
             </td>
           <% end %>
-          <td class="action unwrappable"><%= action_links(food, :nutrients) %></td>
+          <td class="right shrunk unwrappable"><%= action_links(food, :nutrients) %></td>
         </tr>
 
         <tr class="<%= row_class %>" style="display:none">
@@ -55,17 +55,17 @@
              else
                rows = 1
              end %>
-          <td rowspan="<%= rows %>" class="name ellipsible" style="cursor: pointer;"
+          <td rowspan="<%= rows %>" class="topleft ellipsible" style="cursor: pointer;"
               onclick="$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', '.food').toggle(); return false;">
             <span class="icon icon-bullet-open"><%= food.name %></span>
           </td>
           <% @quantities.each do |q| %>
-            <td class="primary quantity ellipsible">
+            <td class="primary topleft ellipsible">
               <%= q.name %>
-              <p class="value"><%= format_value(nutrients[q]) %></p>
+              <p class="right"><%= format_value(nutrients[q]) %></p>
             </td>
           <% end %>
-          <td rowspan="<%= rows %>" class="action unwrappable">
+          <td rowspan="<%= rows %>" class="right shrunk unwrappable">
             <%= action_links(food, :nutrients) %>
           </td>
         </tr>
@@ -74,9 +74,9 @@
         <% extra_quantities.each_slice(@quantities.length) do |eqs| %>
           <tr class="extra <%= row_class %>" style="display:none">
             <% eqs.each do |q| %>
-              <td class="extra quantity ellipsible">
+              <td class="extra topleft ellipsible">
                 <%= q.name if nutrients[q] %>
-                <p class="value"><%= format_value(nutrients[q]) %></p>
+                <p class="right"><%= format_value(nutrients[q]) %></p>
               </td>
             <% end %>
             <% if @quantities.length > eqs.length %>

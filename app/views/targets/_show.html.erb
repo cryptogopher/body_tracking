@@ -1,0 +1,12 @@
+<tr class="details">
+  <td class="topleft">
+    <%= link_to l(:button_close), "#", {class: 'icon icon-close',
+          onclick: '$(this).closest("tr").nextUntil("tr.date", "tr:not(.details)").show()
+            .addBack().first().remove(); return false;'} %>
+  </td>
+  <% content = @quantities.keys.sort_by(&:lft).inject('') do |output, q| %>
+    <% raw "#{output}#{target_markup(@effective_from, q, @quantities[q])}\n" %>
+  <% end %>
+  <td class="topleft" colspan="<%= @goal.exposures.length + 1 %>"
+      style="white-space:pre-line;"><%= content %></td>
+</tr>

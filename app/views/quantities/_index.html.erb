@@ -15,23 +15,19 @@
     </thead>
     <tbody>
       <% Quantity.each_with_level(@quantities) do |q, level| %>
-        <%
-          next if q.new_record?
-          quantity_class = "quantity"
-          quantity_class += " primary" unless q.exposures.empty?
-          quantity_class += " project idnt idnt-#{level+1}"
-        %>
-        <tr id="quantity-<%= q.id %>" class="<%= quantity_class %>">
-          <td class="name unwrappable">
-            <div class="icon <%= q.exposures.empty? ? 'icon-fav-off' : 'icon-fav' %>">
+        <% next if q.new_record? %>
+        <tr id="quantity-<%= q.id %>" class="quantity project idnt idnt-<%= level+1 -%>">
+          <%# NOTE: 'name' class only for proper indentation by 'idnt-N' %>
+          <td class="name topleft unwrappable<%= ' bolded' unless q.exposures.empty? -%>">
+            <div class="icon <%= q.exposures.empty? ? 'icon-fav-off' : 'icon-fav' -%>">
               <%= q.name %>
             </div>
           </td>
           <td class="order"><%= order_links(q) %></td>
           <td class="domain"><%= q.domain %></td>
-          <td class="description"><%= q.description %></td>
+          <td class="description symmetric"><%= q.description %></td>
           <td class="formula"><%= checked_image q.formula %></td>
-          <td class="action unwrappable"><%= action_links(q) %></td>
+          <td class="right shrunk unwrappable"><%= action_links(q) %></td>
         </tr>
       <% end %>
     </tbody>

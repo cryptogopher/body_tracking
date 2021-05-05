@@ -9,7 +9,8 @@
     <p>
       <%= submit_tag l(:button_save) %>
       <%= link_to l(:button_cancel), "#",
-        onclick: '$(this).closest("tr").remove(); return false;' %>
+        onclick: '$(this).closest("tr").nextUntil("tr.date", "tr.details").show()
+                    .addBack().first().remove(); return false;' %>
     </p>
   </div>
 <% end %>

@@ -10,7 +10,7 @@
     <tbody>
       <% @goals.each do |g| %>
         <tr id="goal-<%= g.id %>" class="primary goal">
-          <td class="name unwrappable">
+          <td class="topleft unwrappable">
             <div style="float:left;">
               <%= checked_image g.is_binding %><%= link_to g.name, goal_targets_path(g) %>
             </div>
@@ -20,7 +20,7 @@
             </div>
           </td>
           <td class="description ellipsible"><%= g.description %></td>
-          <td class="action unwrappable">
+          <td class="right shrunk">
             <%= delete_link(g, {remote: true, data: {}}) unless g.is_binding %>
           </td>
         </tr>

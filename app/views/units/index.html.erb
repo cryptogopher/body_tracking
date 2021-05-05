@@ -35,7 +35,7 @@
         <tr id="unit-<%= u.id %>" class="unit">
           <td class="shortname"><%= u.shortname %></td>
           <td class="unitname"><%= u.name %></td>
-          <td class="action"><%= delete_link unit_path(u), data: {} %></td>
+          <td class="right shrunk"><%= delete_link unit_path(u), data: {} %></td>
         </tr>
       <% end %>
     </tbody>

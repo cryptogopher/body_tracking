@@ -15,7 +15,7 @@
       <% header.each_with_index do |row, i| %>
         <tr class="header">
           <% if i == 0 %>
-            <th rowspan="<%= header.length %>" style="width:<%= 2 * 100/total_width %>%">
+            <th rowspan="<%= header.length %>" style="width:<%= 100/total_width %>%">
               <%= l(:field_effective_from) %>
             </th>
           <% end %>
@@ -56,53 +56,16 @@
 
     <tbody>
       <% @targets_by_date.each do |date, targets| %>
-        <% row_class = "date #{cycle('odd', 'even')}" %>
-        <tr id="date-<%= date %>" class="primary <%= row_class %>">
-          <td class="date unwrappable" style="cursor: pointer;"
-              onclick="$(this).closest('tr').toggle();
-                       $(this).closest('tr').nextUntil('tr.primary', '.date').toggle();
-                       return false;">
-            <span class="icon icon-bullet-closed"><%= format_date(date) %></span>
+        <tr id="date-<%= date %>" class="date <%= cycle('odd', 'even') %>">
+          <td class="topleft unwrappable">
+            <%= link_to(format_date(date), goal_target_path(@goal, date),
+                        {remote: true, class: 'icon icon-arrow-right'}) %>
           </td>
           <% @quantities.each do |q| %>
-            <td class="primary value ellipsible"><%= targets[q] %></td>
+            <td class="primary right unwrappable"><%= raw targets[q].to_s %></td>
           <% end %>
-          <td class="action unwrappable"><%= action_links(date) %></td>
+          <td class="right shrunk unwrappable"><%= action_links(date) %></td>
         </tr>
-
-        <tr class="<%= row_class %>" style="display:none">
-          <% rows = @quantities.empty? ? 1 : (targets.length - 1) / @quantities.length + 1 %>
-          <td rowspan="<%= rows %>" class="date unwrappable" style="cursor: pointer;"
-              onclick="$(this).closest('tr').prev('tr.primary').toggle();
-                       $(this).closest('tr').prev('tr.primary')
-                         .nextUntil('tr.primary', '.date').toggle();
-                       return false;">
-            <span class="icon icon-bullet-open"><%= format_date(date) %></span>
-          </td>
-          <% @quantities.each do |q| %>
-            <td class="primary quantity ellipsible">
-              <%= q.name %><p class="value"><%= targets.delete(q) %></p>
-            </td>
-          <% end %>
-          <td rowspan="<%= rows %>" class="action unwrappable">
-            <%= action_links(date) %>
-          </td>
-        </tr>
-
-        <% next if @quantities.empty? %>
-        <% targets.each_slice(@quantities.length) do |extras| %>
-          <tr class="extra <%= row_class %>" style="display:none">
-            <% extras.each do |q, t| %>
-              <td class="extra quantity ellipsible">
-                <%= q.name %><p class="value"><%= t %></p>
-              </td>
-            <% end %>
-            <% if @quantities.length > extras.length %>
-              <td class="space" colspan="<%= @quantities.length - extras.length %>"></td>
-            <% end %>
-          </tr>
-        <% end %>
-
       <% end %>
     </tbody>
   </table>

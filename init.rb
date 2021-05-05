@@ -16,7 +16,7 @@ Redmine::Plugin.register :body_tracking do
     permission :view_body_trackers, {
       body_trackers: [:index],
       goals: [:index],
-      targets: [:index],
+      targets: [:index, :show],
       meals: [:index],
       measurement_routines: [:show],
       measurements: [:index, :readouts, :filter],

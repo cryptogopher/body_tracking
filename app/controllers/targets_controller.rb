@@ -5,8 +5,8 @@ class TargetsController < ApplicationController
 
   include Concerns::Finders
 
-  before_action :find_goal_by_goal_id,
-    only: [:index, :new, :create, :edit, :update, :destroy, :reapply, :toggle_exposure]
+  before_action :find_goal_by_goal_id, only: [:index, :new, :create, :show, :edit, :update,
+                                              :destroy, :reapply, :toggle_exposure]
   before_action :find_quantity_by_quantity_id, only: [:toggle_exposure, :subthresholds]
   before_action :authorize
   #before_action :set_view_params
@@ -39,6 +39,24 @@ class TargetsController < ApplicationController
       @targets = @goal.targets.select(&:changed_for_autosave?)
         .each { |t| t.thresholds.new unless t.thresholds.present? }
       render :new
+    end
+  end
+
+  def show
+    # TODO: take into account nullified targets, after introduced
+    @effective_from = params[:date].to_date
+    targets = @goal.targets.joins(:quantity).where(
+      "(quantity_id, effective_from) IN (?)",
+      @goal.targets.select(:quantity_id, 'MAX(effective_from) as effective_from')
+        .where("effective_from <= ?", @effective_from).group(:quantity_id)
+    ).reorder('quantities.depth DESC')
+
+    @quantities = {}
+    targets.each do |t|
+      unless @quantities.has_key?(t.quantity.parent)
+        t.quantity.ancestors.each { |q| @quantities[q] = nil }
+      end
+      @quantities[t.quantity] = t
     end
   end
 
@@ -123,7 +141,7 @@ class TargetsController < ApplicationController
 
     @targets_by_date = Hash.new { |h,k| h[k] = {} }
     @goal.targets.includes(:item, thresholds: [:quantity]).reject(&:new_record?)
-      .each { |t| @targets_by_date[t.effective_from][t.thresholds.first.quantity] = t }
+      .each { |t| @targets_by_date[t.effective_from][t.quantity] = t }
   end
 
   def set_view_params

@@ -1,0 +1,4 @@
+var row = $('tr[id=date-<%= @effective_from %>]');
+row.nextUntil('tr.date').remove('tr.details').hide();
+row.after('<%= j render partial: 'targets/show' %>').next()
+  .addClass(row.hasClass('even') ? 'even' : 'odd');

@@ -1,6 +1,6 @@
 <tr id="meal-<%= m.id %>" class="primary meal project idnt idnt-1"
     style="background-color: #d0e0e3;">
-  <td class="name unwrappable" style="border-right: none;">
+  <td class="topleft unwrappable" style="border-right: none;">
     <b><%= "#{t '.label_meal'} ##{index+1}" %></b>
     <% if m.eaten_at %>
       <%= " at #{m.eaten_at.strftime('%R')}" %>
@@ -34,12 +34,12 @@
   </td>
 <% end %>
 
-  <td class="value ellipsible" style="border-left: none;"></td>
+  <td class="right ellipsible" style="border-left: none;"></td>
   <% @quantities.each do |q| %>
-    <td class="value ellipsible">
+    <td class="right ellipsible">
       <%= format_value(@ingredient_summary[m][q], @ingredient_summary[:precision][q]) %>
     </td>
   <% end %>
 
-  <td class="action unwrappable" style="width: 1%;"><%= meal_links(m) %></td>
+  <td class="right shrunk unwrappable"><%= meal_links(m) %></td>
 </tr>

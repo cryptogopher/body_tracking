@@ -1,12 +1,12 @@
 <tr id="date-<%= date.strftime('%Y%m%d') %>" class="date" style="background-color: #fff2cc;">
-  <td class="date" colspan="2" style="border-right: none;">
+  <td class="topleft" colspan="2" style="border-right: none;">
     <h3 style="margin: 0;">
       <%= date == Date.current ? 'Today' : date.strftime('%F') %>
     </h3>
   </td>
-  <td class="value ellipsible" style="border-left: none;"></td>
+  <td class="right ellipsible" style="border-left: none;"></td>
   <% @quantities.each do |q| %>
-    <td class="value ellipsible">
+    <td class="right ellipsible">
       <%= format_value(@ingredient_summary[date][q], @ingredient_summary[:precision][q]) %>
     </td>
   <% end %>

@@ -32,14 +32,14 @@
       <% @measurements.each do |measurement, readouts| %>
         <% row_class = "measurement #{cycle('odd', 'even')}" %>
         <tr id="measurement-<%= measurement.id %>" class="primary <%= row_class %>">
-          <td class="date unwrappable" style="cursor: pointer;"
+          <td class="topleft unwrappable" style="cursor: pointer;"
               onclick="$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', '.measurement').toggle(); return false;">
             <span class="icon icon-bullet-closed"><%= format_datetime(measurement) %></span>
           </td>
           <% @quantities.each do |q| %>
-            <td class="primary value ellipsible"><%= format_value(readouts[q]) %></td>
+            <td class="primary right ellipsible"><%= format_value(readouts[q]) %></td>
           <% end %>
-          <td class="action unwrappable"><%= action_links(measurement) %></td>
+          <td class="right shrunk unwrappable"><%= action_links(measurement) %></td>
         </tr>
 
         <tr class="<%= row_class %>" style="display:none">
@@ -48,17 +48,17 @@
              else
                rows = 1
              end %>
-          <td rowspan="<%= rows %>" class="date unwrappable" style="cursor: pointer;"
+          <td rowspan="<%= rows %>" class="topleft unwrappable" style="cursor: pointer;"
               onclick="$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', '.measurement').toggle(); return false;">
             <span class="icon icon-bullet-open"><%= format_datetime(measurement) %></span>
           </td>
           <% @quantities.each do |q| %>
-            <td class="primary quantity ellipsible">
+            <td class="primary topleft ellipsible">
               <%= q.name %>
-              <p class="value"><%= format_value(readouts[q]) %></p>
+              <p class="right"><%= format_value(readouts[q]) %></p>
             </td>
           <% end %>
-          <td rowspan="<%= rows %>" class="action unwrappable">
+          <td rowspan="<%= rows %>" class="right shrunk unwrappable">
             <%= action_links(measurement) %>
           </td>
         </tr>
@@ -67,9 +67,9 @@
         <% extra_quantities.each_slice(@quantities.length) do |eqs| %>
           <tr class="extra <%= row_class %>" style="display:none">
             <% eqs.each do |q| %>
-              <td class="extra quantity ellipsible">
+              <td class="extra topleft ellipsible">
                 <%= q.name if readouts[q] %>
-                <p class="value"><%= format_value(readouts[q]) %></p>
+                <p class="right"><%= format_value(readouts[q]) %></p>
               </td>
             <% end %>
             <% if @quantities.length > eqs.length %>

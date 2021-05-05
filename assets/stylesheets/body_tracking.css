@@ -1,10 +1,6 @@
-table.list tr.quantity.primary td.name {font-weight: bold;}
+table.list .bolded {font-weight: bold;}
+table.list .dimmed {opacity: 0.4}
 
-table.list tr.food.hidden {opacity: 0.4}
-
-table.list .date,
-table.list .name,
-table.list td.quantity {text-align: left;}
 /* TODO: merge with .closable and/or remove .closable */
 /* TODO: replace .quantity(head)(empty) with th.interim/.empty */
 table.list .quantityhead {border-bottom: none;}
@@ -12,8 +8,12 @@ table.list .quantityheadempty {border-top: none; border-bottom: none;}
 table.list th.interim {border-bottom: none;}
 table.list th.empty {border-top: none;}
 
-table.list .action,
-table.list .value {text-align: right; padding-right: 2px;}
+table.list td.topleft {text-align: left; vertical-align: top; padding-left: 4px;}
+table.list td.symmetric {padding-right: 4px;}
+/* .right used with 'p' in _readouts/_nutrients; scope to 'td' after changing
+ * format of these views after _targets */
+table.list .right {text-align: right; padding-right: 2px; padding-left: 4px;}
+table.list td.shrunk {width: 1px;}
 
 table.list .closable {padding-right: 0;}
 table.list .unwrappable {white-space: nowrap;}
@@ -24,11 +24,6 @@ table.list .ellipsible {
   max-width: 1px;
 }
 table.list tr.buttonable {line-height: 1.8em;}
-
-table.list td.form {
-  padding-right: 2px;
-  text-align: left;
-}
 
 table.list tbody tr.header:hover {background-color: unset;}
 table.list tbody tr.header:hover td {border: none;}
