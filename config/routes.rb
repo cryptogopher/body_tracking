@@ -7,8 +7,9 @@ resources :projects, shallow: true do
       post 'defaults'
     end
   end
-  resources :goals, except: [:show] do
-  end
+
+  resources :goals, except: [:show]
+
   resources :ingredients, only: [] do
     member do
       post 'adjust/:adjustment', controller: :meals, action: :adjust, as: :adjust
@@ -24,6 +25,7 @@ resources :projects, shallow: true do
       post 'toggle_exposure'
     end
   end
+
   resources :measurement_routines, only: [:show, :edit] do
     member do
       get 'readouts', controller: :measurements
@@ -38,6 +40,7 @@ resources :projects, shallow: true do
       get 'filter'
     end
   end
+
   resources :foods, except: [:show] do
     member do
       post 'toggle'

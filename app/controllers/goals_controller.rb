@@ -6,7 +6,7 @@ class GoalsController < ApplicationController
   include Concerns::Finders
 
   before_action :find_project_by_project_id, only: [:index, :new, :create]
-  before_action :find_goal, only: [:edit, :update]
+  before_action :find_goal, only: [:edit, :update, :destroy]
   before_action :authorize
 
   def index
@@ -39,6 +39,10 @@ class GoalsController < ApplicationController
     else
       render :new
     end
+  end
+
+  def destroy
+    # TODO
   end
 
   private
