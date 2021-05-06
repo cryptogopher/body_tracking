@@ -1,73 +1,74 @@
 <%= error_messages_for @measurement %>
 
-<div class="box">
-  <div id='measurement-routine-form' class="tabular">
-    <% if @measurement.routine.persisted? %>
-      <%= render partial: 'measurement_routines/show_form',
-        locals: {routine: @measurement.routine} %>
-    <% else %>
-      <%= render partial: 'measurement_routines/form',
-        locals: {routine: @measurement.routine} %>
-    <% end %>
-  </div>
-  <hr style="width: 95%;">
-  <div class="tabular">
-    <div class="splitcontent">
-      <div class="splitcontentleft">
-        <p>
-        <%= f.date_field :taken_at_date, required: true %>
-        <%= f.time_field :taken_at_time, value: format_time(@measurement.taken_at),
-          required: true, label: '' %>
-        </p>
-      </div>
-      <div class="splitcontentright">
-        <p><%= f.select :source_id, source_options,
-          {required: false, include_blank: t('.null_source')} %></p>
-      </div>
-    </div>
-    <p><%= f.text_area :notes, cols: 40, rows: 1, style: "width: 95%;" %></p>
-    <% @measurement.readouts.each_with_index do |r, index| %>
-      <%= f.fields_for 'readouts_attributes', r, index: '' do |ff| %>
-        <p class="readout">
-        <%= ff.hidden_field :id %>
-        <%= ff.select :quantity_id, quantity_options(:measurement),
-          {include_blank: true, required: true, label: (index > 0 ? '' : :field_readouts)} %>
-        <%= ff.number_field :value, {size: 8, step: :any, label: ''} %>
-        <%= ff.select :unit_id, unit_options, {label: ''} %>
-        <%= ff.hidden_field :_destroy %>
-        <%= link_to t(".button_delete_readout"), '#', class: 'icon icon-del',
-          style: (@measurement.readouts.many? ? "" : "display:none"),
-          onclick: "deleteReadout(); return false;" %>
-        </p>
-      <% end %>
-    <% end %>
+<div id='measurement-routine-form'>
+  <% if @measurement.routine.persisted? %>
+    <%= render partial: 'measurement_routines/show_form',
+      locals: {routine: @measurement.routine} %>
+  <% else %>
+    <%= render partial: 'measurement_routines/form',
+      locals: {routine: @measurement.routine} %>
+  <% end %>
+</div>
+
+<hr style="width: 95%;">
+
+<div class="splitcontent">
+  <div class="splitcontentleft">
     <p>
-    <%= link_to t(".button_new_readout"), '#', class: 'icon icon-add',
-      onclick: 'newReadout(); return false;' %>
+    <%= measurement_f.date_field :taken_at_date, required: true %>
+    <%= measurement_f.time_field :taken_at_time, value: format_time(@measurement.taken_at),
+      required: true, no_label: true %>
     </p>
+  </div>
+  <div class="splitcontentright">
+    <p><%= measurement_f.collection_select :source_id, @project.sources, :id, :name,
+      {required: false, include_blank: t('.null_source')} %></p>
   </div>
 </div>
 
+<p><%= measurement_f.text_area :notes, cols: 40, rows: 1, style: "width: 95%;" %></p>
+
+<%= measurement_f.fields_for :readouts, index: '', child_index: '' do |readout_f| %>
+  <%# byebug %>
+  <p class="readout">
+  <%= readout_f.hidden_field :id %>
+  <%= readout_f.hidden_field :_destroy %>
+  <% required = readout_f.object == @measurement.readouts.first %>
+  <%= readout_f.select :quantity_id, quantity_options(:measurement),
+    {include_blank: true, required: required, label: (required ? :field_readouts : '')} %>
+  <%= readout_f.number_field :value, {size: 8, step: :any, no_label: true} %>
+  <%= readout_f.collection_select :unit_id, @project.units, :id, :shortname,
+                                  {no_label: true} %>
+
+  <%= link_to t(".button_delete_readout"), '#', class: 'icon icon-del',
+    style: (@measurement.readouts.many? ? '' : 'display:none'),
+    onclick: 'deleteReadout(event); return false;' %>
+  </p>
+<% end %>
+
+<p>
+<%= link_to t(".button_new_readout"), '#', class: 'icon icon-add',
+  onclick: 'newReadout(event); return false;' %>
+</p>
+
 <%= javascript_tag do %>
-  function newReadout() {
+  function newReadout(event) {
     var form = $(event.target).closest('form');
-    var row = form.find('p.readout:visible:last');
-    var new_row = row.clone().insertAfter(row);
-    new_row.find('input[id$=__id], input[id$=__value], select[id$=_quantity__id]').val('');
-    new_row.find('select[id$=__unit_id]').val(row.find('select[id$=__unit_id]').val());
-    new_row.find('input[id$=__destroy]').val('');
-    new_row.find('label:first').hide();
+    var readout = form.find('p.readout:visible:last');
+    var new_readout = readout.clone().insertAfter(readout);
+    new_readout.find('label:first').hide();
+    new_readout.find('input, select:first').val('');
     form.find('p.readout:visible a.icon-del').show();
   }
 
-  function deleteReadout() {
+  function deleteReadout(event) {
     var form = $(event.target).closest('form');
-    var row = $(event.target).closest('p.readout');
-    if (row.find('input[id$=__id]').val()) {
-      row.hide();
-      row.find('input[id$=__destroy]').val('1');
+    var readout = $(event.target).closest('p.readout');
+    if (readout.find('input[id$=__id]').val()) {
+      readout.hide();
+      readout.find('input[id$=__destroy]').val('1');
     } else {
-      row.remove();
+      readout.remove();
     }
     form.find('p.readout:visible:first label:first').show();
     if (form.find('p.readout:visible').length <= 1) {

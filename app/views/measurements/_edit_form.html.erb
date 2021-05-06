@@ -1,15 +1,17 @@
-<%= labelled_form_for @measurement,
-  url: measurement_path(@measurement, @view_params),
+<%= labelled_form_for @measurement, url: measurement_path(@measurement, @view_params),
   method: :patch, remote: true,
-  html: {id: 'edit-measurement-form', name: 'edit-measurement-form'} do |f| %>
+  html: {id: 'edit-measurement-form', name: 'edit-measurement-form'} do |measurement_f| %>
 
-  <%= render partial: 'measurements/form', locals: {f: f} %>
+  <div class="box tabular">
+    <%= render partial: 'measurements/form', locals: {measurement_f: measurement_f} %>
+  </div>
 
   <div class="tabular">
     <p>
       <%= submit_tag l(:button_save) %>
       <%= link_to l(:button_cancel), "#",
-        onclick: '$(this).closest("tr").remove(); return false;' %>
+        onclick: '$(this).closest("tr").nextUntil("tr.measurement", "tr.details").show()
+                    .addBack().first().remove(); return false;' %>
     </p>
   </div>
 <% end %>

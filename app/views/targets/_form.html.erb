@@ -1,7 +1,5 @@
 <% if goal_f.object.is_binding? %>
-  <p>
-  <%= goal_f.date_field :effective_from, value: @effective_from, required: true %>
-  </p>
+  <p><%= goal_f.date_field :effective_from, value: @effective_from, required: true %></p>
 <% end %>
 
 <%= goal_f.fields_for :targets, @targets, index: '', child_index: '' do |target_f| %>
@@ -21,10 +19,11 @@
              last_quantity: target_f.object.thresholds.last.quantity} %>
 
   <%= link_to t(".button_delete_target"), '#', class: 'icon icon-del',
-    style: (@targets.many? ? "" : "display:none"),
-    onclick: "deleteTarget(event); return false;" %>
+    style: (@targets.many? ? '' : 'display:none'),
+    onclick: 'deleteTarget(event); return false;' %>
   </p>
 <% end %>
+
 <p>
 <%= link_to t(".button_new_target"), '#', class: 'icon icon-add',
   onclick: 'newTarget(event); return false;' %>
@@ -46,7 +45,7 @@
     new_target.find('em').text('<%= t ".choose_quantity" %>');
     new_target.find('label:first').hide();
     new_target.find('input, select:first').val('');
-    new_target.find('input, select.threshold:first').change();
+    new_target.find('select.threshold:first').change();
     form.find('p.target:visible a.icon-del').show();
   }
 

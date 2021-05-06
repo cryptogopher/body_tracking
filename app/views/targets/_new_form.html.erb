@@ -1,6 +1,5 @@
 <h2><%= t ".heading_new_target" %></h2>
 
-<%#  url: project_targets_path(@project, @view_params), %>
 <%= labelled_form_for @goal, url: goal_targets_path(@goal), method: :post, remote: true,
   html: {id: 'new-target-form', name: 'new-target-form'} do |goal_f| %>
 

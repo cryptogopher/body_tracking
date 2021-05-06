@@ -5,12 +5,6 @@ module MeasurementsHelper
       .html_safe
   end
 
-  def source_options
-    @project.sources.map do |s|
-      [s.name, s.id]
-    end
-  end
-
   def action_links(m)
     link_to(l(:button_retake), retake_measurement_path(m, @view_params),
             {remote: true, class: "icon icon-reload"}) +
