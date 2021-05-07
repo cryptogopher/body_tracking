@@ -27,10 +27,8 @@ resources :projects, shallow: true do
   end
 
   resources :measurement_routines, only: [:show, :edit] do
-    member do
-      get 'readouts', controller: :measurements
-      post 'toggle_exposure', controller: :measurements
-    end
+    resources :readouts, only: [:index]
+    post 'toggle_exposure', controller: :readouts
   end
   resources :measurements, except: [:show] do
     member do

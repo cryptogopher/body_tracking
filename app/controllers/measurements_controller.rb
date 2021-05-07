@@ -7,13 +7,9 @@ class MeasurementsController < ApplicationController
 
   before_action :init_session_filters
   before_action :find_project_by_project_id, only: [:index, :new, :create, :filter]
-  before_action :find_quantity_by_quantity_id, only: [:toggle_exposure]
   before_action :find_measurement, only: [:edit, :update, :destroy, :retake]
-  # @routine is set for :readouts view ONLY
-  before_action :find_measurement_routine, only: [:readouts, :toggle_exposure]
   before_action :find_measurement_routine_by_measurement_routine_id,
-    only: [:new, :create, :edit, :update, :retake, :filter],
-    if: -> { params[:view] == 'readouts' }
+    only: [:new, :create, :edit, :update, :retake, :filter]
   before_action :authorize
   before_action :set_view_params
 
@@ -84,15 +80,6 @@ class MeasurementsController < ApplicationController
     render :new
   end
 
-  def readouts
-    prepare_readouts
-  end
-
-  def toggle_exposure
-    @routine.readout_exposures.toggle!(@quantity)
-    prepare_readouts
-  end
-
   def filter
     session[:m_filters] = params.permit(:name, formula: [:code, :zero_nil])
     prepare_items
@@ -139,12 +126,6 @@ class MeasurementsController < ApplicationController
   def prepare_measurements
     @measurements, @filter_q = @project.measurements.includes(:routine, :source, :readouts)
       .filter(session[:m_filters])
-  end
-
-  def prepare_readouts
-    @quantities = @routine.quantities.includes(:formula)
-    @measurements, @filter_q = @routine.measurements.includes(:routine, :source)
-      .filter(session[:m_filters], @quantities)
   end
 
   def set_view_params

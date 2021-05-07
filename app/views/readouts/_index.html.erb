@@ -2,13 +2,13 @@
   locals: {url: filter_project_measurements_path(@project, @view_params)} %>
 
 <% if @measurements.any? %>
-  <%= render partial: 'measurements/options' %>
+  <%= render partial: 'readouts/options' %>
 
-  <% formulas = @quantities.map { |q| q.formula } %>
+  <% formulas = @quantities.collect(&:formula) %>
   <% formulas.unshift(@filter_q.formula) if @filter_q %>
   <%= error_messages_for *formulas %>
 
-  <table class="readouts list odd-even">
+  <table id="readouts" class="list odd-even">
     <thead>
       <tr>
         <% total_width = 3 + @quantities.length %>
@@ -17,7 +17,7 @@
           <th style="width:<%= 100/total_width %>%" class="closable ellipsible">
             <div style="float:right;position:relative;">
               <%= link_to '',
-                toggle_exposure_measurement_routine_path(@routine, quantity_id: q.id),
+                measurement_routine_toggle_exposure_path(@routine, quantity_id: q.id),
                 {class: "icon icon-close", method: :post, remote: true} %>
             </div>
             <%= q.name %>
@@ -34,7 +34,9 @@
         <tr id="measurement-<%= measurement.id %>" class="primary <%= row_class %>">
           <td class="topleft unwrappable" style="cursor: pointer;"
               onclick="$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', '.measurement').toggle(); return false;">
-            <span class="icon icon-bullet-closed"><%= format_datetime(measurement) %></span>
+            <span class="icon icon-bullet-closed">
+              <%= format_datetime(measurement.taken_at) %>
+            </span>
           </td>
           <% @quantities.each do |q| %>
             <td class="primary right ellipsible"><%= format_value(readouts[q]) %></td>
@@ -50,7 +52,9 @@
              end %>
           <td rowspan="<%= rows %>" class="topleft unwrappable" style="cursor: pointer;"
               onclick="$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', '.measurement').toggle(); return false;">
-            <span class="icon icon-bullet-open"><%= format_datetime(measurement) %></span>
+              <span class="icon icon-bullet-open">
+                <%= format_datetime(measurement.taken_at) %>
+              </span>
           </td>
           <% @quantities.each do |q| %>
             <td class="primary topleft ellipsible">

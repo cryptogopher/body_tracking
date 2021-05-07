@@ -1,7 +1,7 @@
 <fieldset id="options" class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:label_options) %></legend>
   <div>
-    <%= form_tag toggle_exposure_measurement_routine_path(@routine, @view_params),
+    <%= form_tag measurement_routine_toggle_exposure_path(@routine, @view_params),
       id: 'toggle-exposure-form', name: 'toggle-exposure-form',
       method: :post, remote: true do %>
 

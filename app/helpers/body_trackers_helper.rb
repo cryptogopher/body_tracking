@@ -22,6 +22,10 @@ module BodyTrackersHelper
     t&.strftime("%R")
   end
 
+  def format_datetime(dt)
+    dt.strftime("%F <small>%R&emsp;(~#{time_ago_in_words(dt)} ago)</small>").html_safe
+  end
+
   def toggle_exposure_options(enabled, domain = :all)
     enabled = enabled.map { |q| [q.name, q.id] }
     enabled_ids = enabled.map(&:last)

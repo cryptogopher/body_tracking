@@ -18,10 +18,10 @@
       <% @measurements.each do |m| %>
         <% next if m.new_record? %>
         <tr id="measurement-<%= m.id %>" class="primary measurement">
-          <td class="topleft unwrappable"><%= format_datetime(m) %></td>
+          <td class="topleft unwrappable"><%= format_datetime(m.taken_at) %></td>
           <td class="topleft">
             <div style="float:left;">
-              <%= link_to m.routine.name, readouts_measurement_routine_path(m.routine) %>
+              <%= link_to m.routine.name, measurement_routine_readouts_path(m.routine) %>
             </div>
             <div style="float:right;">
               <small><%= " (#{pluralize(m.readouts.size, 'readout')})" %></small>

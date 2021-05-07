@@ -7,6 +7,9 @@
 
 <%= title [t("measurements.index.heading"), project_measurements_path(@project)],
           @routine.name %>
+<% if @routine.description? %>
+  <p class="subtitle" style='white-space: pre-wrap;'><%= @routine.description %></p>
+<% end %>
 <div id='readouts'>
-  <%= render partial: 'measurements/readouts' %>
+  <%= render partial: 'readouts/index' %>
 </div>

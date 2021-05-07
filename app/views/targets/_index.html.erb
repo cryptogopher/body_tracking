@@ -1,16 +1,12 @@
-<%#= render partial: 'measurements/filters',
-  locals: {url: filter_project_measurements_path(@project, @view_params)} %>
-
 <% if @targets_by_date.any? %>
   <%= render partial: 'targets/options' %>
 
-  <% formulas = @quantities.map { |q| q.formula } %>
-  <%# formulas.unshift(@filter_q.formula) if @filter_q %>
+  <% formulas = @quantities.collect(&:formula) %>
   <%= error_messages_for *formulas %>
 
   <table id="targets" class="list odd-even">
     <thead>
-      <% total_width = 3 + @quantities.length %>
+      <% total_width = 2 + @quantities.length %>
       <% header = quantities_table_header(@quantities) %>
       <% header.each_with_index do |row, i| %>
         <tr class="header">
