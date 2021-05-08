@@ -9,23 +9,9 @@
   <%= error_messages_for *formulas %>
 
   <table id="readouts" class="list odd-even">
-    <thead>
-      <tr>
-        <% total_width = 3 + @quantities.length %>
-        <th style="width:<%= 2 * 100/total_width%>%"><%= l(:field_taken_at_date) %></th>
-        <% @quantities.each do |q| %>
-          <th style="width:<%= 100/total_width %>%" class="closable ellipsible">
-            <div style="float:right;position:relative;">
-              <%= link_to '',
-                measurement_routine_toggle_exposure_path(@routine, quantity_id: q.id),
-                {class: "icon icon-close", method: :post, remote: true} %>
-            </div>
-            <%= q.name %>
-          </th>
-        <% end %>
-        <th style="width:<%= 100/total_width %>%"><%= l(:field_action) %></th>
-      </tr>
-    </thead>
+    <%= quantities_table_header @quantities, :field_taken_at_date do |quantity_id|
+      measurement_routine_toggle_exposure_path(@routine, quantity_id: quantity_id)
+    end %>
 
     <tbody>
       <% extra_quantities = @measurements.values.first.keys - @quantities %>

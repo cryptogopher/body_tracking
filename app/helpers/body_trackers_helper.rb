@@ -58,7 +58,7 @@ module BodyTrackersHelper
     end
   end
 
-  def quantities_table_header(quantities)
+  def quantities_table_header(quantities, *fields)
     # spec: table of rows (tr), where each row is a hash of cells (td) (hash keeps items
     # ordered the way they were added). Hash values determine cell property:
     # * int > 0 - quantity name-labelled cell with 'int' size colspan
@@ -91,6 +91,47 @@ module BodyTrackersHelper
       single_columns.each { |q| row.delete(q) }
     end
 
-    spec
+    total_width = fields.length + quantities.length + 1
+    table_rows = []
+    spec.zip(spec[1..-1]).collect do |row, next_row|
+      table_headers = []
+
+      table_headers << fields.collect do |field|
+        tag.th(rowspan: spec.length, style: "width: #{100/total_width}%") { l(field) }
+      end if row == spec.first
+
+      row.each do |q, span|
+        row_attrs = {class: []}
+        row_attrs[:class] << 'interim' if (row != spec.last) && (span >= 0)
+        row_attrs[:class] << (span == 0 ? 'empty' : 'closable ellipsible')
+        row_attrs[:colspan] = span if span > 0
+        row_attrs[:rowspan] = -span if span < 0
+        row_attrs[:style] = "width: #{[span, 1].max * 100/total_width}%"
+        row_attrs[:title] = q.description
+
+        table_headers << tag.th(row_attrs) do
+          unless span == 0
+            button_class = ['icon']
+            if (row == spec.last) || next_row.has_key?(q) || (span < -1)
+              button_class << 'icon-close'
+            else
+              button_class << 'icon-bullet-closed'
+            end
+            button = tag.div(style: "float:right;position:relative;") do
+              link_to '', yield(q.id), {class: button_class, method: :post, remote: true}
+            end
+            button.html_safe + q.name
+          end
+        end
+      end
+
+      table_headers << tag.th(rowspan: spec.length, style: "width: #{100/total_width}%") do
+        l(:field_action)
+      end if row == spec.first
+
+      table_rows << tag.tr(class: 'header') { table_headers.join.html_safe }
+    end
+
+    tag.thead { table_rows.join.html_safe }
   end
 end
