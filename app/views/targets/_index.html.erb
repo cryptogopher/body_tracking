@@ -17,7 +17,7 @@
                         {remote: true, class: 'icon icon-arrow-right'}) %>
           </td>
           <% @quantities.each do |q| %>
-            <td class="primary right unwrappable"><%= raw targets[q].to_s %></td>
+            <td class="right unwrappable"><%= raw targets[q].to_s %></td>
           <% end %>
           <td class="right shrunk unwrappable"><%= action_links(date) %></td>
         </tr>

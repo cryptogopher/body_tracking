@@ -9,7 +9,7 @@
     </thead>
     <tbody>
       <% @goals.each do |g| %>
-        <tr id="goal-<%= g.id %>" class="primary goal">
+        <tr id="goal-<%= g.id %>" class="goal">
           <td class="topleft unwrappable">
             <div style="float:left;">
               <%= checked_image g.is_binding %><%= link_to g.name, goal_targets_path(g) %>
