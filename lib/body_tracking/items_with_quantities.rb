@@ -109,7 +109,7 @@ module BodyTracking
       filter_values = completed_q.delete(filter_q)
       items.to_a.keep_if { |i| filter_values[i][0] } if filter_values
       subitems.merge!(completed_q)
-      subitem_keys = subitems.keys.select { |k| k.class == Quantity }.sort_by { |q| q.lft }
+      subitem_keys = subitems.keys.select { |k| k.instance_of?(Quantity) }.sort_by(&:lft)
       items.map { |i| [i, subitem_keys.map { |q| [q, subitems[q][i]] }.to_h] }.to_h
     end
   end

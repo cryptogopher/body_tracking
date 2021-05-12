@@ -27,5 +27,13 @@ class ReadoutsController < ApplicationController
 
     @measurements, @filter_q = @routine.measurements.includes(:routine, :source)
       .filter(session[:m_filters], @quantities)
+
+    # Keep only non-nil readouts and their ancestors
+    @measurements.each do |measurement, readouts|
+      ancestors = {}
+      readouts.keep_if do |q, readout|
+        (readout || ancestors[q]) && (ancestors[q.parent] = true)
+      end
+    end
   end
 end

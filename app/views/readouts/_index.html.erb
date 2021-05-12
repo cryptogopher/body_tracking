@@ -16,58 +16,33 @@
     <tbody>
       <% extra_quantities = @measurements.values.first.keys - @quantities %>
       <% @measurements.each do |measurement, readouts| %>
-        <% row_class = "measurement #{cycle('odd', 'even')}" %>
-        <tr id="measurement-<%= measurement.id %>" class="primary <%= row_class %>">
-          <td class="topleft unwrappable" style="cursor: pointer;"
-              onclick="$(this).closest('tr').toggle(); $(this).closest('tr').nextUntil('tr.primary', '.measurement').toggle(); return false;">
-            <span class="icon icon-bullet-closed">
-              <%= format_datetime(measurement.taken_at) %>
-            </span>
+        <tr id="measurement-<%= measurement.id %>"
+            class="measurement <%= cycle('odd', 'even') %>">
+          <td class="topleft unwrappable">
+            <%= link_to format_datetime(measurement.taken_at), '',
+              {class: 'icon icon-arrow-right',
+               onclick: "$(this).closest('tr').nextUntil('tr.measurement', '.details')
+                           .show(); return false;"} %>
           </td>
           <% @quantities.each do |q| %>
-            <td class="primary right ellipsible"><%= format_value(readouts[q]) %></td>
+            <td class="right ellipsible"><%= format_amount(readouts[q]) %></td>
           <% end %>
           <td class="right shrunk unwrappable"><%= action_links(measurement) %></td>
         </tr>
 
-        <tr class="<%= row_class %>" style="display:none">
-          <% if @quantities.length > 0
-               rows = (readouts.length - 1) / @quantities.length + 1
-             else
-               rows = 1
-             end %>
-          <td rowspan="<%= rows %>" class="topleft unwrappable" style="cursor: pointer;"
-              onclick="$(this).closest('tr').prev('tr.primary').toggle(); $(this).closest('tr').prev('tr.primary').nextUntil('tr.primary', '.measurement').toggle(); return false;">
-              <span class="icon icon-bullet-open">
-                <%= format_datetime(measurement.taken_at) %>
-              </span>
+        <tr class="details <%= current_cycle %>" style="display:none">
+          <td class="topleft">
+            <%= link_to l(:button_close), "#", {class: 'icon icon-close',
+                  onclick: '$(this).closest("tr")
+                              .nextUntil("tr.measurement", ":not(.details)")
+                              .show().addBack().first().hide(); return false;'} %>
           </td>
-          <% @quantities.each do |q| %>
-            <td class="primary topleft ellipsible">
-              <%= q.name %>
-              <p class="right"><%= format_value(readouts[q]) %></p>
-            </td>
+          <% content = readouts.keys.inject('') do |output, q| %>
+            <% raw "#{output}#{readout_markup(q, readouts[q])}\n" %>
           <% end %>
-          <td rowspan="<%= rows %>" class="right shrunk unwrappable">
-            <%= action_links(measurement) %>
-          </td>
+          <td class="topleft" colspan="<%= @quantities.length + 1 %>"
+              style="white-space:pre-line;"><%= content %></td>
         </tr>
-
-        <% next if @quantities.empty? %>
-        <% extra_quantities.each_slice(@quantities.length) do |eqs| %>
-          <tr class="extra <%= row_class %>" style="display:none">
-            <% eqs.each do |q| %>
-              <td class="extra topleft ellipsible">
-                <%= q.name if readouts[q] %>
-                <p class="right"><%= format_value(readouts[q]) %></p>
-              </td>
-            <% end %>
-            <% if @quantities.length > eqs.length %>
-              <td class="space" colspan="<%= @quantities.length - eqs.length %>"></td>
-            <% end %>
-          </tr>
-        <% end %>
-
       <% end %>
     </tbody>
   </table>

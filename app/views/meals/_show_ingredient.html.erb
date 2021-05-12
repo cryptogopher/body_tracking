@@ -6,8 +6,8 @@
   </td>
   <% @quantities.each do |q| %>
     <td class="right ellipsible">
-      <%= format_value(@ingredients[i][q], @ingredient_summary[:precision][q],
-                       @ingredient_summary[:mfu_unit][q]) %>
+      <%= format_amount(@ingredients[i][q], @ingredient_summary[:precision][q],
+                        @ingredient_summary[:mfu_unit][q]) %>
     </td>
   <% end %>
   <%# Moved buttons to helper to avoid spaces between buttons %>

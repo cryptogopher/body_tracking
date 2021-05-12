@@ -42,8 +42,8 @@
           </td>
           <% @quantities.each do |q| %>
             <td class="primary right ellipsible">
-              <%= format_value(nutrients[q], @food_summary[:precision][q],
-                               @food_summary[:mfu_unit][q]) %>
+              <%= format_amount(nutrients[q], @food_summary[:precision][q],
+                                @food_summary[:mfu_unit][q]) %>
             </td>
           <% end %>
           <td class="right shrunk unwrappable"><%= action_links(food, :nutrients) %></td>
@@ -62,7 +62,7 @@
           <% @quantities.each do |q| %>
             <td class="primary topleft ellipsible">
               <%= q.name %>
-              <p class="right"><%= format_value(nutrients[q]) %></p>
+              <p class="right"><%= format_amount(nutrients[q]) %></p>
             </td>
           <% end %>
           <td rowspan="<%= rows %>" class="right shrunk unwrappable">
@@ -76,7 +76,7 @@
             <% eqs.each do |q| %>
               <td class="extra topleft ellipsible">
                 <%= q.name if nutrients[q] %>
-                <p class="right"><%= format_value(nutrients[q]) %></p>
+                <p class="right"><%= format_amount(nutrients[q]) %></p>
               </td>
             <% end %>
             <% if @quantities.length > eqs.length %>

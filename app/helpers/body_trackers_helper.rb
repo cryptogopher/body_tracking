@@ -1,15 +1,17 @@
 module BodyTrackersHelper
-  def format_value(value, precision=2, mfu_unit=nil)
-    amount, unit = value
+  def format_amount(amount, precision=2, mfu_unit=nil)
+    value = amount.respond_to?(:value) ? amount.value : amount&.first
+    unit = amount.respond_to?(:unit) ? amount.unit : amount&.last
+
     case
-    when amount.nil?
-      '-'
-    when amount.nan?
+    when value.nil?
+      ''
+    when value.nan?
       '?'
     else
-      a = amount.round(precision)
-      a_desc = a.nonzero? ? "%.#{precision}f" % a : '-'
-      u_desc = unit && " [#{unit.shortname}]" || ' [-]' if unit != mfu_unit && a.nonzero?
+      value = value.round(precision)
+      a_desc = value.nonzero? ? "%.#{precision}f" % value : '-'
+      u_desc = unit ? " [#{unit.shortname}]" : ' [-]' if unit != mfu_unit && value.nonzero?
       "#{a_desc}#{u_desc}"
     end
   end
