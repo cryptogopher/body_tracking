@@ -31,8 +31,8 @@ class ReadoutsController < ApplicationController
     # Keep only non-nil readouts and their ancestors
     @measurements.each do |measurement, readouts|
       ancestors = {}
-      readouts.keep_if do |q, readout|
-        (readout || ancestors[q]) && (ancestors[q.parent] = true)
+      readouts.keys.sort_by(&:depth).reverse_each do |q|
+        readouts[q] || ancestors[q] ? ancestors[q.parent] = true : readouts.delete(q)
       end
     end
   end
