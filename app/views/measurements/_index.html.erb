@@ -1,10 +1,10 @@
 <%= render partial: 'measurements/filters',
   locals: {url: filter_project_measurements_path(@project, @view_params)} %>
 
-<% if @measurements.any? { |m| m.persisted? } %>
+<% if @measurements.any? %>
   <%= error_messages_for @filter_q.formula if @filter_q %>
 
-  <table class="list">
+  <table id="measurements" class="list">
     <thead>
       <tr>
         <th style="width:5%"><%= l(:field_taken_at_date) %></th>
@@ -16,8 +16,7 @@
     </thead>
     <tbody>
       <% @measurements.each do |m| %>
-        <% next if m.new_record? %>
-        <tr id="measurement-<%= m.id %>" class="primary measurement">
+        <tr id="measurement-<%= m.id %>" class="measurement">
           <td class="topleft unwrappable"><%= format_datetime(m.taken_at) %></td>
           <td class="topleft">
             <div style="float:left;">

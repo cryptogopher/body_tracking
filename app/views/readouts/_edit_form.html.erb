@@ -1,11 +1,8 @@
-<%= labelled_form_for @measurement, url: measurement_path(@measurement),
+<%= labelled_form_for @measurement, url: measurement_readouts_path(@measurement),
   method: :patch, remote: true,
   html: {id: 'edit-measurement-form', name: 'edit-measurement-form'} do |measurement_f| %>
 
   <div class="box tabular">
-    <%= render partial: 'measurement_routines/form',
-      locals: {measurement_f: measurement_f} %>
-    <hr style="width: 95%;">
     <%= render partial: 'measurements/form', locals: {measurement_f: measurement_f} %>
   </div>
 

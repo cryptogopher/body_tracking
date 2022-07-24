@@ -30,7 +30,9 @@ resources :projects, shallow: true do
     resources :readouts, only: [:index]
     post 'toggle_exposure', controller: :readouts
   end
+  # TODO: nest measurements inside routines?
   resources :measurements, except: [:show] do
+    resource :readouts, only: [:edit, :update]
     member do
       get 'retake'
     end

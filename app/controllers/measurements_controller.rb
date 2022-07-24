@@ -9,7 +9,7 @@ class MeasurementsController < ApplicationController
   before_action :find_project_by_project_id, only: [:index, :new, :create, :filter]
   before_action :find_measurement, only: [:edit, :update, :destroy, :retake]
   before_action :find_measurement_routine_by_measurement_routine_id,
-    only: [:new, :create, :edit, :update, :retake, :filter]
+    only: [:new, :create, :filter]
   before_action :authorize
   before_action :set_view_params
 

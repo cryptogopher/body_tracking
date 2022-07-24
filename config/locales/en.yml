@@ -124,11 +124,12 @@ en:
         other: "Created %{count} targets"
     update:
       success:
+        zero: "Targets left unchanged"
         one: "Successfully updated target"
-        other: "Successfully updated targets"
+        other: "Successfully updated %{count} targets"
     destroy:
       success:
-        one: "Deleted 1 target"
+        one: "Deleted target"
         other: "Deleted %{count} targets"
       failure: "Some targets have not been deleted"
   meals:
@@ -158,6 +159,12 @@ en:
       heading_new_measurement: 'New measurement'
     index:
       heading: 'Measurements'
+  readouts:
+    update:
+      success:
+        zero: "Successfully updated measurement"
+        one: "Successfully updated readout"
+        other: "Successfully updated %{count} readouts"
   foods:
     contextual:
       link_import_foods: 'Import'

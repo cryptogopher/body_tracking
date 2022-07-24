@@ -1,8 +1,9 @@
-$('tr[id=measurement-<%= @measurement.id %>]').nextUntil('tr.primary', ':not(.measurement)')
-  .remove();
-var columns = $('table > thead > tr > th').length;
-$('tr[id=measurement-<%= @measurement.id %>]').nextUntil('tr.primary').addBack().last().after(
-  '<tr><td class="form" colspan="'+columns+'"><div id="edit-measurement">' +
-  '<%= j render partial: 'measurements/edit_form' %>' +
-  '</div></td></tr>'
+$('tr[id=measurement-<%= @measurement.id %>]').nextUntil('tr.measurement')
+  .remove().addBack().first().after(
+    '<tr>' +
+      '<td class="topleft symmetric"' +
+          'colspan="'+$('table#measurements tr:first-child td').length+'">' +
+        '<%= j render partial: 'measurements/edit_form' %>' +
+    '</td>' +
+  '</tr>'
 );

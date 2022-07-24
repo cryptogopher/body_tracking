@@ -1,0 +1,9 @@
+<div id='measurement-routine-form'>
+  <% if @measurement.routine.persisted? %>
+    <%= render partial: 'measurement_routines/show_form',
+      locals: {routine: @measurement.routine} %>
+  <% else %>
+    <%= render partial: 'measurement_routines/form',
+      locals: {routine: @measurement.routine} %>
+  <% end %>
+</div>

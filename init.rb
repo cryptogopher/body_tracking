@@ -35,7 +35,7 @@ Redmine::Plugin.register :body_tracking do
               :toggle_eaten, :toggle_exposure, :adjust],
       measurement_routines: [:edit],
       measurements: [:new, :create, :edit, :update, :destroy, :retake],
-      readouts: [:toggle_exposure],
+      readouts: [:edit, :update, :toggle_exposure],
       foods: [:new, :create, :edit, :update, :destroy, :toggle, :toggle_exposure,
                     :import],
       sources: [:create, :destroy],
